@@ -3,21 +3,219 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cuestionario TFM</title>
-    <link rel="stylesheet" href="/static/css/styles.css">
+    <title>Cuestionario de Interpretabilidad</title>
 </head>
 <body>
     <h1>Cuestionario de Interpretabilidad</h1>
-    <form id="questionnaire-form">
-        <div class="question">
-            <label>Pregunta 1: ¿Cómo calificarías la interpretabilidad del modelo?</label>
-            <input type="radio" name="q1" value="alta"> Alta
-            <input type="radio" name="q1" value="media"> Media
-            <input type="radio" name="q1" value="baja"> Baja
-        </div>
-        <button type="submit">Enviar</button>
-    </form>
+    <div id="question-container"></div>
+    <button id="next-question-btn" style="display: none;">Siguiente</button>
+    
+    <script>
+        const questions = [
+            // Preguntas resueltas por ambos modelos
+            {
+                observation: "absences = 1, failures = 1, studytime = 2, age = 18",
+                prediction: "Ambos modelos predicen No Aprobado",
+                options: ["Aprobado", "No aprobado", "No estoy seguro"]
+            },
+            {
+                observation: "absences = 4, failures = 0, studytime = 3, age = 16",
+                prediction: "Ambos modelos predicen No Aprobado",
+                options: ["Aprobado", "No aprobado", "No estoy seguro"]
+            },
+            {
+                observation: "absences = 3, failures = 1, studytime = 1, age = 15",
+                prediction: "Ambos modelos predicen Aprobado",
+                options: ["Aprobado", "No aprobado", "No estoy seguro"]
+            },
+            {
+                observation: "absences = 0, failures = 0, studytime = 1, age = 18",
+                prediction: "Ambos modelos predicen Aprobado",
+                options: ["Aprobado", "No aprobado", "No estoy seguro"]
+            },
+            {
+                observation: "absences = 1, failures = 0, studytime = 2, age = 15",
+                prediction: "Ambos modelos predicen Aprobado",
+                options: ["Aprobado", "No aprobado", "No estoy seguro"]
+            },
+            {
+                observation: "absences = 0, failures = 1, studytime = 3, age = 18",
+                prediction: "Ambos modelos predicen No Aprobado",
+                options: ["Aprobado", "No aprobado", "No estoy seguro"]
+            },
 
-    <script src="/static/js/app.js"></script>
+            // Preguntas ambiguas
+            {
+                observation: "absences = 3, failures = 1, studytime = 2, age = 17",
+                prediction: "La combinación de valores puede no estar claramente definida en las reglas de los modelos generando incertidumbre.",
+                options: ["Aprobado", "No aprobado", "No estoy seguro"]
+            },
+            {
+                observation: "absences = 2, failures = 2, studytime = 3, age = 16",
+                prediction: "Los modelos pueden no tener reglas claras para failures = 2 y studytime = 3 simultáneamente, lo que genera ambigüedad.",
+                options: ["Aprobado", "No aprobado", "No estoy seguro"]
+            },
+            {
+                observation: "absences = 1, failures = 0, studytime = 4, age = 18",
+                prediction: "La alta variabilidad en studytime (4) podría no estar claramente definida en las reglas de los modelos causando incertidumbre.",
+                options: ["Aprobado", "No aprobado", "No estoy seguro"]
+            },
+
+            // Preguntas exclusivas para cada modelo
+            {
+                observation: "absences = 2, failures = 1, studytime = 2, age = 16",
+                prediction: "DT predice Aprobado; IDS predice No Aprobado.",
+                options: ["Aprobado", "No aprobado", "No estoy seguro"]
+            },
+            {
+                observation: "absences = 5, failures = 2, studytime = 2, age = 17",
+                prediction: "DT predice No Aprobado; IDS no tiene reglas específicas.",
+                options: ["Aprobado", "No aprobado", "No estoy seguro"]
+            },
+            {
+                observation: "absences = 1, failures = 0, studytime = 2, age = 16",
+                prediction: "IDS predice No Aprobado; DT predice Aprobado.",
+                options: ["Aprobado", "No aprobado", "No estoy seguro"]
+            },
+
+            // Preguntas de Detección de Error (resueltas por ambos modelos)
+            {
+                observation: "absences = 2, failures = 0, studytime = 1, age = 16",
+                prediction: "Ambos modelos predicen No Aprobado",
+                options: ["Sí", "No", "No estoy seguro"]
+            },
+            {
+                observation: "absences = 0, failures = 0, studytime = 3, age = 17",
+                prediction: "Ambos modelos predicen Aprobado",
+                options: ["Sí", "No", "No estoy seguro"]
+            },
+            {
+                observation: "absences = 1, failures = 1, studytime = 2, age = 18",
+                prediction: "Ambos modelos predicen No Aprobado",
+                options: ["Sí", "No", "No estoy seguro"]
+            },
+            {
+                observation: "absences = 4, failures = 0, studytime = 3, age = 16",
+                prediction: "Ambos modelos predicen No Aprobado",
+                options: ["Sí", "No", "No estoy seguro"]
+            },
+
+            // Preguntas ambiguas (detección de error)
+            {
+                observation: "absences = 4, failures = 1, studytime = 2, age = 17",
+                prediction: "La combinación de ausencias moderadas y fallos podría no estar claramente cubierta por las reglas.",
+                options: ["Sí", "No", "No estoy seguro"]
+            },
+            {
+                observation: "absences = 0, failures = 2, studytime = 3, age = 15",
+                prediction: "La ausencia de fallos pero con alto número de fallos previos y tiempo de estudio moderado puede no estar claramente definida en las reglas.",
+                options: ["Sí", "No", "No estoy seguro"]
+            },
+            {
+                observation: "absences = 1, failures = 1, studytime = 2, age = 16",
+                prediction: "La combinación de valores puede no estar claramente definida en las reglas de los modelos generando incertidumbre.",
+                options: ["Sí", "No", "No estoy seguro"]
+            },
+
+            // Preguntas exclusivas para cada modelo (detección de error)
+            {
+                observation: "absences = 3, failures = 0, studytime = 1, age = 18",
+                prediction: "DT predice No Aprobado; IDS no tiene reglas específicas.",
+                options: ["Sí", "No", "No estoy seguro"]
+            },
+            {
+                observation: "absences = 2, failures = 1, studytime = 2, age = 16",
+                prediction: "DT predice Aprobado; IDS predice No Aprobado.",
+                options: ["Sí", "No", "No estoy seguro"]
+            },
+            {
+                observation: "absences = 5, failures = 2, studytime = 2, age = 17",
+                prediction: "DT predice No Aprobado; IDS no tiene reglas específicas.",
+                options: ["Sí", "No", "No estoy seguro"]
+            },
+            {
+                observation: "absences = 0, failures = 0, studytime = 1, age = 16",
+                prediction: "IDS predice No Aprobado; DT predice Aprobado.",
+                options: ["Sí", "No", "No estoy seguro"]
+            }
+        ];
+
+
+        let currentQuestionIndex = 0;
+        let startTime, endTime;
+        const answers = [];
+
+        function loadQuestion() {
+            const container = document.getElementById('question-container');
+            container.innerHTML = ''; // Limpiar pregunta anterior
+
+            const questionData = questions[currentQuestionIndex];
+
+            const observationElement = document.createElement('p');
+            observationElement.textContent = `Observación: ${questionData.observation}`;
+            container.appendChild(observationElement);
+
+            const predictionElement = document.createElement('p');
+            predictionElement.textContent = `Predicción del modelo: ${questionData.prediction}`;
+            container.appendChild(predictionElement);
+
+            questionData.options.forEach(option => {
+                const optionElement = document.createElement('button');
+                optionElement.textContent = option;
+                optionElement.onclick = () => handleAnswer(option, optionElement);
+                container.appendChild(optionElement);
+            });
+
+            // Inicia el contador de tiempo
+            startTime = new Date().getTime();
+        }
+
+        
+        function handleAnswer(answer, optionElement) {
+            // Calcula el tiempo de respuesta
+            endTime = new Date().getTime();
+            const responseTime = endTime - startTime;
+
+            // Remueve la clase 'selected' de cualquier otra opción seleccionada
+            document.querySelectorAll('button').forEach(button => button.classList.remove('selected'));
+
+            // Añade la clase 'selected' a la opción elegida
+            optionElement.classList.add('selected');
+
+            // Actualiza o guarda la respuesta y el tiempo
+            answers[currentQuestionIndex] = {
+                observation: questions[currentQuestionIndex].observation,
+                prediction: questions[currentQuestionIndex].prediction,
+                answer: answer,
+                time: responseTime
+            };
+
+            // Mostrar el botón para la siguiente pregunta si es la última vez que selecciona
+            document.getElementById('next-question-btn').style.display = 'block';
+        }
+
+        function submitAnswers() {
+            fetch('/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(answers),
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Cuestionario completado');
+                console.log(data);
+            });
+        }
+
+        document.getElementById('next-question-btn').onclick = () => {
+            currentQuestionIndex++;
+            loadQuestion();
+            document.getElementById('next-question-btn').style.display = 'none';
+        };
+
+        loadQuestion(); // Cargar la primera pregunta al iniciar
+    </script>
 </body>
 </html>
