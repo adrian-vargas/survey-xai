@@ -177,3 +177,30 @@ function submitAnswers() {
 }
 
 document.getElementById('next-question-btn').onclick = nextQuestion;
+
+
+const correctAccessKey = 'clave123';  // Define aquí la clave correcta
+
+document.getElementById('access-btn').onclick = function() {
+    const enteredKey = document.getElementById('access-key').value;
+
+    if (enteredKey === correctAccessKey) {
+        document.getElementById('access-container').style.display = 'none';
+        document.getElementById('instructions').style.display = 'block';
+    } else {
+        alert('Clave de acceso incorrecta. Inténtalo de nuevo.');
+    }
+};
+
+document.getElementById('start-questionnaire-btn').onclick = function() {
+    document.getElementById('instructions').style.display = 'none';
+    document.getElementById('question-container').style.display = 'block';
+
+    fetch('/static/questions.json')
+        .then(response => response.json())
+        .then(data => {
+            questions = data;
+            loadQuestion();
+        })
+        .catch(error => console.error('Error loading questions:', error));
+};

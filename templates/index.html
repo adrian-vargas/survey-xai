@@ -7,12 +7,25 @@
 </head>
 <body>
     <h1>Cuestionario de Interpretabilidad</h1>
-    <div id="instructions">
+    
+    <!-- Formulario para la clave de acceso -->
+    <div id="access-container">
+        <p>Introduce la clave de acceso para iniciar el cuestionario:</p>
+        <input type="password" id="access-key" placeholder="Clave de acceso">
+        <button id="access-btn">Acceder</button>
+    </div>
+    
+    <!-- Instrucciones y botón para comenzar el cuestionario -->
+    <div id="instructions" style="display:none;">
         <p><strong>Nota importante:</strong> Una vez que respondas una pregunta y avances a la siguiente, no podrás regresar para cambiar tu respuesta. Te recomendamos que revises tus respuestas cuidadosamente antes de continuar.</p>
         <button id="start-questionnaire-btn">Comenzar Cuestionario</button>
     </div>
+
+    <!-- Contenedor para mostrar las preguntas del cuestionario -->
     <div id="question-container" style="display:none;"></div>
-    <button id="next-question-btn" style="display: none;">Siguiente</button>
+    
+    <!-- Botón para avanzar a la siguiente pregunta -->
+    <button id="next-question-btn" style="display:none;">Siguiente</button>
 
     <!-- Enlace al archivo JavaScript -->
     <script src="/static/js/app.js"></script>
