@@ -162,14 +162,18 @@ function submitAnswers() {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(answers),
+        body: JSON.stringify(answers),  // Asegúrate de que `answers` es un array de objetos
     })
     .then(response => response.json())
     .then(data => {
-        alert('Cuestionario completado');
-        console.log(data);
-        document.getElementById('question-container').innerHTML = '<p>Gracias por completar el cuestionario.</p>';
-        document.getElementById('next-question-btn').style.display = 'none';  // Ocultar botón
+        if (data.status === 'success') {
+            alert('Cuestionario completado');
+            console.log(data);
+            document.getElementById('question-container').innerHTML = '<p>Gracias por completar el cuestionario.</p>';
+            document.getElementById('next-question-btn').style.display = 'none';
+        } else {
+            console.error('Error:', data.message);
+        }
     })
     .catch((error) => {
         console.error('Error:', error);
@@ -177,7 +181,6 @@ function submitAnswers() {
 }
 
 document.getElementById('next-question-btn').onclick = nextQuestion;
-
 
 const correctAccessKey = 'clave123';  // Define aquí la clave correcta
 
