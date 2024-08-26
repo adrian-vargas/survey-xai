@@ -72,5 +72,12 @@ def submit():
         logging.error(f"Error in submit: {str(e)}")
         return jsonify({'status': 'error', 'message': str(e)})
 
+import requests
+@app.route('/get-my-ip')
+def get_my_ip():
+    ip = requests.get('https://api.ipify.org').text
+    return f'My public IP is: {ip}'
+
+
 if __name__ == '__main__':
     app.run(debug=True)
