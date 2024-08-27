@@ -23,6 +23,7 @@ collection_name = os.getenv('MONGO_COLLECTION_NAME')
 public_key = os.getenv('MONGO_PUBLIC_KEY')
 private_key = os.getenv('MONGO_PRIVATE_KEY')
 org_id = os.getenv('MONGO_ORG_ID')
+project_id = os.getenv('MONGO_PROJECT_ID')  # Corregir para obtener el Project ID
 
 # Configuración de la conexión a MongoDB Atlas
 client = MongoClient(mongo_uri)
@@ -32,7 +33,7 @@ collection = db[collection_name]  # Nombre de la colección
 def update_mongodb_ip_access():
     """Actualizar la IP de acceso permitida en MongoDB Atlas y eliminar las antiguas."""
     current_ip = requests.get('https://api.ipify.org').text
-    api_url = f"https://cloud.mongodb.com/api/atlas/v1.0/orgs/{org_id}/accessList"
+    api_url = f"https://cloud.mongodb.com/api/atlas/v1.0/groups/{project_id}/accessList"
     
     headers = {
         "Content-Type": "application/json"
