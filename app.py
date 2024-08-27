@@ -1,11 +1,5 @@
 from flask import Flask, render_template, request, jsonify
-import json
-import time
-import uuid
-import os
-import logging
-import requests
-import threading
+import json, time, uuid, os, logging, requests, threading
 from pymongo import MongoClient
 from dotenv import load_dotenv
 
@@ -34,44 +28,42 @@ collection = db[collection_name]
 last_ip = None
 
 def update_mongodb_ip_access():
-    """Actualizar la IP de acceso permitida en MongoDB Atlas y eliminar las antiguas si la IP ha cambiado."""
     global last_ip
-    current_ip = requests.get('https://api.ipify.org').text
-    
-    if current_ip != last_ip:
-        api_url = f"https://cloud.mongodb.com/api/atlas/v1.0/groups/{project_id}/accessList"
+    try:
+        current_ip = requests.get('https://api.ipify.org').text
 
-        headers = {
-            "Content-Type": "application/json"
-        }
+        if current_ip != last_ip:
+            api_url = f"https://cloud.mongodb.com/api/atlas/v1.0/groups/{project_id}/accessList"
+            headers = {"Content-Type": "application/json"}
 
-        # Obtener lista actual de IPs
-        response = requests.get(api_url, auth=(public_key, private_key), headers=headers)
-        if response.status_code == 200:
-            access_list = response.json()['results']
-            current_ip_list = [{"ipAddress": current_ip}]
-            
-            # Borrar las IPs existentes
-            for ip in access_list:
-                delete_url = f"{api_url}/{ip['ipAddress']}"
-                delete_response = requests.delete(delete_url, auth=(public_key, private_key), headers=headers)
-                if delete_response.status_code != 204:
-                    logging.error(f"Error deleting IP {ip['ipAddress']}: {delete_response.text}")
+            # Obtener lista actual de IPs
+            response = requests.get(api_url, auth=(public_key, private_key), headers=headers)
+            if response.status_code == 200:
+                access_list = response.json()['results']
+                current_ip_list = [{"ipAddress": current_ip}]
+                
+                # Borrar las IPs existentes
+                for ip in access_list:
+                    delete_url = f"{api_url}/{ip['ipAddress']}"
+                    delete_response = requests.delete(delete_url, auth=(public_key, private_key), headers=headers)
+                    if delete_response.status_code != 204:
+                        logging.error(f"Error deleting IP {ip['ipAddress']}: {delete_response.text}")
 
-            # Agregar la nueva IP
-            add_response = requests.post(api_url, json=current_ip_list, auth=(public_key, private_key), headers=headers)
-            if add_response.status_code == 201:
-                last_ip = current_ip  # Actualizar la última IP conocida
-                logging.info(f"Updated MongoDB IP Access List with current IP: {current_ip}")
+                # Agregar la nueva IP
+                add_response = requests.post(api_url, json=current_ip_list, auth=(public_key, private_key), headers=headers)
+                if add_response.status_code == 201:
+                    last_ip = current_ip  # Actualizar la última IP conocida
+                    logging.info(f"Updated MongoDB IP Access List with current IP: {current_ip}")
+                else:
+                    logging.error(f"Failed to add new IP. Status Code: {add_response.status_code}")
+                    logging.error(add_response.text)
             else:
-                logging.error(f"Failed to add new IP. Status Code: {add_response.status_code}")
-                logging.error(add_response.text)
-        else:
-            logging.error(f"Failed to retrieve IP access list. Status Code: {response.status_code}")
-            logging.error(response.text)
+                logging.error(f"Failed to retrieve IP access list. Status Code: {response.status_code}")
+                logging.error(response.text)
+    except Exception as e:
+        logging.error(f"Error updating MongoDB IP: {str(e)}")
 
 def monitor_ip_change(interval=60):
-    """Monitorea cambios en la IP del servidor y actualiza MongoDB Atlas si es necesario."""
     while True:
         update_mongodb_ip_access()
         time.sleep(interval)
@@ -106,14 +98,13 @@ def submit():
         if not isinstance(data, list):
             raise ValueError("Submitted data should be a list of answers")
         
-        timestamp = time.time()  # Captura el tiempo actual en segundos
-        user_id = str(uuid.uuid4())  # Genera un UUID único para identificar al usuario
+        timestamp = time.time()  
+        user_id = str(uuid.uuid4())  
         
         for item in data:
-            item['timestamp'] = timestamp  # Añade la marca de tiempo a los datos
-            item['user_id'] = user_id  # Añade el identificador único de usuario
+            item['timestamp'] = timestamp  
+            item['user_id'] = user_id  
 
-        # Guardar la respuesta en MongoDB
         collection.insert_many(data)
         return jsonify({'status': 'success', 'timestamp': timestamp, 'user_id': user_id})
     except Exception as e:
@@ -126,9 +117,7 @@ def get_my_ip():
     return f'My public IP is: {ip}'
 
 if __name__ == '__main__':
-    # Iniciar el monitor de cambio de IP en un thread separado
-    ip_monitor_thread = threading.Thread(target=monitor_ip_change, args=(60,))
+    ip_monitor_thread = threading.Thread(target=monitor_ip_change, args=(3,))
     ip_monitor_thread.daemon = True
     ip_monitor_thread.start()
-
     app.run(debug=True)
