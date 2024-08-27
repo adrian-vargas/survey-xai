@@ -169,7 +169,7 @@ function submitAnswers() {
         if (data.status === 'success') {
             alert('Cuestionario completado');
             console.log(data);
-            document.getElementById('question-container').innerHTML = '<p>Gracias por completar el cuestionario.</p>';
+            document.getElementById('question-container').innerHTML = '<div class="thank-you-message"><p>Gracias por completar el cuestionario.</p></div>';
             document.getElementById('next-question-btn').style.display = 'none';
         } else {
             console.error('Error:', data.message);
@@ -179,6 +179,7 @@ function submitAnswers() {
         console.error('Error:', error);
     });
 }
+
 
 document.getElementById('next-question-btn').onclick = nextQuestion;
 
