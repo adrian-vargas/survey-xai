@@ -21,7 +21,48 @@ document.getElementById('start-questionnaire-btn').onclick = function() {
         .catch(error => console.error('Error loading questions:', error));
 };
 
+function updateProgressBar() {
+    let totalQuestions = 0;
+
+    // Sumar todas las preguntas de las categorías principales
+    for (let i = 0; i < categories.length; i++) {
+        for (let j = 0; j < subCategories.length; j++) {
+            totalQuestions += questions[categories[i]][subCategories[j]].length;
+        }
+    }
+
+    // Sumar las preguntas descriptivas
+    totalQuestions += questions[descriptiveQuestionsCategory].length;
+
+    // Calcular la posición actual
+    let currentQuestionNumber = 0;
+
+    // Preguntas respondidas en categorías anteriores
+    for (let i = 0; i < currentCategoryIndex; i++) {
+        for (let j = 0; j < subCategories.length; j++) {
+            currentQuestionNumber += questions[categories[i]][subCategories[j]].length;
+        }
+    }
+
+    // Preguntas respondidas en la subcategoría actual
+    if (currentCategoryIndex < categories.length) {
+        for (let j = 0; j < currentSubCategoryIndex; j++) {
+            currentQuestionNumber += questions[categories[currentCategoryIndex]][subCategories[j]].length;
+        }
+        // Sumar la pregunta actual
+        currentQuestionNumber += currentQuestionIndex + 1; // Sumar 1 para considerar la respuesta actual
+    } else if (currentCategoryIndex === categories.length) {
+        // Preguntas descriptivas
+        currentQuestionNumber += currentQuestionIndex + 1; // Sumar 1 para considerar la respuesta actual
+    }
+
+    // Calcular el progreso como porcentaje
+    const currentProgress = (currentQuestionNumber / (totalQuestions+1)) * 100;
+    document.getElementById('progress-bar').style.width = currentProgress + '%';
+}
+
 function loadQuestion() {
+    // Quita la llamada a updateProgressBar() de aquí.
     if (currentCategoryIndex < categories.length) {
         let currentCategory = categories[currentCategoryIndex];
         let currentSubCategory = subCategories[currentSubCategoryIndex];
@@ -77,6 +118,8 @@ function handleAnswer(answer, optionElement) {
     });
 
     document.getElementById('next-question-btn').style.display = 'block';  // Mostrar el botón "Siguiente" después de seleccionar una respuesta
+
+    updateProgressBar(); // Mover la barra de progreso después de seleccionar una respuesta
 }
 
 function nextQuestion() {
@@ -105,6 +148,7 @@ function moveToNextCategory() {
 }
 
 function loadDescriptiveQuestion() {
+    updateProgressBar(); // Actualiza la barra de progreso cada vez que se carga una pregunta descriptiva
     if (currentQuestionIndex < questions[descriptiveQuestionsCategory].length) {
         const questionData = questions[descriptiveQuestionsCategory][currentQuestionIndex];
         const container = document.getElementById('question-container');
@@ -156,7 +200,9 @@ function loadDescriptiveQuestion() {
     }
 }
 
+
 function submitAnswers() {
+    updateProgressBar(); // Asegurarse de que la barra de progreso esté al 100% al finalizar
     fetch('/submit', {
         method: 'POST',
         headers: {
@@ -179,6 +225,7 @@ function submitAnswers() {
         console.error('Error:', error);
     });
 }
+
 
 
 document.getElementById('next-question-btn').onclick = nextQuestion;
