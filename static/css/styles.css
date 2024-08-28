@@ -12,7 +12,7 @@ body {
 }
 
 h1 {
-    font-size: 2.5em;
+    font-size: 2em; /* Usa una fuente un poco más pequeña para mayor flexibilidad */
     color: #333;
     margin-bottom: 20px;
     text-align: center;
@@ -21,7 +21,7 @@ h1 {
 /* Styling for the question container */
 #question-container, #instructions {
     background-color: white;
-    padding: 30px;
+    padding: 2em; /* Usa 'em' para que el padding sea relativo al tamaño de fuente */
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     text-align: left;
@@ -32,11 +32,11 @@ h1 {
 }
 
 #instructions {
-    text-align: justify; /* Justificar el texto de las instrucciones */
+    text-align: justify;
 }
 
 p {
-    font-size: 1.25em;
+    font-size: 1.1em; /* Ligero ajuste para mejor legibilidad */
     color: #555;
     margin-bottom: 20px;
     line-height: 1.6;
@@ -44,15 +44,17 @@ p {
 
 /* Styling for buttons */
 button {
-    background-color: #d9534f; /* Default color for answer buttons */
+    background-color: #d9534f;
     color: white;
     border: none;
-    padding: 15px 30px;
+    padding: 1em 2em; /* Padding flexible */
     border-radius: 5px;
     font-size: 1em;
     cursor: pointer;
     margin: 10px;
     display: inline-block;
+    width: 100%; /* Asegura que los botones ocupen todo el ancho en móviles */
+    max-width: 300px;
 }
 
 button:hover {
@@ -60,52 +62,42 @@ button:hover {
 }
 
 button.selected {
-    background-color: #5bc0de; /* Color change when selected */
+    background-color: #5bc0de;
 }
 
-#start-questionnaire-btn {
-    background-color: #d9534f;
-    color: white;
-    border: none;
-    padding: 15px 30px;
-    border-radius: 5px;
-    font-size: 1.25em;
-    cursor: pointer;
-    display: inline-block;
-    text-align: center;
-    margin: 30px auto 0 auto;
-}
-
-#next-question-btn {
+#start-questionnaire-btn, #next-question-btn {
     background-color: #5cb85c; /* Green color for the next button */
-    margin-top: 30px;
-    font-size: 1.25em;
-    display: inline-block;
+    display: block;
     margin: 30px auto;
+    padding: 1em 2em;
+    font-size: 1.25em;
+    width: 100%; /* Ancho completo en pantallas pequeñas */
+    max-width: 300px; /* Limita el ancho en pantallas más grandes */
 }
 
-#next-question-btn:hover {
+#start-questionnaire-btn:hover, #next-question-btn:hover {
     background-color: #4cae4c;
 }
 
 /* Mobile responsive adjustments */
 @media (max-width: 768px) {
-    #question-container, #instructions {
-        padding: 20px;
-        width: 100%;
-        max-width: 100%;
+    h1 {
+        font-size: 1.8em; /* Reduce el tamaño de la fuente en móviles */
     }
-    
+
+    #question-container, #instructions {
+        padding: 1.5em;
+    }
+
     button {
-        padding: 10px 20px;
         font-size: 1em;
-        width: calc(100% - 20px);
+        padding: 0.8em 1.5em;
         max-width: 100%;
     }
 }
 
 textarea {
-    width: 100%; /* Esto hará que el área de texto ocupe el 100% del ancho disponible */
+    width: 100%;
     max-width: 100%;
     padding: 10px;
     font-size: 1em;
@@ -117,13 +109,17 @@ textarea {
 /* Centrar el campo de texto y el botón en el formulario de acceso */
 #access-container {
     display: flex;
-    justify-content: center;
+    flex-direction: column; /* Ajuste para móviles */
     align-items: center;
-    gap: 10px; /* Espacio entre el campo de texto y el botón */
+    gap: 10px;
     margin-top: 20px;
+    width: 100%; /* Ocupa todo el ancho */
+    max-width: 300px;
+    margin: 0 auto;
 }
 
-#access-container input {
+#access-container input, #access-container button {
+    width: 100%;
     padding: 10px;
     font-size: 1em;
     border-radius: 5px;
@@ -131,23 +127,25 @@ textarea {
     box-sizing: border-box;
 }
 
-#access-container button {
-    background-color: #d9534f;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    font-size: 1em;
-    cursor: pointer;
+/* Progress bar styling */
+.progress-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #f3f3f3;
+    z-index: 1000;
 }
 
-#access-container button:hover {
-    background-color: #c9302c;
+.progress-bar {
+    height: 10px;
+    width: 0%;
+    background-color: #4caf50;
 }
 
 /* Centrar los botones de las respuestas */
 #question-container button {
-    width: calc(33.3% - 20px); /* Cada botón ocupa un tercio del contenedor menos el margen */
+    width: calc(33.3% - 20px);
     margin: 10px;
     text-align: center;
 }
@@ -157,37 +155,5 @@ textarea {
     justify-content: center;
     align-items: center;
     text-align: center;
-    min-height: 100px; /* Puedes ajustar esta altura según sea necesario */
-}
-
-#start-questionnaire-btn {
-    display: block; /* Asegura que el botón ocupe una línea completa */
-    margin: 0 auto; /* Centra el botón horizontalmente */
-    background-color: #d9534f;
-    color: white;
-    border: none;
-    padding: 15px 30px;
-    border-radius: 5px;
-    font-size: 1.25em;
-    cursor: pointer;
-    text-align: center;
-}
-
-
-
-/* Contenedor de la barra de progreso */
-.progress-container {
-    position: fixed; /* Fija la barra en la parte superior */
-    top: 0;
-    left: 0;
-    width: 100%;
-    background-color: #f3f3f3;
-    z-index: 1000; /* Asegura que la barra esté por encima de otros elementos */
-}
-
-/* Barra de progreso */
-.progress-bar {
-    height: 10px; /* Altura de la barra */
-    width: 0%;
-    background-color: #4caf50; /* Color de la barra */
+    min-height: 100px;
 }
