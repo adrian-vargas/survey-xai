@@ -172,3 +172,22 @@ textarea {
     cursor: pointer;
     text-align: center;
 }
+
+
+
+/* Contenedor de la barra de progreso */
+.progress-container {
+    position: fixed; /* Fija la barra en la parte superior */
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #f3f3f3;
+    z-index: 1000; /* Asegura que la barra esté por encima de otros elementos */
+}
+
+/* Barra de progreso */
+.progress-bar {
+    height: 10px; /* Altura de la barra */
+    width: 0%;
+    background-color: #4caf50; /* Color de la barra */
+}
