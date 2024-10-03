@@ -1,0 +1,103 @@
+{
+    "accuracy_questions": {
+        "both_models_make_the_same_decision": [
+            {
+                "observation": "absences = 1, failures = 1, studytime = 2, age = 18",
+                "prediction": "Ambos modelos predicen No Aprobado",
+                "options": ["Aprobado", "No aprobado", "No estoy seguro"]
+            },
+            {
+                "observation": "absences = 4, failures = 0, studytime = 3, age = 16",
+                "prediction": "Ambos modelos predicen No Aprobado",
+                "options": ["Aprobado", "No aprobado", "No estoy seguro"]
+            },
+            {
+                "observation": "absences = 3, failures = 1, studytime = 1, age = 15",
+                "prediction": "Ambos modelos predicen Aprobado",
+                "options": ["Aprobado", "No aprobado", "No estoy seguro"]
+            }
+        ],
+        "ambiguous_questions": [
+            {
+                "observation": "absences = 3, failures = 1, studytime = 2, age = 17",
+                "prediction": "La combinación de valores puede no estar claramente definida en las reglas de los modelos generando incertidumbre.",
+                "options": ["Aprobado", "No aprobado", "No estoy seguro"]
+            },
+            {
+                "observation": "absences = 2, failures = 2, studytime = 3, age = 16",
+                "prediction": "Los modelos pueden no tener reglas claras para failures = 2 y studytime = 3 simultáneamente, lo que genera ambigüedad.",
+                "options": ["Aprobado", "No aprobado", "No estoy seguro"]
+            }
+        ],
+        "model_specific_questions": [
+            {
+                "observation": "absences = 2, failures = 1, studytime = 2, age = 16",
+                "prediction": "DT predice Aprobado; IDS predice No Aprobado.",
+                "options": ["Aprobado", "No aprobado", "No estoy seguro"]
+            },
+            {
+                "observation": "absences = 5, failures = 2, studytime = 2, age = 17",
+                "prediction": "DT predice No Aprobado; IDS no tiene reglas específicas.",
+                "options": ["Aprobado", "No aprobado", "No estoy seguro"]
+            }
+        ]
+    },
+    "error_detection_questions": {
+        "both_models_make_the_same_decision": [
+            {
+                "observation": "absences = 2, failures = 0, studytime = 1, age = 16",
+                "prediction": "Ambos modelos predicen No Aprobado",
+                "options": ["Sí", "No", "No estoy seguro"]
+            },
+            {
+                "observation": "absences = 0, failures = 0, studytime = 3, age = 17",
+                "prediction": "Ambos modelos predicen Aprobado",
+                "options": ["Sí", "No", "No estoy seguro"]
+            }
+        ],
+        "ambiguous_questions": [
+            {
+                "observation": "absences = 4, failures = 1, studytime = 2, age = 17",
+                "prediction": "La combinación de ausencias moderadas y fallos podría no estar claramente cubierta por las reglas.",
+                "options": ["Sí", "No", "No estoy seguro"]
+            },
+            {
+                "observation": "absences = 0, failures = 2, studytime = 3, age = 15",
+                "prediction": "La ausencia de fallos pero con alto número de fallos previos y tiempo de estudio moderado puede no estar claramente definida en las reglas.",
+                "options": ["Sí", "No", "No estoy seguro"]
+            }
+        ],
+        "model_specific_questions": [
+            {
+                "observation": "absences = 3, failures = 0, studytime = 1, age = 18",
+                "prediction": "DT predice No Aprobado; IDS no tiene reglas específicas.",
+                "options": ["Sí", "No", "No estoy seguro"]
+            },
+            {
+                "observation": "absences = 2, failures = 1, studytime = 2, age = 16",
+                "prediction": "DT predice Aprobado; IDS predice No Aprobado.",
+                "options": ["Sí", "No", "No estoy seguro"]
+            }
+        ]
+    },
+    "descriptive_questions": [
+        {
+            "rules": [
+                "If Allergies = True and Smoking = True and Irregular-Heartbeat-Symptoms = True, then Asthma",
+                "If Allergies = True and Past-Respiratory-Illness = True and High-Body-Temperature = True, then Asthma",
+                "If Smoking = True and Overweight = True and Age >= 60, then Diabetes"
+            ],
+            "question": "Por favor, escriba un párrafo corto describiendo las características de los pacientes con Asma basándose en las reglas proporcionadas. Use un lenguaje simple en inglés para escribir su descripción.",
+            "answer_placeholder": "Su respuesta"
+        },
+        {
+            "rules": [
+                "If Family-History-Diabetes = True and Overweight = True, then Diabetes",
+                "If Smoking = True and Overweight = True and Age >= 60, then Diabetes",
+                "If Frequently-Visited-Doctor = True and Childhood-Obesity = True and Past-Respiratory-Illness = True, then Diabetes"
+            ],
+            "question": "Por favor, escriba un párrafo corto describiendo las características de los pacientes con Diabetes basándose en las reglas proporcionadas. Use un lenguaje simple en inglés para escribir su descripción.",
+            "answer_placeholder": "Su respuesta"
+        }
+    ]
+}

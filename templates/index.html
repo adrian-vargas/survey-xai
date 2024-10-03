@@ -1,23 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
+    <link rel="stylesheet" href="/static/css/styles.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cuestionario TFM</title>
-    <link rel="stylesheet" href="/static/css/styles.css">
+    <title>Cuestionario de Interpretabilidad</title>
 </head>
 <body>
-    <h1>Cuestionario de Interpretabilidad</h1>
-    <form id="questionnaire-form">
-        <div class="question">
-            <label>Pregunta 1: ¿Cómo calificarías la interpretabilidad del modelo?</label>
-            <input type="radio" name="q1" value="alta"> Alta
-            <input type="radio" name="q1" value="media"> Media
-            <input type="radio" name="q1" value="baja"> Baja
-        </div>
-        <button type="submit">Enviar</button>
-    </form>
+    <!-- Contenedor de la barra de progreso -->
+    <div class="progress-container">
+        <div id="progress-bar" class="progress-bar"></div>
+    </div>
+    
 
+    <h1>Cuestionario de Interpretabilidad</h1>
+    
+    <!-- Formulario para la clave de acceso -->
+    <div id="access-container">
+        <p>Introduce la clave de acceso:</p>
+        <input type="password" id="access-key" placeholder="Clave de acceso">
+        <button id="access-btn">Acceder</button>
+    </div>
+    
+    <!-- Instrucciones y botón para comenzar el cuestionario -->
+    <div id="instructions" style="display:none;">
+        <p><strong>Nota importante:</strong> Una vez que respondas una pregunta y avances a la siguiente, no podrás regresar para cambiar tu respuesta. Te recomendamos que revises tus respuestas cuidadosamente antes de continuar.</p>
+        <button id="start-questionnaire-btn">Comenzar Cuestionario</button>
+    </div>
+
+    <!-- Contenedor para mostrar las preguntas del cuestionario -->
+    <div id="question-container" style="display:none;"></div>
+    
+    <!-- Botón para avanzar a la siguiente pregunta -->
+    <button id="next-question-btn" style="display:none;">Siguiente</button>
+
+    <!-- Enlace al archivo JavaScript -->
     <script src="/static/js/app.js"></script>
 </body>
 </html>
