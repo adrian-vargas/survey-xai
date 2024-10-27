@@ -12,7 +12,6 @@
         <div id="progress-bar" class="progress-bar"></div>
     </div>
     
-
     <h1>Cuestionario de Interpretabilidad</h1>
     
     <!-- Formulario para la clave de acceso -->
@@ -22,9 +21,11 @@
         <button id="access-btn">Acceder</button>
     </div>
     
-    <!-- Instrucciones y botón para comenzar el cuestionario -->
+    <!-- Instrucciones del cuestionario -->
     <div id="instructions" style="display:none;">
-        <p><strong>Nota importante:</strong> Una vez que respondas una pregunta y avances a la siguiente, no podrás regresar para cambiar tu respuesta. Te recomendamos que revises tus respuestas cuidadosamente antes de continuar.</p>
+        <p id="instruction-text">
+            <strong>Nota importante:</strong> Una vez que respondas una pregunta y avances a la siguiente, no podrás regresar para cambiar tu respuesta. Te recomendamos que revises tus respuestas cuidadosamente antes de continuar.
+        </p>
         <button id="start-questionnaire-btn">Comenzar Cuestionario</button>
     </div>
 
@@ -32,7 +33,9 @@
     <div id="question-container" style="display:none;"></div>
     
     <!-- Botón para avanzar a la siguiente pregunta -->
-    <button id="next-question-btn" style="display:none;">Siguiente</button>
+    <div class="navigation">
+        <button id="next-question-btn" style="display:none;">Siguiente</button>
+    </div>
 
     <!-- Enlace al archivo JavaScript -->
     <script src="/static/js/app.js"></script>

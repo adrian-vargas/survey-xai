@@ -1,14 +1,59 @@
+// app.js
+
 let questions;
-let categories = ['accuracy_questions', 'error_detection_questions'];
+let categories = ['accuracy_questions', 'ambiguous_questions', 'error_detection_questions', 'visualization_preferences'];
 let descriptiveQuestionsCategory = 'descriptive_questions';
 let currentCategoryIndex = 0;
-let subCategories = ['both_models_make_the_same_decision', 'ambiguous_questions', 'model_specific_questions'];
-let currentSubCategoryIndex = 0;
 let currentQuestionIndex = 0;
 let startTime, endTime;
 const answers = [];
 
-document.getElementById('start-questionnaire-btn').onclick = function() {
+// Tabla de definiciones en HTML
+const definitionsTableHTML = `
+    <table style="width: 100%; border-collapse: collapse; margin-top: 20px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); border-radius: 8px; overflow: hidden;">
+        <thead>
+            <tr style="background-color: #333; color: #fff;">
+                <th style="padding: 12px; text-align: left;">Característica</th>
+                <th style="padding: 12px; text-align: left;">Descripción</th>
+                <th style="padding: 12px; text-align: left;">Posibles Valores</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr style="background-color: #f9f9f9;">
+                <td style="padding: 12px; border-bottom: 1px solid #ddd; font-weight: bold;">absences</td>
+                <td style="padding: 12px; border-bottom: 1px solid #ddd;">Número de ausencias escolares del estudiante.</td>
+                <td style="padding: 12px; border-bottom: 1px solid #ddd;">0 a 93</td>
+            </tr>
+            <tr>
+                <td style="padding: 12px; border-bottom: 1px solid #ddd; font-weight: bold;">goout</td>
+                <td style="padding: 12px; border-bottom: 1px solid #ddd;">Frecuencia con la que el estudiante sale con sus amigos.</td>
+                <td style="padding: 12px; border-bottom: 1px solid #ddd;">1: Muy baja frecuencia, 5: Muy alta frecuencia</td>
+            </tr>
+            <tr style="background-color: #f9f9f9;">
+                <td style="padding: 12px; border-bottom: 1px solid #ddd; font-weight: bold;">studytime</td>
+                <td style="padding: 12px; border-bottom: 1px solid #ddd;">Tiempo semanal dedicado al estudio fuera de las clases.</td>
+                <td style="padding: 12px; border-bottom: 1px solid #ddd;">1: <2 horas, 2: 2-5 horas, 3: 5-10 horas, 4: >10 horas</td>
+            </tr>
+            <tr>
+                <td style="padding: 12px; border-bottom: 1px solid #ddd; font-weight: bold;">reason_reputation</td>
+                <td style="padding: 12px; border-bottom: 1px solid #ddd;">Razón principal de elección de la escuela (reputación).</td>
+                <td style="padding: 12px; border-bottom: 1px solid #ddd;">0: No es la razón principal, 1: Es la razón principal</td>
+            </tr>
+            <tr style="background-color: #f9f9f9;">
+                <td style="padding: 12px; border-bottom: 1px solid #ddd; font-weight: bold;">failures</td>
+                <td style="padding: 12px; border-bottom: 1px solid #ddd;">Número de cursos que el estudiante ha reprobado previamente.</td>
+                <td style="padding: 12px; border-bottom: 1px solid #ddd;">0 a 4</td>
+            </tr>
+            <tr>
+                <td style="padding: 12px; font-weight: bold;">Fedu</td>
+                <td style="padding: 12px;">Nivel educativo del padre del estudiante.</td>
+                <td style="padding: 12px;">0: Sin educación, 1: Primaria, 2: Secundaria, 3: Universidad, 4: Postgrado o avanzado</td>
+            </tr>
+        </tbody>
+    </table>
+`;
+
+document.getElementById('start-questionnaire-btn').onclick = function () {
     document.getElementById('instructions').style.display = 'none';
     document.getElementById('question-container').style.display = 'block';
 
@@ -24,54 +69,42 @@ document.getElementById('start-questionnaire-btn').onclick = function() {
 function updateProgressBar() {
     let totalQuestions = 0;
 
-    // Sumar todas las preguntas de las categorías principales
     for (let i = 0; i < categories.length; i++) {
-        for (let j = 0; j < subCategories.length; j++) {
-            totalQuestions += questions[categories[i]][subCategories[j]].length;
-        }
+        totalQuestions += questions[categories[i]].length;
     }
 
-    // Sumar las preguntas descriptivas
     totalQuestions += questions[descriptiveQuestionsCategory].length;
 
-    // Calcular la posición actual
     let currentQuestionNumber = 0;
 
-    // Preguntas respondidas en categorías anteriores
     for (let i = 0; i < currentCategoryIndex; i++) {
-        for (let j = 0; j < subCategories.length; j++) {
-            currentQuestionNumber += questions[categories[i]][subCategories[j]].length;
-        }
+        currentQuestionNumber += questions[categories[i]].length;
     }
 
-    // Preguntas respondidas en la subcategoría actual
     if (currentCategoryIndex < categories.length) {
-        for (let j = 0; j < currentSubCategoryIndex; j++) {
-            currentQuestionNumber += questions[categories[currentCategoryIndex]][subCategories[j]].length;
-        }
-        // Sumar la pregunta actual
-        currentQuestionNumber += currentQuestionIndex + 1; // Sumar 1 para considerar la respuesta actual
+        currentQuestionNumber += currentQuestionIndex + 1;
     } else if (currentCategoryIndex === categories.length) {
-        // Preguntas descriptivas
-        currentQuestionNumber += currentQuestionIndex + 1; // Sumar 1 para considerar la respuesta actual
+        currentQuestionNumber += currentQuestionIndex + 1;
     }
 
-    // Calcular el progreso como porcentaje
-    const currentProgress = (currentQuestionNumber / (totalQuestions+1)) * 100;
+    const currentProgress = (currentQuestionNumber / totalQuestions) * 100;
     document.getElementById('progress-bar').style.width = currentProgress + '%';
 }
 
 function loadQuestion() {
-    // Quita la llamada a updateProgressBar() de aquí.
     if (currentCategoryIndex < categories.length) {
         let currentCategory = categories[currentCategoryIndex];
-        let currentSubCategory = subCategories[currentSubCategoryIndex];
 
-        if (currentQuestionIndex < questions[currentCategory][currentSubCategory].length) {
-            const questionData = questions[currentCategory][currentSubCategory][currentQuestionIndex];
-            displayQuestion(questionData);
+        if (questions[currentCategory]) {
+            if (currentQuestionIndex < questions[currentCategory].length) {
+                const questionData = questions[currentCategory][currentQuestionIndex];
+                displayQuestion(questionData);
+            } else {
+                moveToNextCategory();
+            }
         } else {
-            moveToNextSubCategory();
+            console.error('Category not found in questions:', currentCategory);
+            moveToNextCategory();
         }
     } else if (currentCategoryIndex === categories.length) {
         loadDescriptiveQuestion();
@@ -82,25 +115,96 @@ function loadQuestion() {
 
 function displayQuestion(questionData) {
     const container = document.getElementById('question-container');
-    container.innerHTML = '';  // Limpiar la pregunta anterior
+    container.innerHTML = ''; // Limpiar la pregunta anterior
 
-    const observationElement = document.createElement('p');
-    observationElement.textContent = `Observación: ${questionData.observation}`;
-    container.appendChild(observationElement);
+    container.style.maxWidth = '95%';
 
-    const predictionElement = document.createElement('p');
-    predictionElement.textContent = `Predicción del modelo: ${questionData.prediction}`;
-    container.appendChild(predictionElement);
+    if (questionData.instructions) {
+        const instructionsElement = document.createElement('h2');
+        instructionsElement.textContent = questionData.instructions;
+        instructionsElement.style.textAlign = 'center';
+        container.appendChild(instructionsElement);
+        document.querySelector('h1').style.display = 'none'; // Ocultar el título principal
+    }
 
-    questionData.options.forEach(option => {
-        const optionElement = document.createElement('button');
-        optionElement.textContent = option;
-        optionElement.onclick = () => handleAnswer(option, optionElement);
-        container.appendChild(optionElement);
-    });
+    if (questionData.model) {
+        const modelElement = document.createElement('p');
+        modelElement.textContent = `Modelo: ${questionData.model}`;
+        modelElement.style.textAlign = 'center';
+        container.appendChild(modelElement);
+    }
+
+    if (questionData.observation) {
+        const observationElement = document.createElement('p');
+        observationElement.textContent = `Observación: ${questionData.observation}`;
+        observationElement.style.textAlign = 'center';
+        container.appendChild(observationElement);
+    }
+
+    // Tabla de definiciones
+    const definitionsContainer = document.createElement('div');
+    definitionsContainer.innerHTML = definitionsTableHTML;
+    container.appendChild(definitionsContainer);
+
+    // Mostrar y formatear la regla
+    if (questionData.rule) {
+        const ruleElement = document.createElement('div');
+        ruleElement.classList.add('rule-container');
+
+        // Utilizar la función unescapeHTML para des-escapar el contenido
+        ruleElement.innerHTML = unescapeHTML(formatRule(questionData.rule));
+
+        container.appendChild(ruleElement);
+    }
+
+    if (questionData.visualization) {
+        const visualizationPath = getVisualizationPath(questionData);
+        if (visualizationPath) {
+            const visualizationElement = document.createElement('img');
+            visualizationElement.src = visualizationPath;
+            visualizationElement.alt = 'Visualización del modelo';
+            visualizationElement.classList.add('visualizacion-modelo');
+            container.appendChild(visualizationElement);
+        }
+    }
+
+    // Configuración de las opciones de respuesta
+    const options = questionData.prediction || questionData.answer || questionData.options;
+    if (options && Array.isArray(options)) {
+        const buttonContainer = document.createElement('div');
+        buttonContainer.style.display = 'flex';
+        buttonContainer.style.justifyContent = 'center';
+        buttonContainer.style.gap = '20px';
+        buttonContainer.style.flexWrap = 'wrap';
+
+        options.forEach(option => {
+            const optionElement = document.createElement('button');
+            optionElement.textContent = option;
+            optionElement.onclick = () => handleAnswer(option, optionElement);
+            optionElement.style.flex = '1 1 calc(33% - 20px)';
+            buttonContainer.appendChild(optionElement);
+        });
+
+        container.appendChild(buttonContainer);
+    } else {
+        console.error('Options not found or invalid format in questionData:', questionData);
+    }
 
     startTime = new Date().getTime();
-    document.getElementById('next-question-btn').style.display = 'none';  // Ocultar el botón "Siguiente" hasta que se seleccione una respuesta
+    document.getElementById('next-question-btn').style.display = 'none';
+}
+
+function getVisualizationPath(questionData) {
+    if (questionData.visualization) {
+        if (questionData.visualization.includes('scikit-learn')) {
+            return '/static/graphs/scikit-learn/dt.png';
+        } else if (questionData.visualization.includes('InterpretML')) {
+            return '/static/graphs/interpretml/dt.png';
+        } else if (questionData.visualization.includes('IDS')) {
+            return '/static/graphs/ids/ids.png';
+        }
+    }
+    return null;
 }
 
 function handleAnswer(answer, optionElement) {
@@ -110,60 +214,57 @@ function handleAnswer(answer, optionElement) {
     document.querySelectorAll('button').forEach(button => button.classList.remove('selected'));
     optionElement.classList.add('selected');
 
-    answers.push({
-        observation: questions[categories[currentCategoryIndex]][subCategories[currentSubCategoryIndex]][currentQuestionIndex].observation,
-        prediction: questions[categories[currentCategoryIndex]][subCategories[currentSubCategoryIndex]][currentQuestionIndex].prediction,
-        answer: answer,
-        time: responseTime
-    });
+    const currentCategory = categories[currentCategoryIndex];
+    const currentQuestionData = questions[currentCategory][currentQuestionIndex];
 
-    document.getElementById('next-question-btn').style.display = 'block';  // Mostrar el botón "Siguiente" después de seleccionar una respuesta
+    if (currentQuestionData) {
+        answers.push({
+            model: currentQuestionData.model || "",
+            observation: currentQuestionData.observation || "",
+            rule: currentQuestionData.rule || "",
+            visualization: currentQuestionData.visualization || "",
+            prediction_model: currentQuestionData.prediction_model || "",
+            prediction: currentQuestionData.prediction || [],
+            answer: answer,
+            time: responseTime
+        });
 
-    updateProgressBar(); // Mover la barra de progreso después de seleccionar una respuesta
+        document.getElementById('next-question-btn').style.display = 'block';
+        updateProgressBar();
+    } else {
+        console.error("Error: currentQuestionData es undefined.");
+    }
 }
 
 function nextQuestion() {
     currentQuestionIndex++;
     loadQuestion();
-    document.getElementById('next-question-btn').style.display = 'none';  // Ocultar el botón después de hacer clic
-}
-
-function moveToNextSubCategory() {
-    currentSubCategoryIndex++;
-    currentQuestionIndex = 0;
-
-    if (currentSubCategoryIndex < subCategories.length) {
-        loadQuestion();
-    } else {
-        moveToNextCategory();
-    }
+    document.getElementById('next-question-btn').style.display = 'none';
 }
 
 function moveToNextCategory() {
     currentCategoryIndex++;
-    currentSubCategoryIndex = 0;
     currentQuestionIndex = 0;
-
     loadQuestion();
 }
 
 function loadDescriptiveQuestion() {
-    updateProgressBar(); // Actualiza la barra de progreso cada vez que se carga una pregunta descriptiva
+    updateProgressBar();
     if (currentQuestionIndex < questions[descriptiveQuestionsCategory].length) {
         const questionData = questions[descriptiveQuestionsCategory][currentQuestionIndex];
         const container = document.getElementById('question-container');
-        container.innerHTML = '';  // Limpiar la pregunta anterior
+        container.innerHTML = '';
 
-        const rulesElement = document.createElement('div');
-        rulesElement.innerHTML = '<strong>Reglas generadas por el modelo:</strong><br>' + questionData.rules.join('<br>');
-        container.appendChild(rulesElement);
+        container.style.maxWidth = '95%';
 
-        const questionElement = document.createElement('p');
-        questionElement.textContent = questionData.question;
+        const questionElement = document.createElement('h2');
+        questionElement.textContent = questionData.instructions;
+        questionElement.style.textAlign = 'center';
         container.appendChild(questionElement);
+        document.querySelector('h1').style.display = 'none';
 
         const answerInput = document.createElement('textarea');
-        answerInput.setAttribute('placeholder', questionData.answer_placeholder);
+        answerInput.setAttribute('placeholder', questionData.answer_placeholder || 'Escribe tu respuesta aquí...');
         answerInput.setAttribute('rows', '5');
         answerInput.setAttribute('cols', '50');
         container.appendChild(answerInput);
@@ -172,7 +273,7 @@ function loadDescriptiveQuestion() {
 
         document.getElementById('next-question-btn').style.display = 'none';
 
-        answerInput.addEventListener('input', function() {
+        answerInput.addEventListener('input', function () {
             if (answerInput.value.trim() !== '') {
                 document.getElementById('next-question-btn').style.display = 'block';
             } else {
@@ -180,12 +281,11 @@ function loadDescriptiveQuestion() {
             }
         });
 
-        document.getElementById('next-question-btn').onclick = function() {
+        document.getElementById('next-question-btn').onclick = function () {
             endTime = new Date().getTime();
             const responseTime = endTime - startTime;
 
             answers.push({
-                rules: questionData.rules,
                 question: questionElement.textContent,
                 answer: answerInput.value,
                 time: responseTime
@@ -194,45 +294,42 @@ function loadDescriptiveQuestion() {
             currentQuestionIndex++;
             loadDescriptiveQuestion();
         };
-
     } else {
         submitAnswers();
     }
 }
 
-
 function submitAnswers() {
-    updateProgressBar(); // Asegurarse de que la barra de progreso esté al 100% al finalizar
+    updateProgressBar();
     fetch('/submit', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(answers),  // Asegúrate de que `answers` es un array de objetos
+        body: JSON.stringify(answers),
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'success') {
-            alert('Cuestionario completado');
-            console.log(data);
-            document.getElementById('question-container').innerHTML = '<div class="thank-you-message"><p>Gracias por completar el cuestionario.</p></div>';
-            document.getElementById('next-question-btn').style.display = 'none';
-        } else {
-            console.error('Error:', data.message);
-        }
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-    });
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert('Cuestionario completado');
+                console.log(data);
+                document.getElementById('question-container').innerHTML = '<div class="thank-you-message"><p>Gracias por completar el cuestionario.</p></div>';
+                document.getElementById('next-question-btn').style.display = 'none';
+                document.querySelector('h1').style.display = 'none';
+            } else {
+                console.error('Error:', data.message);
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
 }
-
-
 
 document.getElementById('next-question-btn').onclick = nextQuestion;
 
-const correctAccessKey = 'clave123';  // Define aquí la clave correcta
+const correctAccessKey = 'clave123';
 
-document.getElementById('access-btn').onclick = function() {
+document.getElementById('access-btn').onclick = function () {
     const enteredKey = document.getElementById('access-key').value;
 
     if (enteredKey === correctAccessKey) {
@@ -243,7 +340,7 @@ document.getElementById('access-btn').onclick = function() {
     }
 };
 
-document.getElementById('start-questionnaire-btn').onclick = function() {
+document.getElementById('start-questionnaire-btn').onclick = function () {
     document.getElementById('instructions').style.display = 'none';
     document.getElementById('question-container').style.display = 'block';
 
@@ -255,3 +352,20 @@ document.getElementById('start-questionnaire-btn').onclick = function() {
         })
         .catch(error => console.error('Error loading questions:', error));
 };
+
+// Función para des-escapar el contenido HTML
+function unescapeHTML(html) {
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    return doc.documentElement.textContent;
+}
+
+function formatRule(ruleText) {
+    return ruleText
+        .replace(/\b(Aprobado|Reprobado)\b/g, '<span class="conclusion">$1</span>')
+        .replace(/(\d+(\.\d+)?)/g, '<span class="value">$1</span>') // Resalta números
+        .replace(/\b(si|y|entonces)\b/g, '<span class="keyword">$1</span>') // Resalta las palabras clave
+        .replace(/\b(absences|goout|studytime|reason_reputation|failures|Fedu)\b/g, '<span class="attribute">$1</span>') // Resalta características
+        .replace(/([≤≥=<>])/g, '<span class="value">$1</span>') // Resalta los signos de comparación
+        
+        
+}
