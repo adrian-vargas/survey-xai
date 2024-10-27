@@ -22,20 +22,48 @@
     </div>
     
     <!-- Sección de explicación del modelo IDS -->
-    <div id="ids-explanation" style="display:none; padding: 20px; border: 1px solid #ddd; margin: 20px 0;">
+    <div id="ids-explanation" style="display: none;">
         <h2>¿Cómo toma decisiones el modelo IDS?</h2>
         <p>
             IDS clasifica observaciones utilizando un conjunto de <strong>reglas simples</strong>. Cada regla contiene condiciones que, si se cumplen, llevan a una decisión específica (como "Aprobado" o "Reprobado"). Si varias reglas se aplican a una misma observación, el modelo elige la etiqueta <strong>que más se repita</strong> entre esas reglas aplicables.
         </p>
-        <p>Por ejemplo:</p>
+        <p><strong>Por ejemplo:</strong></p>
         <ul>
-            <li><strong>Regla:</strong> Si <code>Fedu > 2</code>, entonces Aprobado.</li>
-            <li><strong>Regla:</strong> Si <code>absences < 3</code> y <code>studytime > 2</code>, entonces Aprobado.</li>
-            <li><strong>Regla:</strong> Si <code>failures > 1</code>, entonces Reprobado.</li>
+            <li><strong>Regla 1:</strong> Si <span class="attribute">Fedu</span> > <span class="value">2</span>, <span class="keyword">entonces</span> <span class="conclusion">Aprobado</span>.</li>
+            <li><strong>Regla 2:</strong> Si <span class="attribute">absences</span> < <span class="value">3</span> <span class="keyword">y</span> <span class="attribute">studytime</span> > <span class="value">2</span>, <span class="keyword">entonces</span> <span class="conclusion">Aprobado</span>.</li>
+            <li><strong>Regla 3:</strong> Si <span class="attribute">failures</span> > <span class="value">1</span>, <span class="keyword">entonces</span> <span class="conclusion">Reprobado</span>.</li>
+            <li><strong>Regla 4:</strong> Si <span class="attribute">goout</span> > <span class="value">4</span> <span class="keyword">y</span> <span class="attribute">reason_reputation</span> = <span class="value">False</span>, <span class="keyword">entonces</span> <span class="conclusion">Reprobado</span>.</li>
+            <li><strong>Regla 5:</strong> Si <span class="attribute">studytime</span> < <span class="value">1</span> <span class="keyword">y</span> <span class="attribute">Fedu</span> < <span class="value">2</span>, <span class="keyword">entonces</span> <span class="conclusion">Reprobado</span>.</li>
+            <li><strong>Regla 6:</strong> Si <span class="attribute">absences</span> > <span class="value">10</span> <span class="keyword">y</span> <span class="attribute">reason_reputation</span> = <span class="value">1</span>, <span class="keyword">entonces</span> <span class="conclusion">Aprobado</span>.</li>
         </ul>
-        <p>Si una observación cumple las dos primeras reglas, que predicen "Aprobado", y también cumple la tercera regla, que predice "Reprobado", el modelo decidirá "Aprobado" porque esa etiqueta se repite más veces.</p>
+        
+        
+        
+        <p><strong>Para esta observación, se tienen los siguientes valores de características:</strong></p>
+        <ul style="list-style-type: none; padding-left: 0;">
+            <li><strong>Fedu:</strong> 3</li>
+            <li><strong>absences:</strong> 2</li>
+            <li><strong>studytime:</strong> 3</li>
+            <li><strong>failures:</strong> 0</li>
+            <li><strong>goout:</strong> 5</li>
+            <li><strong>reason_reputation:</strong> 0</li>
+        </ul>
+
+        <!-- Imagen de explicación global -->
+        <div style="text-align: center; margin-top: 20px;">
+            <img src="static/graphs/ids/intro/ids_global.png" alt="Explicación global del modelo IDS" style="max-width:80%; height:auto;">
+            <p><em>Explicación global del modelo IDS</em></p>
+        </div>
+
+        <!-- Imagen de explicación local -->
+        <div style="text-align: center; margin-top: 20px;">
+            <img src="static/graphs/ids/intro/ids_local.png" alt="Explicación local del modelo IDS" style="max-width:80%; height:auto;">
+            <p><em>Explicación local del modelo IDS (reglas aplicadas y predicción remarcadas)</em></p>
+        </div>
+
         <button id="close-explanation-btn">Entendido</button>
     </div>
+
 
     <!-- Instrucciones del cuestionario -->
     <div id="instructions" style="display:none;">

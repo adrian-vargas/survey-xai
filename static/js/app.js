@@ -55,18 +55,7 @@ const definitionsTableHTML = `
     </div>
 `;
 
-document.getElementById('start-questionnaire-btn').onclick = function () {
-    document.getElementById('instructions').style.display = 'none';
-    document.getElementById('question-container').style.display = 'block';
 
-    fetch('/static/questions.json')
-        .then(response => response.json())
-        .then(data => {
-            questions = data;
-            loadQuestion();
-        })
-        .catch(error => console.error('Error loading questions:', error));
-};
 
 function updateProgressBar() {
     let totalQuestions = 0;
@@ -118,9 +107,9 @@ function loadQuestion() {
 function displayQuestion(questionData) {
     const container = document.getElementById('question-container');
     container.innerHTML = ''; // Limpiar la pregunta anterior
-
     container.style.maxWidth = '95%';
 
+    // Mostrar instrucciones
     if (questionData.instructions) {
         const instructionsElement = document.createElement('h2');
         instructionsElement.textContent = questionData.instructions;
@@ -129,6 +118,7 @@ function displayQuestion(questionData) {
         document.querySelector('h1').style.display = 'none'; // Ocultar el título principal
     }
 
+    // Mostrar el modelo
     if (questionData.model) {
         const modelElement = document.createElement('p');
         modelElement.textContent = `Modelo ${questionData.model}`;
@@ -137,6 +127,7 @@ function displayQuestion(questionData) {
         container.appendChild(modelElement);
     }
 
+    // Mostrar observación
     if (questionData.observation) {
         const observationElement = document.createElement('p');
         observationElement.textContent = `Observación: ${questionData.observation}`;
@@ -144,29 +135,24 @@ function displayQuestion(questionData) {
         container.appendChild(observationElement);
     }
 
-    // Tabla de definiciones
-    const definitionsContainer = document.createElement('div');
-    definitionsContainer.innerHTML = definitionsTableHTML;
-
-    // Oculta la tabla para las categorías visualization_preferences y descriptive_questions
-    if (currentCategoryIndex === categories.indexOf('visualization_preferences') || 
-        currentCategoryIndex === categories.indexOf('descriptive_questions')) {
-        definitionsContainer.classList.add('hidden-definitions-table');
+    // Verificar si la categoría actual requiere mostrar la tabla de definiciones
+    if (categories[currentCategoryIndex] !== 'visualization_preferences' && 
+        categories[currentCategoryIndex] !== 'descriptive_questions') {
+        
+        const definitionsContainer = document.createElement('div');
+        definitionsContainer.innerHTML = definitionsTableHTML;
+        container.appendChild(definitionsContainer);
     }
-
-    container.appendChild(definitionsContainer);
 
     // Mostrar y formatear la regla
     if (questionData.rule) {
         const ruleElement = document.createElement('div');
         ruleElement.classList.add('rule-container');
-
-        // Utilizar la función unescapeHTML para des-escapar el contenido
         ruleElement.innerHTML = unescapeHTML(formatRule(questionData.rule));
-
         container.appendChild(ruleElement);
     }
 
+    // Mostrar visualización si está disponible
     if (questionData.visualization) {
         const visualizationPath = getVisualizationPath(questionData);
         if (visualizationPath) {
@@ -203,6 +189,8 @@ function displayQuestion(questionData) {
     startTime = new Date().getTime();
     document.getElementById('next-question-btn').style.display = 'none';
 }
+
+
 
 
 function getVisualizationPath(questionData) {
@@ -422,29 +410,69 @@ function unescapeHTML(html) {
     return doc.documentElement.textContent;
 }
 
-function formatRule(ruleText) {
-    return ruleText
-        .replace(/\b(Aprobado|Reprobado)\b/g, '<span class="conclusion">$1</span>')
-        .replace(/(\d+(\.\d+)?)/g, '<span class="value">$1</span>') // Resalta números
-        .replace(/\b(si|y|entonces)\b/g, '<span class="keyword">$1</span>') // Resalta las palabras clave
-        .replace(/\b(absences|goout|studytime|reason_reputation|failures|Fedu)\b/g, '<span class="attribute">$1</span>') // Resalta características
-        .replace(/([≤≥=<>])/g, '<span class="value">$1</span>') // Resalta los signos de comparación
-        
-        
+function formatRule(input) {
+    // Función auxiliar para aplicar el formato al texto
+    function applyFormatting(ruleText) {
+        return ruleText
+            .replace(/\b(Aprobado|Reprobado)\b/g, '<span class="conclusion">$1</span>')
+            .replace(/(\d+(\.\d+)?)/g, '<span class="value">$1</span>') // Resalta números
+            .replace(/\b(si|y|entonces)\b/g, '<span class="keyword">$1</span>') // Resalta las palabras clave
+            .replace(/\b(absences|goout|studytime|reason_reputation|failures|Fedu)\b/g, '<span class="attribute">$1</span>') // Resalta características
+            .replace(/([≤≥=<>])/g, '<span class="value">$1</span>'); // Resalta los signos de comparación
+    }
+
+    // Verificar si el input es un elemento HTML o texto plano
+    if (typeof input === "string") {
+        // Si es texto plano, aplicar el formato y devolverlo
+        return applyFormatting(input);
+    } else if (input instanceof HTMLElement) {
+        // Si es un elemento HTML, aplicar el formato al contenido de texto
+        input.innerHTML = applyFormatting(input.textContent);
+    }
 }
 
+
+
+
+
+
+
+
+
+
+
+
+// Inicializar el botón de acceso
 document.getElementById('access-btn').onclick = function () {
     const enteredKey = document.getElementById('access-key').value;
+    const correctAccessKey = 'clave123';
+
     if (enteredKey === correctAccessKey) {
         document.getElementById('access-container').style.display = 'none';
         document.getElementById('ids-explanation').style.display = 'block'; // Mostrar la explicación del modelo IDS
+        listItem.innerHTML = formatRule(rule);
+
     } else {
         alert('Clave de acceso incorrecta. Inténtalo de nuevo.');
     }
 };
 
-// Botón para cerrar la explicación y mostrar las instrucciones
+// Mostrar las instrucciones al hacer clic en "Entendido" en la explicación de IDS
 document.getElementById('close-explanation-btn').onclick = function () {
     document.getElementById('ids-explanation').style.display = 'none';
-    document.getElementById('instructions').style.display = 'block';
+    document.getElementById('instructions').style.display = 'block'; // Mostrar las instrucciones del cuestionario
+};
+
+// Iniciar el cuestionario al hacer clic en "Comenzar Cuestionario"
+document.getElementById('start-questionnaire-btn').onclick = function () {
+    document.getElementById('instructions').style.display = 'none';
+    document.getElementById('question-container').style.display = 'block';
+
+    fetch('/static/questions.json')
+        .then(response => response.json())
+        .then(data => {
+            questions = data;
+            loadQuestion();
+        })
+        .catch(error => console.error('Error loading questions:', error));
 };

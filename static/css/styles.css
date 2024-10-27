@@ -19,7 +19,7 @@ h1 {
 }
 
 /* Styling for the question container */
-#question-container, #instructions {
+#question-container, #instructions, #ids-explanation {
     background-color: white;
     padding: 2em;
     border-radius: 8px;
@@ -271,3 +271,31 @@ textarea {
     padding: 15px;
     border-top: 1px solid #ddd;
 }
+
+/* Ajustar el espaciado entre párrafos y elementos en la explicación de IDS */
+#ids-explanation p, #ids-explanation ul {
+    margin-bottom: 20px;
+}
+
+#ids-explanation h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#ids-explanation ul {
+    list-style: disc;
+    padding-left: 20px;
+}
+
+#ids-explanation img {
+    margin-top: 20px;
+}
+
+
+
+
+
+
+
+
+
