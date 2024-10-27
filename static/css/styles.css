@@ -12,7 +12,11 @@ body {
 }
 
 h1 {
+<<<<<<< HEAD
     font-size: 2em;
+=======
+    font-size: 2em; /* Usa una fuente un poco más pequeña para mayor flexibilidad */
+>>>>>>> origin/main
     color: #333;
     margin-bottom: 20px;
     text-align: center;
@@ -21,12 +25,21 @@ h1 {
 /* Styling for the question container */
 #question-container, #instructions {
     background-color: white;
+<<<<<<< HEAD
     padding: 2em;
+=======
+    padding: 2em; /* Usa 'em' para que el padding sea relativo al tamaño de fuente */
+>>>>>>> origin/main
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     text-align: left;
     margin-bottom: 20px;
+<<<<<<< HEAD
     width: 95%;
+=======
+    width: 100%;
+    max-width: 800px;
+>>>>>>> origin/main
     margin: 0 auto;
 }
 
@@ -35,7 +48,11 @@ h1 {
 }
 
 p {
+<<<<<<< HEAD
     font-size: 1.1em;
+=======
+    font-size: 1.1em; /* Ligero ajuste para mejor legibilidad */
+>>>>>>> origin/main
     color: #555;
     margin-bottom: 20px;
     line-height: 1.6;
@@ -46,14 +63,23 @@ button {
     background-color: #d9534f;
     color: white;
     border: none;
+<<<<<<< HEAD
     padding: 1em 2em;
+=======
+    padding: 1em 2em; /* Padding flexible */
+>>>>>>> origin/main
     border-radius: 5px;
     font-size: 1em;
     cursor: pointer;
     margin: 10px;
     display: inline-block;
+<<<<<<< HEAD
     max-width: 300px;
     flex: 1 1 calc(30% - 20px);
+=======
+    width: 100%; /* Asegura que los botones ocupen todo el ancho en móviles */
+    max-width: 300px;
+>>>>>>> origin/main
 }
 
 button:hover {
@@ -65,13 +91,22 @@ button.selected {
 }
 
 #start-questionnaire-btn, #next-question-btn {
+<<<<<<< HEAD
     background-color: #5cb85c;
+=======
+    background-color: #5cb85c; /* Green color for the next button */
+>>>>>>> origin/main
     display: block;
     margin: 30px auto;
     padding: 1em 2em;
     font-size: 1.25em;
+<<<<<<< HEAD
     width: 100%;
     max-width: 300px;
+=======
+    width: 100%; /* Ancho completo en pantallas pequeñas */
+    max-width: 300px; /* Limita el ancho en pantallas más grandes */
+>>>>>>> origin/main
 }
 
 #start-questionnaire-btn:hover, #next-question-btn:hover {
@@ -81,7 +116,11 @@ button.selected {
 /* Mobile responsive adjustments */
 @media (max-width: 768px) {
     h1 {
+<<<<<<< HEAD
         font-size: 1.8em;
+=======
+        font-size: 1.8em; /* Reduce el tamaño de la fuente en móviles */
+>>>>>>> origin/main
     }
 
     #question-container, #instructions {
@@ -108,11 +147,19 @@ textarea {
 /* Centrar el campo de texto y el botón en el formulario de acceso */
 #access-container {
     display: flex;
+<<<<<<< HEAD
     flex-direction: column;
     align-items: center;
     gap: 10px;
     margin-top: 20px;
     width: 100%;
+=======
+    flex-direction: column; /* Ajuste para móviles */
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+    width: 100%; /* Ocupa todo el ancho */
+>>>>>>> origin/main
     max-width: 300px;
     margin: 0 auto;
 }
@@ -142,6 +189,7 @@ textarea {
     background-color: #4caf50;
 }
 
+<<<<<<< HEAD
 /* Ajustar los botones para alinearlos al centro */
 #question-container button {
     margin: 10px auto;
@@ -154,6 +202,12 @@ textarea {
     justify-content: center;
     gap: 20px;
     flex-wrap: wrap;
+=======
+/* Centrar los botones de las respuestas */
+#question-container button {
+    width: calc(33.3% - 20px);
+    margin: 10px;
+>>>>>>> origin/main
     text-align: center;
 }
 
@@ -164,6 +218,7 @@ textarea {
     text-align: center;
     min-height: 100px;
 }
+<<<<<<< HEAD
 
 .visualizacion-modelo {
     max-width: 100%;
@@ -216,3 +271,5 @@ textarea {
 .value {
     font-weight: bold;
 }
+=======
+>>>>>>> origin/main
