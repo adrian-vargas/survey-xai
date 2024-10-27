@@ -2,7 +2,7 @@
     "accuracy_questions": [
         {
             "instructions": "Selecciona la predicción de acuerdo con la observación y la regla o grafo",
-            "model": "scikit-learn",
+            "model": "DT scikit-learn",
             "observation": "absences = 3, failures = 0, studytime = 2, goout = 2, reason_reputation = Yes, Fedu = 3",
             "rule": "si failures ≤ 0.50 y reason_reputation ≤ 0.50 y Fedu ≤ 1.50 y goout ≤ 2.50, entonces Aprobado",
             "prediction_model": "",
@@ -10,7 +10,7 @@
         },
         {
             "instructions": "Selecciona la predicción de acuerdo con la observación y la regla o grafo",
-            "model": "scikit-learn",
+            "model": "DT scikit-learn",
             "observation": "absences = 1, failures = 1, studytime = 3, goout = 1, reason_reputation = No, Fedu = 2",
             "visualization": "Grafo completo del Árbol de Decisión de scikit-learn.",
             "prediction_model": "",
@@ -18,7 +18,7 @@
         },
         {
             "instructions": "Selecciona la predicción de acuerdo con la observación y la regla o grafo",
-            "model": "InterpretML",
+            "model": "DT InterpretML",
             "observation": "absences = 2, failures = 2, studytime = 3, goout = 1, reason_reputation = Yes, Fedu = 4",
             "rule": "si failures > 1 y goout > 0, entonces Reprobado",
             "prediction_model": "",
@@ -26,7 +26,7 @@
         },
         {
             "instructions": "Selecciona la predicción de acuerdo con la observación y la regla o grafo",
-            "model": "InterpretML",
+            "model": "DT InterpretML",
             "observation": "absences = 0, failures = 2, studytime = 1, goout = 3, reason_reputation = Yes, Fedu = 1",
             "visualization": "Grafo completo del DT de InterpretML.",
             "prediction_model": "",
@@ -52,23 +52,29 @@
     "ambiguous_questions": [
         {
             "instructions": "Selecciona la predicción de acuerdo con la observación y la regla o grafo",
-            "model": "scikit-learn",
+            "model": "DT scikit-learn",
             "observation": "absences = 3, failures = 1, studytime = 3, goout = 4, reason_reputation = No, Fedu = 2",
             "rule": "si failures ≤ 0.50 y goout > 3, entonces Reprobado",
             "visualization": "Regla local y grafo completo del Árbol de Decisión de scikit-learn.",
             "prediction_model": "",
             "prediction": ["Aprobado", "Reprobado", "No estoy seguro"],
-            "follow_up": "¿La visualización del grafo completo te ayudó a tomar una decisión más clara?"
+            "follow_up": {
+                "question": "¿La visualización del grafo completo te ayudó a tomar una decisión más clara?",
+                "options": ["Sí", "No", "No estoy seguro"]
+            }
         },
         {
             "instructions": "Selecciona la predicción de acuerdo con la observación y la regla o grafo",
-            "model": "InterpretML",
+            "model": "DT InterpretML",
             "observation": "absences = 1, failures = 0, studytime = 2, goout = 3, reason_reputation = Yes, Fedu = 1",
             "rule": "si reason_reputation = Yes, entonces Aprobado",
             "visualization": "Regla local del DT de InterpretML.",
             "prediction_model": "",
             "prediction": ["Aprobado", "Reprobado", "No estoy seguro"],
-            "follow_up": "¿Habría sido más fácil tomar la decisión con el grafo completo?"
+            "follow_up": {
+                "question": "¿Habría sido más fácil tomar la decisión con el grafo completo?",
+                "options": ["Sí", "No", "No estoy seguro"]
+            }
         },
         {
             "instructions": "Selecciona la predicción de acuerdo con la observación y la regla o grafo",
@@ -78,28 +84,37 @@
             "visualization": "Conjunto de reglas completo del IDS.",
             "prediction_model": "",
             "prediction": ["Aprobado", "Reprobado", "No estoy seguro"],
-            "follow_up": "¿Te fue más fácil o difícil tomar la decisión con el conjunto de reglas completo?"
+            "follow_up": {
+                "question": "¿Te fue más fácil o difícil tomar la decisión con el conjunto de reglas completo?",
+                "options": ["Más fácil", "Más difícil", "No estoy seguro"]
+            }
         }
     ],
     "error_detection_questions": [
         {
             "instructions": "Califica la predicción del modelo de acuerdo con la observación y su explicación",
-            "model": "scikit-learn",
+            "model": "DT scikit-learn",
             "observation": "absences = 3, failures = 2, studytime = 1, goout = 1, reason_reputation = Yes, Fedu = 4",
             "prediction_model": "Reprobado",
             "answer": ["Correcta", "Incorrecta", "No estoy seguro"],
             "visualization": "Grafo completo del Árbol de Decisión de scikit-learn.",
-            "follow_up": "¿El grafo completo te ayudó a identificar algún posible error en la predicción?"
+            "follow_up": {
+                "question": "¿El grafo completo te ayudó a identificar algún posible error en la predicción?",
+                "options": ["Sí", "No", "No estoy seguro"]
+            }
         },
         {
             "instructions": "Califica la predicción del modelo de acuerdo con la observación y su explicación",
-            "model": "InterpretML",
+            "model": "DT InterpretML",
             "observation": "absences = 0, failures = 3, studytime = 2, goout = 2, reason_reputation = Yes, Fedu = 2",
             "rule": "si failures > 1, entonces Reprobado",
             "prediction_model": "Aprobado",
             "answer": ["Correcta", "Incorrecta", "No estoy seguro"],
             "visualization": "Grafo completo del DT de InterpretML.",
-            "follow_up": "¿Te ayudó el grafo completo a evaluar si la predicción era correcta?"
+            "follow_up": {
+                "question": "¿Te ayudó el grafo completo a evaluar si la predicción era correcta?",
+                "options": ["Sí", "No", "No estoy seguro"]
+            }
         },
         {
             "instructions": "Califica la predicción del modelo de acuerdo con la observación y su explicación",
@@ -109,7 +124,10 @@
             "prediction_model": "Aprobado",
             "answer": ["Correcta", "Incorrecta", "No estoy seguro"],
             "visualization": "Conjunto de reglas completo del IDS.",
-            "follow_up": "¿El conjunto de reglas te facilitó identificar algún posible error en la predicción?"
+            "follow_up": {
+                "question": "¿El conjunto de reglas te facilitó identificar algún posible error en la predicción?",
+                "options": ["Sí", "No", "No estoy seguro"]
+            }
         }
     ],
     "visualization_preferences": [
@@ -132,7 +150,7 @@
     ],
     "descriptive_questions": [
         {
-            "instructions": "¿Crees que la visualización del grafo y sus reglas debería siempre acompañar las predicciones para mejorar la comprensión? Explica tu respuesta."
+            "instructions": "¿Crees que la visualización del grafo y sus reglas debería siempre acompañar las predicciones para mejorar la comprensión?"
         }
     ]
 }

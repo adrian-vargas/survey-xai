@@ -10,47 +10,49 @@ const answers = [];
 
 // Tabla de definiciones en HTML
 const definitionsTableHTML = `
-    <table style="width: 100%; border-collapse: collapse; margin-top: 20px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); border-radius: 8px; overflow: hidden;">
-        <thead>
-            <tr style="background-color: #333; color: #fff;">
-                <th style="padding: 12px; text-align: left;">Característica</th>
-                <th style="padding: 12px; text-align: left;">Descripción</th>
-                <th style="padding: 12px; text-align: left;">Posibles Valores</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr style="background-color: #f9f9f9;">
-                <td style="padding: 12px; border-bottom: 1px solid #ddd; font-weight: bold;">absences</td>
-                <td style="padding: 12px; border-bottom: 1px solid #ddd;">Número de ausencias escolares del estudiante.</td>
-                <td style="padding: 12px; border-bottom: 1px solid #ddd;">0 a 93</td>
-            </tr>
-            <tr>
-                <td style="padding: 12px; border-bottom: 1px solid #ddd; font-weight: bold;">goout</td>
-                <td style="padding: 12px; border-bottom: 1px solid #ddd;">Frecuencia con la que el estudiante sale con sus amigos.</td>
-                <td style="padding: 12px; border-bottom: 1px solid #ddd;">1: Muy baja frecuencia, 5: Muy alta frecuencia</td>
-            </tr>
-            <tr style="background-color: #f9f9f9;">
-                <td style="padding: 12px; border-bottom: 1px solid #ddd; font-weight: bold;">studytime</td>
-                <td style="padding: 12px; border-bottom: 1px solid #ddd;">Tiempo semanal dedicado al estudio fuera de las clases.</td>
-                <td style="padding: 12px; border-bottom: 1px solid #ddd;">1: <2 horas, 2: 2-5 horas, 3: 5-10 horas, 4: >10 horas</td>
-            </tr>
-            <tr>
-                <td style="padding: 12px; border-bottom: 1px solid #ddd; font-weight: bold;">reason_reputation</td>
-                <td style="padding: 12px; border-bottom: 1px solid #ddd;">Razón principal de elección de la escuela (reputación).</td>
-                <td style="padding: 12px; border-bottom: 1px solid #ddd;">0: No es la razón principal, 1: Es la razón principal</td>
-            </tr>
-            <tr style="background-color: #f9f9f9;">
-                <td style="padding: 12px; border-bottom: 1px solid #ddd; font-weight: bold;">failures</td>
-                <td style="padding: 12px; border-bottom: 1px solid #ddd;">Número de cursos que el estudiante ha reprobado previamente.</td>
-                <td style="padding: 12px; border-bottom: 1px solid #ddd;">0 a 4</td>
-            </tr>
-            <tr>
-                <td style="padding: 12px; font-weight: bold;">Fedu</td>
-                <td style="padding: 12px;">Nivel educativo del padre del estudiante.</td>
-                <td style="padding: 12px;">0: Sin educación, 1: Primaria, 2: Secundaria, 3: Universidad, 4: Postgrado o avanzado</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="table-container">
+        <table style="width: 80%; border-collapse: collapse; margin-top: 10px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); border-radius: 8px; overflow: hidden;">
+            <thead>
+                <tr style="background-color: #333; color: #fff;">
+                    <th style="padding: 8px; text-align: left; font-size: 0.9em;">Característica</th>
+                    <th style="padding: 8px; text-align: left; font-size: 0.9em;">Descripción</th>
+                    <th style="padding: 8px; text-align: left; font-size: 0.9em;">Posibles Valores</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="background-color: #f9f9f9;">
+                    <td style="padding: 6px; border-bottom: 1px solid #ddd; font-weight: bold; line-height: 1.2;">absences</td>
+                    <td style="padding: 6px; border-bottom: 1px solid #ddd; line-height: 1.2;">Número de ausencias escolares del estudiante.</td>
+                    <td style="padding: 6px; border-bottom: 1px solid #ddd; line-height: 1.2;">0 a 93</td>
+                </tr>
+                <tr>
+                    <td style="padding: 6px; border-bottom: 1px solid #ddd; font-weight: bold; line-height: 1.2;">goout</td>
+                    <td style="padding: 6px; border-bottom: 1px solid #ddd; line-height: 1.2;">Frecuencia con la que el estudiante sale con sus amigos.</td>
+                    <td style="padding: 6px; border-bottom: 1px solid #ddd; line-height: 1.2;">1: Muy baja frecuencia, 5: Muy alta frecuencia</td>
+                </tr>
+                <tr style="background-color: #f9f9f9;">
+                    <td style="padding: 6px; border-bottom: 1px solid #ddd; font-weight: bold; line-height: 1.2;">studytime</td>
+                    <td style="padding: 6px; border-bottom: 1px solid #ddd; line-height: 1.2;">Tiempo semanal dedicado al estudio fuera de las clases.</td>
+                    <td style="padding: 6px; border-bottom: 1px solid #ddd; line-height: 1.2;">1: <2 horas, 2: 2-5 horas, 3: 5-10 horas, 4: >10 horas</td>
+                </tr>
+                <tr>
+                    <td style="padding: 6px; border-bottom: 1px solid #ddd; font-weight: bold; line-height: 1.2;">reason_reputation</td>
+                    <td style="padding: 6px; border-bottom: 1px solid #ddd; line-height: 1.2;">Razón principal de elección de la escuela (reputación).</td>
+                    <td style="padding: 6px; border-bottom: 1px solid #ddd; line-height: 1.2;">0: No es la razón principal, 1: Es la razón principal</td>
+                </tr>
+                <tr style="background-color: #f9f9f9;">
+                    <td style="padding: 6px; border-bottom: 1px solid #ddd; font-weight: bold; line-height: 1.2;">failures</td>
+                    <td style="padding: 6px; border-bottom: 1px solid #ddd; line-height: 1.2;">Número de cursos que el estudiante ha reprobado previamente.</td>
+                    <td style="padding: 6px; border-bottom: 1px solid #ddd; line-height: 1.2;">0 a 4</td>
+                </tr>
+                <tr>
+                    <td style="padding: 6px; font-weight: bold; line-height: 1.2;">Fedu</td>
+                    <td style="padding: 6px; line-height: 1.2;">Nivel educativo del padre del estudiante.</td>
+                    <td style="padding: 6px; line-height: 1.2;">0: Sin educación, 1: Primaria, 2: Secundaria, 3: Universidad, 4: Postgrado o avanzado</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 `;
 
 document.getElementById('start-questionnaire-btn').onclick = function () {
@@ -129,8 +131,9 @@ function displayQuestion(questionData) {
 
     if (questionData.model) {
         const modelElement = document.createElement('p');
-        modelElement.textContent = `Modelo: ${questionData.model}`;
+        modelElement.textContent = `Modelo ${questionData.model}`;
         modelElement.style.textAlign = 'center';
+        modelElement.classList.add('model-text');
         container.appendChild(modelElement);
     }
 
@@ -144,6 +147,13 @@ function displayQuestion(questionData) {
     // Tabla de definiciones
     const definitionsContainer = document.createElement('div');
     definitionsContainer.innerHTML = definitionsTableHTML;
+
+    // Oculta la tabla para las categorías visualization_preferences y descriptive_questions
+    if (currentCategoryIndex === categories.indexOf('visualization_preferences') || 
+        currentCategoryIndex === categories.indexOf('descriptive_questions')) {
+        definitionsContainer.classList.add('hidden-definitions-table');
+    }
+
     container.appendChild(definitionsContainer);
 
     // Mostrar y formatear la regla
@@ -194,6 +204,7 @@ function displayQuestion(questionData) {
     document.getElementById('next-question-btn').style.display = 'none';
 }
 
+
 function getVisualizationPath(questionData) {
     if (questionData.visualization) {
         if (questionData.visualization.includes('scikit-learn')) {
@@ -211,6 +222,7 @@ function handleAnswer(answer, optionElement) {
     endTime = new Date().getTime();
     const responseTime = endTime - startTime;
 
+    // Desmarcar todos los botones y marcar el botón seleccionado
     document.querySelectorAll('button').forEach(button => button.classList.remove('selected'));
     optionElement.classList.add('selected');
 
@@ -218,6 +230,7 @@ function handleAnswer(answer, optionElement) {
     const currentQuestionData = questions[currentCategory][currentQuestionIndex];
 
     if (currentQuestionData) {
+        // Guardar la respuesta principal
         answers.push({
             model: currentQuestionData.model || "",
             observation: currentQuestionData.observation || "",
@@ -229,12 +242,62 @@ function handleAnswer(answer, optionElement) {
             time: responseTime
         });
 
-        document.getElementById('next-question-btn').style.display = 'block';
         updateProgressBar();
+
+        // Verificar si existe una pregunta de seguimiento
+        const followUpContainer = document.getElementById('follow-up-container');
+        followUpContainer.innerHTML = ''; // Limpiar cualquier contenido previo
+        if (currentQuestionData.follow_up) {
+            // Mostrar la pregunta de seguimiento
+            followUpContainer.innerHTML = `<p>${currentQuestionData.follow_up.question}</p>`;
+            followUpContainer.style.display = 'block';
+            
+            // Crear botones para las opciones de la pregunta de seguimiento
+            currentQuestionData.follow_up.options.forEach(option => {
+                const followUpButton = document.createElement('button');
+                followUpButton.textContent = option;
+                followUpButton.classList.add('follow-up-option');
+                followUpButton.onclick = () => handleFollowUpAnswer(option);
+                followUpContainer.appendChild(followUpButton);
+            });
+
+            // Ocultar el botón "Siguiente" hasta que se responda la pregunta de seguimiento
+            document.getElementById('next-question-btn').style.display = 'none';
+        } else {
+            // Si no hay pregunta de seguimiento, mostrar el botón "Siguiente" inmediatamente
+            document.getElementById('next-question-btn').style.display = 'block';
+        }
+
+        // Realizar scroll hacia abajo
+        scrollDown();
     } else {
         console.error("Error: currentQuestionData es undefined.");
     }
 }
+
+// Función para manejar la respuesta a la pregunta de seguimiento
+function handleFollowUpAnswer(answer) {
+    // Guardar la respuesta a la pregunta de seguimiento
+    answers.push({
+        follow_up_answer: answer,
+        time: new Date().getTime() - endTime // Tiempo desde que se mostró la pregunta de seguimiento
+    });
+
+    // Ocultar el contenedor de seguimiento y mostrar el botón "Siguiente"
+    document.getElementById('follow-up-container').style.display = 'none';
+    document.getElementById('next-question-btn').style.display = 'block';
+}
+
+
+
+// Función para hacer scroll hacia abajo
+function scrollDown() {
+    window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: 'smooth' // Desplazamiento suave
+    });
+}
+
 
 function nextQuestion() {
     currentQuestionIndex++;
@@ -264,7 +327,7 @@ function loadDescriptiveQuestion() {
         document.querySelector('h1').style.display = 'none';
 
         const answerInput = document.createElement('textarea');
-        answerInput.setAttribute('placeholder', questionData.answer_placeholder || 'Escribe tu respuesta aquí...');
+        answerInput.setAttribute('placeholder', questionData.answer_placeholder || 'Explica tu respuesta aquí...');
         answerInput.setAttribute('rows', '5');
         answerInput.setAttribute('cols', '50');
         container.appendChild(answerInput);
@@ -369,3 +432,19 @@ function formatRule(ruleText) {
         
         
 }
+
+document.getElementById('access-btn').onclick = function () {
+    const enteredKey = document.getElementById('access-key').value;
+    if (enteredKey === correctAccessKey) {
+        document.getElementById('access-container').style.display = 'none';
+        document.getElementById('ids-explanation').style.display = 'block'; // Mostrar la explicación del modelo IDS
+    } else {
+        alert('Clave de acceso incorrecta. Inténtalo de nuevo.');
+    }
+};
+
+// Botón para cerrar la explicación y mostrar las instrucciones
+document.getElementById('close-explanation-btn').onclick = function () {
+    document.getElementById('ids-explanation').style.display = 'none';
+    document.getElementById('instructions').style.display = 'block';
+};

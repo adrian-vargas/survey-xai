@@ -216,3 +216,58 @@ textarea {
 .value {
     font-weight: bold;
 }
+
+
+/* Centrar la tabla dentro de su contenedor */
+.table-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.table-container table {
+    width: 80%; /* Controla el ancho de la tabla */
+    border-collapse: collapse;
+    margin-top: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    font-size: 0.9em;
+}
+
+/* Estilo de las cabeceras */
+.table-container th {
+    background-color: #333;
+    color: #fff;
+    padding: 8px;
+    text-align: left;
+}
+
+/* Estilo de las celdas */
+.table-container td {
+    padding: 6px 10px;
+    border-bottom: 1px solid #ddd;
+    line-height: 1.2;
+    text-align: left;
+}
+
+/* Alternar color de fondo para filas */
+.table-container tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+
+.model-text {
+    font-weight: bold;
+    color: coral;
+    font-size: 1.5em;
+    text-align: center;
+}
+
+
+#follow-up-container {
+    text-align: center;
+    margin-top: 20px;
+    padding: 15px;
+    border-top: 1px solid #ddd;
+}

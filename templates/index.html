@@ -21,6 +21,22 @@
         <button id="access-btn">Acceder</button>
     </div>
     
+    <!-- Sección de explicación del modelo IDS -->
+    <div id="ids-explanation" style="display:none; padding: 20px; border: 1px solid #ddd; margin: 20px 0;">
+        <h2>¿Cómo toma decisiones el modelo IDS?</h2>
+        <p>
+            IDS clasifica observaciones utilizando un conjunto de <strong>reglas simples</strong>. Cada regla contiene condiciones que, si se cumplen, llevan a una decisión específica (como "Aprobado" o "Reprobado"). Si varias reglas se aplican a una misma observación, el modelo elige la etiqueta <strong>que más se repita</strong> entre esas reglas aplicables.
+        </p>
+        <p>Por ejemplo:</p>
+        <ul>
+            <li><strong>Regla:</strong> Si <code>Fedu > 2</code>, entonces Aprobado.</li>
+            <li><strong>Regla:</strong> Si <code>absences < 3</code> y <code>studytime > 2</code>, entonces Aprobado.</li>
+            <li><strong>Regla:</strong> Si <code>failures > 1</code>, entonces Reprobado.</li>
+        </ul>
+        <p>Si una observación cumple las dos primeras reglas, que predicen "Aprobado", y también cumple la tercera regla, que predice "Reprobado", el modelo decidirá "Aprobado" porque esa etiqueta se repite más veces.</p>
+        <button id="close-explanation-btn">Entendido</button>
+    </div>
+
     <!-- Instrucciones del cuestionario -->
     <div id="instructions" style="display:none;">
         <p id="instruction-text">
@@ -31,6 +47,9 @@
 
     <!-- Contenedor para mostrar las preguntas del cuestionario -->
     <div id="question-container" style="display:none;"></div>
+
+    <!-- Contenedor para la pregunta de seguimiento (follow-up) -->
+    <div id="follow-up-container" style="display: none; margin-top: 20px;"></div>
     
     <!-- Botón para avanzar a la siguiente pregunta -->
     <div class="navigation">
