@@ -20,10 +20,60 @@
         <input type="password" id="access-key" placeholder="Clave de acceso">
         <button id="access-btn">Acceder</button>
     </div>
-    
+
+    <!-- Sección de explicación de modelos -->
+    <div id="model-prediction-explanation" style="display: none;">
+        <h2>¿Qué están prediciendo los modelos?</h2>
+        <p>
+            Los modelos que estás evaluando en este cuestionario han sido entrenados para predecir si un estudiante 
+            <strong>aprobará o reprobará</strong> según su rendimiento y características personales. Utilizan un conjunto de reglas 
+            simples que toman en cuenta factores específicos como el tiempo de estudio, las ausencias y la educación de los padres, 
+            entre otros, para realizar esta predicción.
+        </p>
+
+        <!-- Contenedor donde se insertará la tabla desde JavaScript -->
+        <div id="definitions-table-container"></div>
+
+        <p>
+            En cada pregunta, verás una <strong>tabla de características</strong> que describe estos factores y sus posibles valores. 
+            Esto te ayudará a interpretar las reglas aplicadas y comprender cómo cada característica influye en la predicción del modelo.
+        </p>
+
+        <button id="close-model-prediction-explanation-btn">Entendido</button>
+    </div>
+
+    <!-- Sección de explicación de InterpretML y DT de scikit-learn -->
+    <div id="interpretml-explanation" style="display: none;">
+        <h2>Explicación del Modelo de Árbol de Decisión (DT) en InterpretML y scikit-learn</h2>
+        <p>
+            El modelo de Árbol de Decisión (DT) se utiliza en InterpretML para obtener explicaciones locales y globales. Para este cuestionario, el modelo subyacente de scikit-learn se ha extraído y se visualiza en InterpretML para analizar tanto las explicaciones globales (comportamiento general del modelo) como las explicaciones locales (interpretación específica para una observación).
+        </p>
+        <p>
+            <strong>Nota:</strong> InterpretML presenta un defecto en el conteo de observaciones (indicado como <code>#Obs</code>), el cual muestra incorrectamente el valor <code>0, 0</code>. Este error debe ignorarse en el contexto de este cuestionario, ya que no afecta la interpretación de las decisiones del modelo.
+        </p>
+        
+        <!-- Imagen del modelo global en InterpretML (usando dt.png) -->
+        <div style="text-align: center; margin-top: 20px;">
+            <img src="/static/graphs/interpretml/dt.png" alt="Explicación Global del Modelo DT de scikit-learn" style="max-width:80%; height:auto;">
+            <p><em>Explicación global del modelo de Árbol de Decisión (DT) en scikit-learn.</em></p>
+        </div>
+        
+        <!-- Explicación Local -->
+        <h3>Explicación Local del Modelo DT</h3>
+        <p>La explicación local para una observación específica detalla la contribución de cada característica a la predicción final del modelo.</p>
+        
+        <!-- Imagen de la explicación local (local_0.PNG) -->
+        <div style="text-align: center; margin-top: 20px;">
+            <img src="/static/graphs/interpretml/local/local_0.PNG" alt="Explicación Local 0" style="max-width:80%; height:auto;">
+            <p><em>Explicación Local - Observación 0</em></p>
+        </div>
+        <button id="close-interpretml-explanation-btn">Entendido</button>
+    </div>
+
+
     <!-- Sección de explicación del modelo IDS -->
     <div id="ids-explanation" style="display: none;">
-        <h2>¿Cómo toma decisiones el modelo IDS?</h2>
+        <h2>¿Cómo toma decisiones el modelo IDS (Interpretable Decision Sets)?</h2>
         <p>
             IDS clasifica observaciones utilizando un conjunto de <strong>reglas simples</strong>. Cada regla contiene condiciones que, si se cumplen, llevan a una decisión específica (como "Aprobado" o "Reprobado"). Si varias reglas se aplican a una misma observación, el modelo elige la etiqueta <strong>que más se repita</strong> entre esas reglas aplicables.
         </p>

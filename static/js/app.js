@@ -449,7 +449,7 @@ document.getElementById('access-btn').onclick = function () {
 
     if (enteredKey === correctAccessKey) {
         document.getElementById('access-container').style.display = 'none';
-        document.getElementById('ids-explanation').style.display = 'block'; // Mostrar la explicación del modelo IDS
+        document.getElementById('model-prediction-explanation').style.display = 'block'; // Mostrar la explicación del modelo IDS
         listItem.innerHTML = formatRule(rule);
 
     } else {
@@ -457,10 +457,35 @@ document.getElementById('access-btn').onclick = function () {
     }
 };
 
-// Mostrar las instrucciones al hacer clic en "Entendido" en la explicación de IDS
+// Función para hacer scroll hacia arriba
+function scrollUp() {
+    setTimeout(() => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth' // Desplazamiento suave
+        });
+    }, 100); // Retraso de 100ms para asegurar que el contenido cambie antes de hacer scroll
+}
+
+// Mostrar la explicación de InterpretML y DT de scikit-learn al hacer clic en "Entendido" en la explicación de modelos
+document.getElementById('close-model-prediction-explanation-btn').onclick = function () {
+    document.getElementById('model-prediction-explanation').style.display = 'none';
+    document.getElementById('interpretml-explanation').style.display = 'block';
+    scrollUp(); // Scroll hacia arriba
+};
+
+// Mostrar la explicación de IDS al hacer clic en "Entendido" en la explicación de InterpretML
+document.getElementById('close-interpretml-explanation-btn').onclick = function () {
+    document.getElementById('interpretml-explanation').style.display = 'none';
+    document.getElementById('ids-explanation').style.display = 'block';
+    scrollUp(); // Scroll hacia arriba
+};
+
+// Mostrar las instrucciones del cuestionario al hacer clic en "Entendido" en la explicación de IDS
 document.getElementById('close-explanation-btn').onclick = function () {
     document.getElementById('ids-explanation').style.display = 'none';
-    document.getElementById('instructions').style.display = 'block'; // Mostrar las instrucciones del cuestionario
+    document.getElementById('instructions').style.display = 'block';
+    scrollUp(); // Scroll hacia arriba
 };
 
 // Iniciar el cuestionario al hacer clic en "Comenzar Cuestionario"
@@ -473,6 +498,11 @@ document.getElementById('start-questionnaire-btn').onclick = function () {
         .then(data => {
             questions = data;
             loadQuestion();
+            scrollUp(); // Scroll hacia arriba al iniciar el cuestionario
         })
         .catch(error => console.error('Error loading questions:', error));
 };
+
+
+// Insertar la tabla de definiciones en el contenedor específico
+document.getElementById('definitions-table-container').innerHTML = definitionsTableHTML;

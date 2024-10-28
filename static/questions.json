@@ -37,6 +37,18 @@
             "model": "IDS",
             "observation": "absences = 3, failures = 0, studytime = 4, goout = 2, reason_reputation = Yes, Fedu = 3",
             "rule": "Fedu > 2, entonces Aprobado",
+            "all_rules": [
+                "Fedu > 1",
+                "Fedu > 4",
+                "absences > 0",
+                "absences > 2",
+                "failures > 1",
+                "goout > 2",
+                "reason_reputation > True",
+                "Fedu > 3 y failures > 0",
+                "reason_reputation > False y goout > 4",
+                "Fedu > 2 y failures > 0 y goout > 3"
+            ],
             "prediction_model": "",
             "prediction": ["Aprobado", "Reprobado", "No estoy seguro"]
         },
@@ -44,6 +56,18 @@
             "instructions": "Selecciona la predicción de acuerdo con la observación y la regla o grafo",
             "model": "IDS",
             "observation": "absences = 5, failures = 1, studytime = 2, goout = 4, reason_reputation = No, Fedu = 4",
+            "all_rules": [
+                "Fedu > 1",
+                "Fedu > 4",
+                "absences > 0",
+                "absences > 2",
+                "failures > 1",
+                "goout > 2",
+                "reason_reputation > True",
+                "Fedu > 3 y failures > 0",
+                "reason_reputation > False y goout > 4",
+                "Fedu > 2 y failures > 0 y goout > 3"
+            ],
             "visualization": "Conjunto de reglas completo del IDS.",
             "prediction_model": "",
             "prediction": ["Aprobado", "Reprobado", "No estoy seguro"]
@@ -81,6 +105,18 @@
             "model": "IDS",
             "observation": "absences = 4, failures = 1, studytime = 4, goout = 2, reason_reputation = No, Fedu = 5",
             "rule": "Fedu > 3 y absences > 3, entonces Aprobado",
+            "all_rules": [
+                "Fedu > 1",
+                "Fedu > 4",
+                "absences > 0",
+                "absences > 2",
+                "failures > 1",
+                "goout > 2",
+                "reason_reputation > True",
+                "Fedu > 3 y failures > 0",
+                "reason_reputation > False y goout > 4",
+                "Fedu > 2 y failures > 0 y goout > 3"
+            ],
             "visualization": "Conjunto de reglas completo del IDS.",
             "prediction_model": "",
             "prediction": ["Aprobado", "Reprobado", "No estoy seguro"],
@@ -121,11 +157,61 @@
             "model": "IDS",
             "observation": "absences = 2, failures = 0, studytime = 1, goout = 3, reason_reputation = No, Fedu = 3",
             "rule": "goout > 2, entonces Reprobado",
+            "all_rules": [
+                "Fedu > 1",
+                "Fedu > 4",
+                "absences > 0",
+                "absences > 2",
+                "failures > 1",
+                "goout > 2",
+                "reason_reputation > True",
+                "Fedu > 3 y failures > 0",
+                "reason_reputation > False y goout > 4",
+                "Fedu > 2 y failures > 0 y goout > 3"
+            ],
             "prediction_model": "Aprobado",
             "answer": ["Correcta", "Incorrecta", "No estoy seguro"],
             "visualization": "Conjunto de reglas completo del IDS.",
             "follow_up": {
                 "question": "¿El conjunto de reglas te facilitó identificar algún posible error en la predicción?",
+                "options": ["Sí", "No", "No estoy seguro"]
+            }
+        },
+        {
+            "instructions": "Califica la predicción del modelo de acuerdo con la observación y su explicación",
+            "model": "DT scikit-learn",
+            "observation": "absences = 2, failures = 1, studytime = 3, goout = 2, reason_reputation = No, Fedu = 3",
+            "rule": "si goout ≤ 2.5 y failures ≤ 1, entonces Aprobado",
+            "prediction_model": "Reprobado",
+            "answer": ["Correcta", "Incorrecta", "No estoy seguro"],
+            "visualization": "Regla local del DT de scikit-learn.",
+            "follow_up": {
+                "question": "¿Te ayudó la visualización de la regla local a identificar si había un error?",
+                "options": ["Sí", "No", "No estoy seguro"]
+            }
+        },
+        {
+            "instructions": "Califica la predicción del modelo de acuerdo con la observación y su explicación",
+            "model": "IDS",
+            "observation": "absences = 3, failures = 0, studytime = 4, goout = 2, reason_reputation = Yes, Fedu = 3",
+            "rule": "Fedu > 2, entonces Aprobado",
+            "all_rules": [
+                "Fedu > 1",
+                "Fedu > 4",
+                "absences > 0",
+                "absences > 2",
+                "failures > 1",
+                "goout > 2",
+                "reason_reputation > True",
+                "Fedu > 3 y failures > 0",
+                "reason_reputation > False y goout > 4",
+                "Fedu > 2 y failures > 0 y goout > 3"
+            ],
+            "prediction_model": "Reprobado",
+            "answer": ["Correcta", "Incorrecta", "No estoy seguro"],
+            "visualization": "Regla individual del IDS.",
+            "follow_up": {
+                "question": "¿La regla individual te ayudó a evaluar si la predicción era correcta?",
                 "options": ["Sí", "No", "No estoy seguro"]
             }
         }
@@ -154,3 +240,4 @@
         }
     ]
 }
+

@@ -19,7 +19,7 @@ h1 {
 }
 
 /* Styling for the question container */
-#question-container, #instructions, #ids-explanation {
+#question-container, #instructions, #ids-explanation, #model-prediction-explanation, #interpretml-explanation {
     background-color: white;
     padding: 2em;
     border-radius: 8px;
@@ -272,25 +272,45 @@ textarea {
     border-top: 1px solid #ddd;
 }
 
-/* Ajustar el espaciado entre párrafos y elementos en la explicación de IDS */
-#ids-explanation p, #ids-explanation ul {
+/* Ajustar el espaciado entre párrafos y elementos en la explicación de modelos */
+#model-prediction-explanation p, #model-prediction-explanation ul {
     margin-bottom: 20px;
 }
 
-#ids-explanation h2 {
+#model-prediction-explanation h2 {
     text-align: center;
     margin-bottom: 20px;
 }
 
-#ids-explanation ul {
+#model-prediction-explanation ul {
     list-style: disc;
     padding-left: 20px;
 }
 
-#ids-explanation img {
+#model-prediction-explanation img {
     margin-top: 20px;
 }
 
+
+
+/* Ajustar el espaciado entre párrafos y elementos en la explicación de InterpretML */
+#interpretml-explanation p, #interpretml-explanation ul {
+    margin-bottom: 20px;
+}
+
+#interpretml-explanation h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#interpretml-explanation ul {
+    list-style: disc;
+    padding-left: 20px;
+}
+
+#interpretml-explanation img {
+    margin-top: 20px;
+}
 
 
 
