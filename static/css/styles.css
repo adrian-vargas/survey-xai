@@ -196,6 +196,7 @@ textarea {
     border-radius: 5px;
     font-size: 0.95em;
     line-height: 1.5;
+    text-align: left;
 }
 
 .keyword {
@@ -315,7 +316,52 @@ textarea {
 
 
 
+/* Ajustes adicionales para follow-up-container */
+#follow-up-container {
+    background-color: #f5f5f5; /* Fondo más claro para diferenciar */
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 20px;
+    text-align: center;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
 
+/* Estilos adicionales para opciones de seguimiento */
+.follow-up-option {
+    background-color: #5bc0de;
+    color: white;
+    padding: 0.8em 1.5em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 10px 5px;
+    transition: background-color 0.3s ease;
+}
 
+.follow-up-option:hover {
+    background-color: #31b0d5;
+}
 
+/* Ajustes para visualización de grafos globales y locales */
+.visualizacion-modelo {
+    max-width: 100%;
+    height: auto;
+    margin: 20px auto;
+    display: block;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.global-graph, .local-graph {
+    max-width: 90%;
+    margin: 15px auto;
+    text-align: center;
+}
+
+/* Ajustes para elementos de texto descriptivo en gráficos y explicaciones */
+.global-graph p, .local-graph p {
+    font-size: 1.1em;
+    color: #333;
+    margin: 10px 0;
+}
 

@@ -1,9 +1,6 @@
 // app.js
 
 let questions;
-let categories = ['accuracy_questions', 'ambiguous_questions', 'error_detection_questions', 'visualization_preferences'];
-let descriptiveQuestionsCategory = 'descriptive_questions';
-let currentCategoryIndex = 0;
 let currentQuestionIndex = 0;
 let startTime, endTime;
 const answers = [];
@@ -55,50 +52,25 @@ const definitionsTableHTML = `
     </div>
 `;
 
-
-
 function updateProgressBar() {
-    let totalQuestions = 0;
-
-    for (let i = 0; i < categories.length; i++) {
-        totalQuestions += questions[categories[i]].length;
-    }
-
-    totalQuestions += questions[descriptiveQuestionsCategory].length;
-
-    let currentQuestionNumber = 0;
-
-    for (let i = 0; i < currentCategoryIndex; i++) {
-        currentQuestionNumber += questions[categories[i]].length;
-    }
-
-    if (currentCategoryIndex < categories.length) {
-        currentQuestionNumber += currentQuestionIndex + 1;
-    } else if (currentCategoryIndex === categories.length) {
-        currentQuestionNumber += currentQuestionIndex + 1;
-    }
-
+    // Total de preguntas en la lista 'questions'
+    const totalQuestions = questions.length;
+    
+    // Número de preguntas respondidas hasta el momento
+    const currentQuestionNumber = currentQuestionIndex + 1; // Sumar 1 porque el índice comienza en 0
+    
+    // Calcular el progreso en porcentaje
     const currentProgress = (currentQuestionNumber / totalQuestions) * 100;
     document.getElementById('progress-bar').style.width = currentProgress + '%';
 }
 
-function loadQuestion() {
-    if (currentCategoryIndex < categories.length) {
-        let currentCategory = categories[currentCategoryIndex];
 
-        if (questions[currentCategory]) {
-            if (currentQuestionIndex < questions[currentCategory].length) {
-                const questionData = questions[currentCategory][currentQuestionIndex];
-                displayQuestion(questionData);
-            } else {
-                moveToNextCategory();
-            }
-        } else {
-            console.error('Category not found in questions:', currentCategory);
-            moveToNextCategory();
-        }
-    } else if (currentCategoryIndex === categories.length) {
-        loadDescriptiveQuestion();
+// Función para cargar preguntas
+function loadQuestion() {
+    if (currentQuestionIndex < questions.length) {
+        const questionData = questions[currentQuestionIndex];
+        displayQuestion(questionData);
+        updateProgressBar();
     } else {
         submitAnswers();
     }
@@ -107,89 +79,116 @@ function loadQuestion() {
 function displayQuestion(questionData) {
     const container = document.getElementById('question-container');
     container.innerHTML = ''; // Limpiar la pregunta anterior
-    container.style.maxWidth = '95%';
 
     // Mostrar instrucciones
     if (questionData.instructions) {
         const instructionsElement = document.createElement('h2');
         instructionsElement.textContent = questionData.instructions;
-        instructionsElement.style.textAlign = 'center';
         container.appendChild(instructionsElement);
-        document.querySelector('h1').style.display = 'none'; // Ocultar el título principal
     }
 
     // Mostrar el modelo
     if (questionData.model) {
         const modelElement = document.createElement('p');
-        modelElement.textContent = `Modelo ${questionData.model}`;
-        modelElement.style.textAlign = 'center';
-        modelElement.classList.add('model-text');
+        modelElement.textContent = `Modelo: ${questionData.model}`;
         container.appendChild(modelElement);
     }
 
     // Mostrar observación
     if (questionData.observation) {
+        const observationText = Object.entries(questionData.observation)
+            .map(([key, value]) => `${key} = ${value}`)
+            .join(", ");
         const observationElement = document.createElement('p');
-        observationElement.textContent = `Observación: ${questionData.observation}`;
-        observationElement.style.textAlign = 'center';
+        observationElement.textContent = `Observación: ${observationText}`;
         container.appendChild(observationElement);
     }
 
-    // Verificar si la categoría actual requiere mostrar la tabla de definiciones
-    if (categories[currentCategoryIndex] !== 'visualization_preferences' && 
-        categories[currentCategoryIndex] !== 'descriptive_questions') {
-        
+    // Mostrar tabla de definiciones si es relevante
+    if (questionData.category !== 'visualization_preferences' && questionData.category !== 'descriptive_questions') {
         const definitionsContainer = document.createElement('div');
         definitionsContainer.innerHTML = definitionsTableHTML;
         container.appendChild(definitionsContainer);
     }
 
-    // Mostrar y formatear la regla
-    if (questionData.rule) {
-        const ruleElement = document.createElement('div');
-        ruleElement.classList.add('rule-container');
-        ruleElement.innerHTML = unescapeHTML(formatRule(questionData.rule));
-        container.appendChild(ruleElement);
+    // Mostrar reglas como una lista de elementos
+    if (questionData.rules) {
+        const rulesContainer = document.createElement('div');
+        rulesContainer.classList.add('rule-container');
+    
+        const rulesTitle = document.createElement('strong');
+        rulesTitle.textContent = "Reglas:";
+        rulesContainer.appendChild(rulesTitle);
+    
+        const rulesList = document.createElement('ul');
+        questionData.rules.forEach(rule => {
+            console.log("Regla original:", rule); // Para depuración
+            const ruleItem = document.createElement('li');
+            // Asigna directamente el contenido con innerHTML para interpretar las etiquetas
+            ruleItem.innerHTML = formatRule(rule);
+            rulesList.appendChild(ruleItem);
+        });
+        rulesContainer.appendChild(rulesList);
+        container.appendChild(rulesContainer);
     }
 
-    // Mostrar visualización si está disponible
-    if (questionData.visualization) {
-        const visualizationPath = getVisualizationPath(questionData);
-        if (visualizationPath) {
-            const visualizationElement = document.createElement('img');
-            visualizationElement.src = visualizationPath;
-            visualizationElement.alt = 'Visualización del modelo';
-            visualizationElement.classList.add('visualizacion-modelo');
-            container.appendChild(visualizationElement);
-        }
+    // Mostrar grafo global o local
+    if (questionData.global_graph) {
+        const globalGraphElement = document.createElement('p');
+        globalGraphElement.textContent = `Grafo Global: ${questionData.global_graph}`;
+        container.appendChild(globalGraphElement);
+    } else if (questionData.local_graph) {
+        const localGraphElement = document.createElement('p');
+        localGraphElement.textContent = `Grafo Local: ${questionData.local_graph}`;
+        container.appendChild(localGraphElement);
+    }
+
+    // Mostrar predicción del modelo
+    if (questionData.prediction_model) {
+        const predictionElement = document.createElement('p');
+        predictionElement.textContent = `Predicción del modelo: ${questionData.prediction_model}`;
+        container.appendChild(predictionElement);
     }
 
     // Configuración de las opciones de respuesta
-    const options = questionData.prediction || questionData.answer || questionData.options;
-    if (options && Array.isArray(options)) {
-        const buttonContainer = document.createElement('div');
-        buttonContainer.style.display = 'flex';
-        buttonContainer.style.justifyContent = 'center';
-        buttonContainer.style.gap = '20px';
-        buttonContainer.style.flexWrap = 'wrap';
+    const options = questionData.answer || ["Aprobado", "Reprobado", "No estoy seguro"];
+    const optionsContainer = document.createElement('div');
+    optionsContainer.style.display = 'flex';
+    optionsContainer.style.justifyContent = 'center';
+    optionsContainer.style.gap = '20px';
+    optionsContainer.style.flexWrap = 'wrap';
 
-        options.forEach(option => {
-            const optionElement = document.createElement('button');
-            optionElement.textContent = option;
-            optionElement.onclick = () => handleAnswer(option, optionElement);
-            optionElement.style.flex = '1 1 calc(33% - 20px)';
-            buttonContainer.appendChild(optionElement);
+    options.forEach(option => {
+        const optionElement = document.createElement('button');
+        optionElement.textContent = option;
+        optionElement.onclick = () => handleAnswer(option, optionElement);
+        optionsContainer.appendChild(optionElement);
+    });
+    container.appendChild(optionsContainer);
+
+    // Pregunta de seguimiento
+    if (questionData.follow_up) {
+        const followUpElement = document.createElement('p');
+        followUpElement.textContent = questionData.follow_up.question;
+        container.appendChild(followUpElement);
+
+        const followUpOptionsContainer = document.createElement('div');
+        followUpOptionsContainer.style.display = 'flex';
+        followUpOptionsContainer.style.justifyContent = 'center';
+        followUpOptionsContainer.style.gap = '20px';
+
+        questionData.follow_up.options.forEach(option => {
+            const button = document.createElement('button');
+            button.textContent = option;
+            button.onclick = () => handleFollowUpAnswer(option);
+            followUpOptionsContainer.appendChild(button);
         });
-
-        container.appendChild(buttonContainer);
-    } else {
-        console.error('Options not found or invalid format in questionData:', questionData);
+        container.appendChild(followUpOptionsContainer);
     }
 
     startTime = new Date().getTime();
     document.getElementById('next-question-btn').style.display = 'none';
 }
-
 
 
 
@@ -214,15 +213,14 @@ function handleAnswer(answer, optionElement) {
     document.querySelectorAll('button').forEach(button => button.classList.remove('selected'));
     optionElement.classList.add('selected');
 
-    const currentCategory = categories[currentCategoryIndex];
-    const currentQuestionData = questions[currentCategory][currentQuestionIndex];
+    const currentQuestionData = questions[currentQuestionIndex];
 
     if (currentQuestionData) {
         // Guardar la respuesta principal
         answers.push({
             model: currentQuestionData.model || "",
-            observation: currentQuestionData.observation || "",
-            rule: currentQuestionData.rule || "",
+            observation: currentQuestionData.observation || {},
+            rules: currentQuestionData.rules || [],
             visualization: currentQuestionData.visualization || "",
             prediction_model: currentQuestionData.prediction_model || "",
             prediction: currentQuestionData.prediction || [],
@@ -286,9 +284,14 @@ function scrollDown() {
     });
 }
 
-
 function nextQuestion() {
     currentQuestionIndex++;
+
+    if (currentQuestionIndex >= questions.length) {
+        submitAnswers();
+        return;
+    }
+
     loadQuestion();
     document.getElementById('next-question-btn').style.display = 'none';
 }
@@ -404,43 +407,6 @@ document.getElementById('start-questionnaire-btn').onclick = function () {
         .catch(error => console.error('Error loading questions:', error));
 };
 
-// Función para des-escapar el contenido HTML
-function unescapeHTML(html) {
-    const doc = new DOMParser().parseFromString(html, 'text/html');
-    return doc.documentElement.textContent;
-}
-
-function formatRule(input) {
-    // Función auxiliar para aplicar el formato al texto
-    function applyFormatting(ruleText) {
-        return ruleText
-            .replace(/\b(Aprobado|Reprobado)\b/g, '<span class="conclusion">$1</span>')
-            .replace(/(\d+(\.\d+)?)/g, '<span class="value">$1</span>') // Resalta números
-            .replace(/\b(si|y|entonces)\b/g, '<span class="keyword">$1</span>') // Resalta las palabras clave
-            .replace(/\b(absences|goout|studytime|reason_reputation|failures|Fedu)\b/g, '<span class="attribute">$1</span>') // Resalta características
-            .replace(/([≤≥=<>])/g, '<span class="value">$1</span>'); // Resalta los signos de comparación
-    }
-
-    // Verificar si el input es un elemento HTML o texto plano
-    if (typeof input === "string") {
-        // Si es texto plano, aplicar el formato y devolverlo
-        return applyFormatting(input);
-    } else if (input instanceof HTMLElement) {
-        // Si es un elemento HTML, aplicar el formato al contenido de texto
-        input.innerHTML = applyFormatting(input.textContent);
-    }
-}
-
-
-
-
-
-
-
-
-
-
-
 
 // Inicializar el botón de acceso
 document.getElementById('access-btn').onclick = function () {
@@ -449,9 +415,19 @@ document.getElementById('access-btn').onclick = function () {
 
     if (enteredKey === correctAccessKey) {
         document.getElementById('access-container').style.display = 'none';
-        document.getElementById('model-prediction-explanation').style.display = 'block'; // Mostrar la explicación del modelo IDS
-        listItem.innerHTML = formatRule(rule);
+        document.getElementById('model-prediction-explanation').style.display = 'block';
 
+        // Verifica que `questions` esté definido y tenga una pregunta con reglas
+        if (questions && questions[0] && questions[0].rules) {
+            // Itera sobre cada regla en `rules`
+            questions[0].rules.forEach(rule => {
+                const listItem = document.createElement('div');
+                listItem.innerHTML = formatRule(rule);
+                document.getElementById('model-prediction-explanation').appendChild(listItem);
+            });
+        } else {
+            console.warn("No se encontró una regla en el JSON");
+        }
     } else {
         alert('Clave de acceso incorrecta. Inténtalo de nuevo.');
     }
@@ -496,13 +472,36 @@ document.getElementById('start-questionnaire-btn').onclick = function () {
     fetch('/static/questions.json')
         .then(response => response.json())
         .then(data => {
-            questions = data;
+            questions = data.questions; // Asegúrate de que `data.questions` sea un array de preguntas
+            currentQuestionIndex = 0;
             loadQuestion();
-            scrollUp(); // Scroll hacia arriba al iniciar el cuestionario
+            scrollUp();
         })
         .catch(error => console.error('Error loading questions:', error));
 };
 
-
 // Insertar la tabla de definiciones en el contenedor específico
 document.getElementById('definitions-table-container').innerHTML = definitionsTableHTML;
+
+function formatRule(rule) {
+    if (!rule) {
+        console.error("Regla indefinida o vacía");
+        return '';
+    }
+
+    // Aplicar formato HTML para los elementos destacados
+    rule = rule.replace(/\b(Aprobado|Reprobado)\b/g, '<span class="conclusion">$1</span>')
+        .replace(/(\d+(\.\d+)?)/g, '<span class="value">$1</span>')
+        .replace(/\b(si|y|entonces)\b/g, '<span class="keyword">$1</span>')
+        .replace(/\b(absences|goout|studytime|reason_reputation|failures|Fedu)\b/g, '<span class="attribute">$1</span>')
+        .replace(/([≤≥=<>])/g, '<span class="operator">$1</span>');
+
+    return unescapeHTML(rule);
+}
+// Función para des-escapar el contenido HTML
+function unescapeHTML(html) {
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    return doc.documentElement.textContent;
+}
+
+
