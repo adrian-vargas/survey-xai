@@ -80,6 +80,11 @@ function displayQuestion(questionData) {
     const container = document.getElementById('question-container');
     container.innerHTML = ''; // Limpiar la pregunta anterior
 
+    // Limpiar el contenedor de seguimiento para cada nueva pregunta
+    const followUpContainer = document.getElementById('follow-up-container');
+    followUpContainer.innerHTML = ''; // Limpia cualquier contenido previo en el contenedor de seguimiento
+    followUpContainer.style.display = 'none'; // Oculta el contenedor inicialmente
+
     // Mostrar instrucciones
     if (questionData.instructions) {
         const instructionsElement = document.createElement('h2');
@@ -90,7 +95,7 @@ function displayQuestion(questionData) {
     // Mostrar el modelo
     if (questionData.model) {
         const modelElement = document.createElement('p');
-        modelElement.textContent = `Modelo: ${questionData.model}`;
+        modelElement.textContent = `Modelo ${questionData.model}`;
         container.appendChild(modelElement);
     }
 
@@ -105,7 +110,7 @@ function displayQuestion(questionData) {
     }
 
     // Mostrar tabla de definiciones si es relevante
-    if (questionData.category !== 'visualization_preferences' && questionData.category !== 'descriptive_questions') {
+    if (questionData.category !== 'Preferencias de Visualización' && questionData.category !== 'Pregunta Descriptiva') {
         const definitionsContainer = document.createElement('div');
         definitionsContainer.innerHTML = definitionsTableHTML;
         container.appendChild(definitionsContainer);
@@ -122,9 +127,7 @@ function displayQuestion(questionData) {
     
         const rulesList = document.createElement('ul');
         questionData.rules.forEach(rule => {
-            console.log("Regla original:", rule); // Para depuración
             const ruleItem = document.createElement('li');
-            // Asigna directamente el contenido con innerHTML para interpretar las etiquetas
             ruleItem.innerHTML = formatRule(rule);
             rulesList.appendChild(ruleItem);
         });
@@ -143,15 +146,56 @@ function displayQuestion(questionData) {
         container.appendChild(localGraphElement);
     }
 
-    // Mostrar predicción del modelo
-    if (questionData.prediction_model) {
+    // Mostrar predicción del modelo solo si la categoría no es de exactitud ni ambigüedad
+    if (questionData.prediction_model && questionData.category !== 'Exactitud' && questionData.category !== 'Ambigüedad') {
         const predictionElement = document.createElement('p');
         predictionElement.textContent = `Predicción del modelo: ${questionData.prediction_model}`;
         container.appendChild(predictionElement);
     }
 
-    // Configuración de las opciones de respuesta
-    const options = questionData.answer || ["Aprobado", "Reprobado", "No estoy seguro"];
+    // Verificar si es una pregunta descriptiva y mostrar un campo de texto
+    if (questionData.category === "Pregunta Descriptiva") {
+        const answerInput = document.createElement('textarea');
+        answerInput.setAttribute('placeholder', 'Explica tu respuesta aquí...');
+        answerInput.setAttribute('rows', '5');
+        answerInput.setAttribute('cols', '50');
+        answerInput.style.width = '95%';
+        container.appendChild(answerInput);
+
+        // Mostrar el botón "Siguiente" solo cuando haya texto
+        document.getElementById('next-question-btn').style.display = 'none';
+        answerInput.addEventListener('input', function () {
+            if (answerInput.value.trim() !== '') {
+                document.getElementById('next-question-btn').style.display = 'block';
+            } else {
+                document.getElementById('next-question-btn').style.display = 'none';
+            }
+        });
+
+        // Guardar la respuesta de texto cuando el usuario haga clic en "Siguiente"
+        document.getElementById('next-question-btn').onclick = function () {
+            endTime = new Date().getTime();
+            const responseTime = endTime - startTime;
+
+            answers.push({
+                question: questionData.instructions,
+                answer: answerInput.value,
+                time: responseTime
+            });
+
+            currentQuestionIndex++;
+            loadQuestion();
+        };
+
+        startTime = new Date().getTime();
+        return; // Salir de la función para evitar agregar opciones de botón en preguntas descriptivas
+    }
+
+    // Configuración de las opciones de respuesta para preguntas no descriptivas
+    const options = questionData.category === "Error"
+        ? ["Correcto", "Incorrecto", "No estoy seguro"]
+        : questionData.answer || ["Aprobado", "Reprobado", "No estoy seguro"];
+    
     const optionsContainer = document.createElement('div');
     optionsContainer.style.display = 'flex';
     optionsContainer.style.justifyContent = 'center';
@@ -166,30 +210,9 @@ function displayQuestion(questionData) {
     });
     container.appendChild(optionsContainer);
 
-    // Pregunta de seguimiento
-    if (questionData.follow_up) {
-        const followUpElement = document.createElement('p');
-        followUpElement.textContent = questionData.follow_up.question;
-        container.appendChild(followUpElement);
-
-        const followUpOptionsContainer = document.createElement('div');
-        followUpOptionsContainer.style.display = 'flex';
-        followUpOptionsContainer.style.justifyContent = 'center';
-        followUpOptionsContainer.style.gap = '20px';
-
-        questionData.follow_up.options.forEach(option => {
-            const button = document.createElement('button');
-            button.textContent = option;
-            button.onclick = () => handleFollowUpAnswer(option);
-            followUpOptionsContainer.appendChild(button);
-        });
-        container.appendChild(followUpOptionsContainer);
-    }
-
     startTime = new Date().getTime();
     document.getElementById('next-question-btn').style.display = 'none';
 }
-
 
 
 function getVisualizationPath(questionData) {
@@ -230,10 +253,9 @@ function handleAnswer(answer, optionElement) {
 
         updateProgressBar();
 
-        // Verificar si existe una pregunta de seguimiento
+        // Verificar si existe una pregunta de seguimiento y si el contenedor está vacío
         const followUpContainer = document.getElementById('follow-up-container');
-        followUpContainer.innerHTML = ''; // Limpiar cualquier contenido previo
-        if (currentQuestionData.follow_up) {
+        if (currentQuestionData.follow_up && followUpContainer.innerHTML === '') {
             // Mostrar la pregunta de seguimiento
             followUpContainer.innerHTML = `<p>${currentQuestionData.follow_up.question}</p>`;
             followUpContainer.style.display = 'block';
@@ -249,7 +271,7 @@ function handleAnswer(answer, optionElement) {
 
             // Ocultar el botón "Siguiente" hasta que se responda la pregunta de seguimiento
             document.getElementById('next-question-btn').style.display = 'none';
-        } else {
+        } else if (!currentQuestionData.follow_up) {
             // Si no hay pregunta de seguimiento, mostrar el botón "Siguiente" inmediatamente
             document.getElementById('next-question-btn').style.display = 'block';
         }
@@ -260,6 +282,7 @@ function handleAnswer(answer, optionElement) {
         console.error("Error: currentQuestionData es undefined.");
     }
 }
+
 
 // Función para manejar la respuesta a la pregunta de seguimiento
 function handleFollowUpAnswer(answer) {
@@ -273,8 +296,6 @@ function handleFollowUpAnswer(answer) {
     document.getElementById('follow-up-container').style.display = 'none';
     document.getElementById('next-question-btn').style.display = 'block';
 }
-
-
 
 // Función para hacer scroll hacia abajo
 function scrollDown() {
