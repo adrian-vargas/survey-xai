@@ -12,7 +12,6 @@
         <div id="progress-bar" class="progress-bar"></div>
     </div>
     
-
     <h1>Cuestionario de Interpretabilidad</h1>
     
     <!-- Formulario para la clave de acceso -->
@@ -21,18 +20,119 @@
         <input type="password" id="access-key" placeholder="Clave de acceso">
         <button id="access-btn">Acceder</button>
     </div>
-    
-    <!-- Instrucciones y botón para comenzar el cuestionario -->
+
+    <!-- Sección de explicación de modelos -->
+    <div id="model-prediction-explanation" style="display: none;">
+        <h2>¿Qué están prediciendo los modelos?</h2>
+        <p>
+            Los modelos que estás evaluando en este cuestionario han sido entrenados para predecir si un estudiante 
+            <strong>aprobará o reprobará</strong> según su rendimiento y características personales. Utilizan un conjunto de reglas 
+            simples que toman en cuenta factores específicos como el tiempo de estudio, las ausencias y la educación de los padres, 
+            entre otros, para realizar esta predicción.
+        </p>
+
+        <!-- Contenedor donde se insertará la tabla desde JavaScript -->
+        <div id="definitions-table-container"></div>
+
+        <p>
+            En cada pregunta, verás una <strong>tabla de características</strong> que describe estos factores y sus posibles valores. 
+            Esto te ayudará a interpretar las reglas aplicadas y comprender cómo cada característica influye en la predicción del modelo.
+        </p>
+
+        <button id="close-model-prediction-explanation-btn">Entendido</button>
+    </div>
+
+    <!-- Sección de explicación de InterpretML y DT de scikit-learn -->
+    <div id="interpretml-explanation" style="display: none;">
+        <h2>Explicación del Modelo de Árbol de Decisión (DT) en InterpretML y scikit-learn</h2>
+        <p>
+            El modelo de Árbol de Decisión (DT) se utiliza en InterpretML para obtener explicaciones locales y globales. Para este cuestionario, el modelo subyacente de scikit-learn se ha extraído y se visualiza en InterpretML para analizar tanto las explicaciones globales (comportamiento general del modelo) como las explicaciones locales (interpretación específica para una observación).
+        </p>
+        <p>
+            <strong>Nota:</strong> InterpretML presenta un defecto en el conteo de observaciones (indicado como <code>#Obs</code>), el cual muestra incorrectamente el valor <code>0, 0</code>. Este error debe ignorarse en el contexto de este cuestionario, ya que no afecta la interpretación de las decisiones del modelo.
+        </p>
+        
+        <!-- Imagen del modelo global en InterpretML (usando dt.png) -->
+        <div style="text-align: center; margin-top: 20px;">
+            <img src="/static/graphs/interpretml/dt.png" alt="Explicación Global del Modelo DT de scikit-learn" style="max-width:80%; height:auto;">
+            <p><em>Explicación global del modelo de Árbol de Decisión (DT) en scikit-learn.</em></p>
+        </div>
+        
+        <!-- Explicación Local -->
+        <h3>Explicación Local del Modelo DT</h3>
+        <p>La explicación local para una observación específica detalla la contribución de cada característica a la predicción final del modelo.</p>
+        
+        <!-- Imagen de la explicación local (local_0.PNG) -->
+        <div style="text-align: center; margin-top: 20px;">
+            <img src="/static/graphs/interpretml/local/local_0.PNG" alt="Explicación Local 0" style="max-width:80%; height:auto;">
+            <p><em>Explicación Local - Observación 0</em></p>
+        </div>
+        <button id="close-interpretml-explanation-btn">Entendido</button>
+    </div>
+
+
+    <!-- Sección de explicación del modelo IDS -->
+    <div id="ids-explanation" style="display: none;">
+        <h2>¿Cómo toma decisiones el modelo IDS (Interpretable Decision Sets)?</h2>
+        <p>
+            IDS clasifica observaciones utilizando un conjunto de <strong>reglas simples</strong>. Cada regla contiene condiciones que, si se cumplen, llevan a una decisión específica (como "Aprobado" o "Reprobado"). Si varias reglas se aplican a una misma observación, el modelo elige la etiqueta <strong>que más se repita</strong> entre esas reglas aplicables.
+        </p>
+        <p><strong>Por ejemplo:</strong></p>
+        <ul>
+            <li><strong>Regla 1:</strong> Si <span class="attribute">Fedu</span> > <span class="value">2</span>, <span class="keyword">entonces</span> <span class="conclusion">Aprobado</span>.</li>
+            <li><strong>Regla 2:</strong> Si <span class="attribute">absences</span> < <span class="value">3</span> <span class="keyword">y</span> <span class="attribute">studytime</span> > <span class="value">2</span>, <span class="keyword">entonces</span> <span class="conclusion">Aprobado</span>.</li>
+            <li><strong>Regla 3:</strong> Si <span class="attribute">failures</span> > <span class="value">1</span>, <span class="keyword">entonces</span> <span class="conclusion">Reprobado</span>.</li>
+            <li><strong>Regla 4:</strong> Si <span class="attribute">goout</span> > <span class="value">4</span> <span class="keyword">y</span> <span class="attribute">reason_reputation</span> = <span class="value">False</span>, <span class="keyword">entonces</span> <span class="conclusion">Reprobado</span>.</li>
+            <li><strong>Regla 5:</strong> Si <span class="attribute">studytime</span> < <span class="value">1</span> <span class="keyword">y</span> <span class="attribute">Fedu</span> < <span class="value">2</span>, <span class="keyword">entonces</span> <span class="conclusion">Reprobado</span>.</li>
+            <li><strong>Regla 6:</strong> Si <span class="attribute">absences</span> > <span class="value">10</span> <span class="keyword">y</span> <span class="attribute">reason_reputation</span> = <span class="value">1</span>, <span class="keyword">entonces</span> <span class="conclusion">Aprobado</span>.</li>
+        </ul>
+        
+        
+        
+        <p><strong>Para esta observación, se tienen los siguientes valores de características:</strong></p>
+        <ul style="list-style-type: none; padding-left: 0;">
+            <li><strong>Fedu:</strong> 3</li>
+            <li><strong>absences:</strong> 2</li>
+            <li><strong>studytime:</strong> 3</li>
+            <li><strong>failures:</strong> 0</li>
+            <li><strong>goout:</strong> 5</li>
+            <li><strong>reason_reputation:</strong> 0</li>
+        </ul>
+
+        <!-- Imagen de explicación global -->
+        <div style="text-align: center; margin-top: 20px;">
+            <img src="static/graphs/ids/intro/ids_global.png" alt="Explicación global del modelo IDS" style="max-width:80%; height:auto;">
+            <p><em>Explicación global del modelo IDS</em></p>
+        </div>
+
+        <!-- Imagen de explicación local -->
+        <div style="text-align: center; margin-top: 20px;">
+            <img src="static/graphs/ids/intro/ids_local.png" alt="Explicación local del modelo IDS" style="max-width:80%; height:auto;">
+            <p><em>Explicación local del modelo IDS (reglas aplicadas y predicción remarcadas)</em></p>
+        </div>
+
+        <button id="close-explanation-btn">Entendido</button>
+    </div>
+
+
+    <!-- Instrucciones del cuestionario -->
     <div id="instructions" style="display:none;">
-        <p><strong>Nota importante:</strong> Una vez que respondas una pregunta y avances a la siguiente, no podrás regresar para cambiar tu respuesta. Te recomendamos que revises tus respuestas cuidadosamente antes de continuar.</p>
+        <p id="instruction-text">
+            <strong>Nota importante:</strong> Una vez que respondas una pregunta y avances a la siguiente, no podrás regresar para cambiar tu respuesta. Te recomendamos que revises tus respuestas cuidadosamente antes de continuar.
+        </p>
         <button id="start-questionnaire-btn">Comenzar Cuestionario</button>
     </div>
 
     <!-- Contenedor para mostrar las preguntas del cuestionario -->
     <div id="question-container" style="display:none;"></div>
+
+    <!-- Contenedor para la pregunta de seguimiento (follow-up) -->
+    <div id="follow-up-container" style="display: none; margin-top: 20px;"></div>
     
     <!-- Botón para avanzar a la siguiente pregunta -->
-    <button id="next-question-btn" style="display:none;">Siguiente</button>
+    <div class="navigation">
+        <button id="next-question-btn" style="display:none;">Siguiente</button>
+    </div>
 
     <!-- Enlace al archivo JavaScript -->
     <script src="/static/js/app.js"></script>

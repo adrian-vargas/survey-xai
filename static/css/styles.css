@@ -12,22 +12,21 @@ body {
 }
 
 h1 {
-    font-size: 2em; /* Usa una fuente un poco más pequeña para mayor flexibilidad */
+    font-size: 2em;
     color: #333;
     margin-bottom: 20px;
     text-align: center;
 }
 
 /* Styling for the question container */
-#question-container, #instructions {
+#question-container, #instructions, #ids-explanation, #model-prediction-explanation, #interpretml-explanation {
     background-color: white;
-    padding: 2em; /* Usa 'em' para que el padding sea relativo al tamaño de fuente */
+    padding: 2em;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     text-align: left;
     margin-bottom: 20px;
-    width: 100%;
-    max-width: 800px;
+    width: 95%;
     margin: 0 auto;
 }
 
@@ -36,7 +35,7 @@ h1 {
 }
 
 p {
-    font-size: 1.1em; /* Ligero ajuste para mejor legibilidad */
+    font-size: 1.1em;
     color: #555;
     margin-bottom: 20px;
     line-height: 1.6;
@@ -47,14 +46,14 @@ button {
     background-color: #d9534f;
     color: white;
     border: none;
-    padding: 1em 2em; /* Padding flexible */
+    padding: 1em 2em;
     border-radius: 5px;
     font-size: 1em;
     cursor: pointer;
     margin: 10px;
     display: inline-block;
-    width: 100%; /* Asegura que los botones ocupen todo el ancho en móviles */
     max-width: 300px;
+    flex: 1 1 calc(30% - 20px);
 }
 
 button:hover {
@@ -66,13 +65,13 @@ button.selected {
 }
 
 #start-questionnaire-btn, #next-question-btn {
-    background-color: #5cb85c; /* Green color for the next button */
+    background-color: #5cb85c;
     display: block;
     margin: 30px auto;
     padding: 1em 2em;
     font-size: 1.25em;
-    width: 100%; /* Ancho completo en pantallas pequeñas */
-    max-width: 300px; /* Limita el ancho en pantallas más grandes */
+    width: 100%;
+    max-width: 300px;
 }
 
 #start-questionnaire-btn:hover, #next-question-btn:hover {
@@ -82,7 +81,7 @@ button.selected {
 /* Mobile responsive adjustments */
 @media (max-width: 768px) {
     h1 {
-        font-size: 1.8em; /* Reduce el tamaño de la fuente en móviles */
+        font-size: 1.8em;
     }
 
     #question-container, #instructions {
@@ -109,11 +108,11 @@ textarea {
 /* Centrar el campo de texto y el botón en el formulario de acceso */
 #access-container {
     display: flex;
-    flex-direction: column; /* Ajuste para móviles */
+    flex-direction: column;
     align-items: center;
     gap: 10px;
     margin-top: 20px;
-    width: 100%; /* Ocupa todo el ancho */
+    width: 100%;
     max-width: 300px;
     margin: 0 auto;
 }
@@ -143,10 +142,18 @@ textarea {
     background-color: #4caf50;
 }
 
-/* Centrar los botones de las respuestas */
+/* Ajustar los botones para alinearlos al centro */
 #question-container button {
-    width: calc(33.3% - 20px);
-    margin: 10px;
+    margin: 10px auto;
+    display: inline-block;
+}
+
+/* Contenedor de botones */
+#question-container .button-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
     text-align: center;
 }
 
@@ -156,4 +163,210 @@ textarea {
     align-items: center;
     text-align: center;
     min-height: 100px;
+}
+
+.visualizacion-modelo {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 20px auto;
+}
+
+.question-container {
+    width: 95%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+/* Centrar el contenido del contenedor de preguntas */
+#question-container {
+    text-align: center;
+}
+
+/* Estilos para el contenedor de reglas */
+.rule-container {
+    border: 1px solid #ddd;
+    padding: 10px;
+    background-color: #f9f9f9;
+    margin-top: 20px;
+    border-radius: 5px;
+    font-size: 0.95em;
+    line-height: 1.5;
+    text-align: left;
+}
+
+.keyword {
+    font-weight: normal;
+    color: black;
+}
+
+.attribute {
+    color: blue;
+    font-weight: bold;
+}
+
+.conclusion {
+    color: red;
+    font-weight: bold;
+}
+
+.value {
+    font-weight: bold;
+}
+
+
+/* Centrar la tabla dentro de su contenedor */
+.table-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.table-container table {
+    width: 80%; /* Controla el ancho de la tabla */
+    border-collapse: collapse;
+    margin-top: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    font-size: 0.9em;
+}
+
+/* Estilo de las cabeceras */
+.table-container th {
+    background-color: #333;
+    color: #fff;
+    padding: 8px;
+    text-align: left;
+}
+
+/* Estilo de las celdas */
+.table-container td {
+    padding: 6px 10px;
+    border-bottom: 1px solid #ddd;
+    line-height: 1.2;
+    text-align: left;
+}
+
+/* Alternar color de fondo para filas */
+.table-container tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+
+.model-text {
+    font-weight: bold;
+    color: coral;
+    font-size: 1.5em;
+    text-align: center;
+}
+
+
+#follow-up-container {
+    text-align: center;
+    margin-top: 20px;
+    padding: 15px;
+    border-top: 1px solid #ddd;
+}
+
+/* Ajustar el espaciado entre párrafos y elementos en la explicación de modelos */
+#model-prediction-explanation p, #model-prediction-explanation ul {
+    margin-bottom: 20px;
+}
+
+#model-prediction-explanation h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#model-prediction-explanation ul {
+    list-style: disc;
+    padding-left: 20px;
+}
+
+#model-prediction-explanation img {
+    margin-top: 20px;
+}
+
+
+
+/* Ajustar el espaciado entre párrafos y elementos en la explicación de InterpretML */
+#interpretml-explanation p, #interpretml-explanation ul {
+    margin-bottom: 20px;
+}
+
+#interpretml-explanation h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#interpretml-explanation ul {
+    list-style: disc;
+    padding-left: 20px;
+}
+
+#interpretml-explanation img {
+    margin-top: 20px;
+}
+
+
+
+
+/* Ajustes adicionales para follow-up-container */
+#follow-up-container {
+    background-color: #f5f5f5; /* Fondo más claro para diferenciar */
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 20px;
+    text-align: center;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos adicionales para opciones de seguimiento */
+.follow-up-option {
+    background-color: #5bc0de;
+    color: white;
+    padding: 0.8em 1.5em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 10px 5px;
+    transition: background-color 0.3s ease;
+}
+
+.follow-up-option:hover {
+    background-color: #31b0d5;
+}
+
+/* Ajustes para visualización de grafos globales y locales */
+.visualizacion-modelo {
+    max-width: 100%;
+    height: auto;
+    margin: 20px auto;
+    display: block;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.global-graph, .local-graph {
+    max-width: 90%;
+    margin: 15px auto;
+    text-align: center;
+}
+
+/* Ajustes para elementos de texto descriptivo en gráficos y explicaciones */
+.global-graph p, .local-graph p {
+    font-size: 1.1em;
+    color: #333;
+    margin: 10px 0;
+}
+
+#question-container > p:nth-child(2) {
+    font-weight: bold;
+    color: purple;
+    font-size: 1.5em;
 }
