@@ -6,12 +6,12 @@
             "instructions": "Selecciona la predicción de acuerdo con la observación",
             "model": "DT-InterpretML",
             "observation": {
-                "absences": 3,
+                "absences": 0,
                 "goout": 2,
-                "studytime": 2,
+                "studytime": 3,
                 "reason_reputation": 1,
-                "failures": 1,
-                "Fedu": 2
+                "failures": 0,
+                "Fedu": 3
             },
             "rules": [
                 "si failures ≤ 0.50 y reason_reputation ≤ 0.50 y Fedu ≤ 1.50 entonces Reprobado",
@@ -24,7 +24,11 @@
                 "si failures > 0.50 y absences > 1.50 y goout > 2.50 entonces Reprobado"
 
             ],
-            "prediction_model": "Aprobado",
+            "prediction_model": {
+                "DT-InterpretML": "Aprobado",
+                "IDS": "Aprobado"
+            },
+            "real_class": "Reprobado",
             "answer": null
         },
         {
@@ -33,12 +37,12 @@
             "instructions": "Selecciona la predicción de acuerdo con la observación",
             "model": "IDS",
             "observation": {
-                "absences": 3,
+                "absences": 0,
                 "goout": 2,
-                "studytime": 2,
+                "studytime": 3,
                 "reason_reputation": 1,
-                "failures": 1,
-                "Fedu": 2
+                "failures": 0,
+                "Fedu": 3
             },
             "rules": [
                 "si Fedu > 1 entonces Reprobado",
@@ -52,7 +56,11 @@
                 "si reason_reputation > 0 y goout > 4 entonces Reprobado",
                 "si Fedu > 2 y goout > 3 y failures > 0 entonces Aprobado"
             ],
-            "prediction_model": "Reprobado",
+            "prediction_model": {
+                "DT-InterpretML": "Aprobado",
+                "IDS": "Aprobado"
+            },
+            "real_class": "Aprobado",
             "answer": null
         },
         {
@@ -61,11 +69,11 @@
             "instructions": "Selecciona la predicción de acuerdo con la observación",
             "model": "DT-InterpretML",
             "observation": {
-                "absences": 8,
-                "goout": 3,
-                "studytime": 1,
+                "absences": 20,
+                "goout": 4,
+                "studytime": 2,
                 "reason_reputation": 0,
-                "failures": 2,
+                "failures": 1,
                 "Fedu": 3
             },
             "global_graph": "Representación del grafo global del modelo DT-InterpretML",
@@ -79,7 +87,11 @@
                 "si failures > 0.50 y absences > 1.50 y goout ≤ 2.50 entonces Aprobado",
                 "si failures > 0.50 y absences > 1.50 y goout > 2.50 entonces Reprobado"
             ],
-            "prediction_model": "Reprobado",
+            "prediction_model": {
+                "DT-InterpretML": "Reprobado",
+                "IDS": "Reprobado"
+            },
+            "real_class": "Reprobado",
             "answer": null
         },
         {
@@ -88,11 +100,11 @@
             "instructions": "Selecciona la predicción de acuerdo con la observación",
             "model": "IDS",
             "observation": {
-                "absences": 8,
-                "goout": 3,
-                "studytime": 1,
+                "absences": 20,
+                "goout": 4,
+                "studytime": 2,
                 "reason_reputation": 0,
-                "failures": 2,
+                "failures": 1,
                 "Fedu": 3
             },
             "global_graph": "Representación del grafo global del modelo IDS",
@@ -108,7 +120,11 @@
                 "si reason_reputation > 0 y goout > 4 entonces Reprobado",
                 "si Fedu > 2 y goout > 3 y failures > 0 entonces Aprobado"
             ],
-            "prediction_model": "Reprobado",
+            "prediction_model": {
+                "DT-InterpretML": "Reprobado",
+                "IDS": "Reprobado"
+            },
+            "real_class": "Reprobado",
             "answer": null
         },
         {
@@ -117,11 +133,11 @@
             "instructions": "Selecciona la predicción de acuerdo con la observación",
             "model": "DT-InterpretML",
             "observation": {
-                "absences": 1,
-                "goout": 4,
-                "studytime": 3,
-                "reason_reputation": 1,
-                "failures": 0,
+                "absences": 14,
+                "goout": 3,
+                "studytime": 1,
+                "reason_reputation": 0,
+                "failures": 1,
                 "Fedu": 2
             },
             "local_graph": "Representación del grafo local del modelo DT-InterpretML",
@@ -135,7 +151,11 @@
                 "si failures > 0.50 y absences > 1.50 y goout ≤ 2.50 entonces Aprobado",
                 "si failures > 0.50 y absences > 1.50 y goout > 2.50 entonces Reprobado"
             ],
-            "prediction_model": "Aprobado",
+            "prediction_model": {
+                "DT-InterpretML": "Reprobado",
+                "IDS": "Reprobado"
+            },
+            "real_class": "Reprobado",
             "answer": null
         },
         {
@@ -144,11 +164,11 @@
             "instructions": "Selecciona la predicción de acuerdo con la observación",
             "model": "IDS",
             "observation": {
-                "absences": 1,
-                "goout": 4,
-                "studytime": 3,
-                "reason_reputation": 1,
-                "failures": 0,
+                "absences": 14,
+                "goout": 3,
+                "studytime": 1,
+                "reason_reputation": 0,
+                "failures": 1,
                 "Fedu": 2
             },
             "local_graph": "Representación del grafo local del modelo IDS",
@@ -164,7 +184,11 @@
                 "si reason_reputation > 0 y goout > 4 entonces Reprobado",
                 "si Fedu > 2 y goout > 3 y failures > 0 entonces Aprobado"
             ],
-            "prediction_model": "Reprobado",
+            "prediction_model": {
+                "DT-InterpretML": "Reprobado",
+                "IDS": "Reprobado"
+            },
+            "real_class": "Reprobado",
             "answer": null
         },
         {
@@ -173,11 +197,11 @@
             "instructions": "Selecciona la predicción de acuerdo con la observación",
             "model": "DT-InterpretML",
             "observation": {
-                "absences": 2,
-                "goout": 3,
-                "studytime": 2,
+                "absences": 0,
+                "goout": 4,
+                "studytime": 4,
                 "reason_reputation": 0,
-                "failures": 1,
+                "failures": 0,
                 "Fedu": 2
             },
             "rules": [
@@ -190,7 +214,11 @@
                 "si failures > 0.50 y absences > 1.50 y goout ≤ 2.50 entonces Aprobado",
                 "si failures > 0.50 y absences > 1.50 y goout > 2.50 entonces Reprobado"
             ],
-            "prediction_model": "Reprobado",
+            "prediction_model": {
+                "DT-InterpretML": "Aprobado",
+                "IDS": "Reprobado"
+            },
+            "real_class": "Reprobado",
             "answer": null,
             "follow_up": {
                 "question": "¿Qué tan seguro(a) estás de tu respuesta?",
@@ -203,107 +231,47 @@
             "instructions": "Selecciona la predicción de acuerdo con la observación",
             "model": "IDS",
             "observation": {
-                "absences": 2,
+                "absences": 0,
+                "goout": 4,
+                "studytime": 4,
+                "reason_reputation": 0,
+                "failures": 0,
+                "Fedu": 2
+            },
+            "rules": [
+                "si Fedu > 1 entonces Reprobado",
+                "si Fedu > 4 entonces Aprobado",
+                "si absences > 0 entonces Reprobado",
+                "si absences > 2 entonces Aprobado",
+                "si failures > 1 entonces Reprobado",
+                "si goout > 2 entonces Aprobado",
+                "si reason_reputation > 1 entonces Aprobado",
+                "si Fedu > 3 y failures > 0 entonces Aprobado",
+                "si reason_reputation > 0 y goout > 4 entonces Reprobado",
+                "si Fedu > 2 y goout > 3 y failures > 0 entonces Aprobado"
+            ],
+            "prediction_model": {
+                "DT-InterpretML": "Aprobado",
+                "IDS": "Reprobado"
+            },
+            "real_class": "Reprobado",
+            "answer": null,
+            "follow_up": {
+                "question": "¿Qué tan seguro(a) estás de tu respuesta?",
+                "options": ["Mucho", "Poco", "Nada"]
+            }
+        },
+        {
+            "category": "Ambigüedad",
+            "sub_category": "Grado Global",
+            "instructions": "Selecciona la predicción de acuerdo con la observación",
+            "model": "DT-InterpretML",
+            "observation": {
+                "absences": 0,
                 "goout": 3,
                 "studytime": 2,
                 "reason_reputation": 0,
-                "failures": 1,
-                "Fedu": 2
-            },
-            "rules": [
-                "si Fedu > 1 entonces Reprobado",
-                "si Fedu > 4 entonces Aprobado",
-                "si absences > 0 entonces Reprobado",
-                "si absences > 2 entonces Aprobado",
-                "si failures > 1 entonces Reprobado",
-                "si goout > 2 entonces Aprobado",
-                "si reason_reputation > 1 entonces Aprobado",
-                "si Fedu > 3 y failures > 0 entonces Aprobado",
-                "si reason_reputation > 0 y goout > 4 entonces Reprobado",
-                "si Fedu > 2 y goout > 3 y failures > 0 entonces Aprobado"
-            ],
-            "prediction_model": "Reprobado",
-            "answer": null,
-            "follow_up": {
-                "question": "¿Qué tan seguro(a) estás de tu respuesta?",
-                "options": ["Mucho", "Poco", "Nada"]
-            }
-        },
-        {
-            "category": "Ambigüedad",
-            "sub_category": "Grado Global",
-            "instructions": "Selecciona la predicción de acuerdo con la observación",
-            "model": "DT-InterpretML",
-            "observation": {
-                "absences": 4,
-                "goout": 2,
-                "studytime": 1,
-                "reason_reputation": 1,
-                "failures": 1,
-                "Fedu": 3
-            },
-            "global_graph": "Representación del grafo global del modelo DT-InterpretML",
-            "rules": [
-                "si failures ≤ 0.50 y reason_reputation ≤ 0.50 y Fedu ≤ 1.50 entonces Reprobado",
-                "si failures ≤ 0.50 y reason_reputation ≤ 0.50 y Fedu > 1.50 entonces Aprobado",
-                "si failures ≤ 0.50 y reason_reputation > 0.50 y absences ≤ 13.50 entonces Aprobado",
-                "si failures ≤ 0.50 y reason_reputation > 0.50 y absences > 13.50 entonces Reprobado",
-                "si failures > 0.50 y absences ≤ 1.50 y reason_reputation ≤ 0.50 entonces Reprobado",
-                "si failures > 0.50 y absences ≤ 1.50 y reason_reputation > 0.50 entonces Reprobado",
-                "si failures > 0.50 y absences > 1.50 y goout ≤ 2.50 entonces Aprobado",
-                "si failures > 0.50 y absences > 1.50 y goout > 2.50 entonces Reprobado"
-            ],
-            "prediction_model": "Aprobado",
-            "answer": null,
-            "follow_up": {
-                "question": "¿Qué tan seguro(a) estás de tu respuesta?",
-                "options": ["Mucho", "Poco", "Nada"]
-            }
-        },
-        {
-            "category": "Ambigüedad",
-            "sub_category": "Grado Global",
-            "instructions": "Selecciona la predicción de acuerdo con la observación",
-            "model": "IDS",
-            "observation": {
-                "absences": 4,
-                "goout": 2,
-                "studytime": 1,
-                "reason_reputation": 1,
-                "failures": 1,
-                "Fedu": 3
-            },
-            "global_graph": "Representación del grafo global del modelo IDS",
-            "rules": [
-                "si Fedu > 1 entonces Reprobado",
-                "si Fedu > 4 entonces Aprobado",
-                "si absences > 0 entonces Reprobado",
-                "si absences > 2 entonces Aprobado",
-                "si failures > 1 entonces Reprobado",
-                "si goout > 2 entonces Aprobado",
-                "si reason_reputation > 1 entonces Aprobado",
-                "si Fedu > 3 y failures > 0 entonces Aprobado",
-                "si reason_reputation > 0 y goout > 4 entonces Reprobado",
-                "si Fedu > 2 y goout > 3 y failures > 0 entonces Aprobado"
-            ],
-            "prediction_model": "Reprobado",
-            "answer": null,
-            "follow_up": {
-                "question": "¿Qué tan seguro(a) estás de tu respuesta?",
-                "options": ["Mucho", "Poco", "Nada"]
-            }
-        },
-        {
-            "category": "Ambigüedad",
-            "sub_category": "Grado Local",
-            "instructions": "Selecciona la predicción de acuerdo con la observación",
-            "model": "DT-InterpretML",
-            "observation": {
-                "absences": 5,
-                "goout": 3,
-                "studytime": 1,
-                "reason_reputation": 0,
-                "failures": 1,
+                "failures": 0,
                 "Fedu": 2
             },
             "global_graph": "Representación del grafo global del modelo DT-InterpretML",
@@ -317,7 +285,11 @@
                 "si failures > 0.50 y absences > 1.50 y goout ≤ 2.50 entonces Aprobado",
                 "si failures > 0.50 y absences > 1.50 y goout > 2.50 entonces Reprobado"
             ],
-            "prediction_model": "Reprobado",
+            "prediction_model": {
+                "DT-InterpretML": "Aprobado",
+                "IDS": "Reprobado"
+            },
+            "real_class": "Aprobado",
             "answer": null,
             "follow_up": {
                 "question": "¿Qué tan seguro(a) estás de tu respuesta?",
@@ -326,15 +298,15 @@
         },
         {
             "category": "Ambigüedad",
-            "sub_category": "Grado Local",
+            "sub_category": "Grado Global",
             "instructions": "Selecciona la predicción de acuerdo con la observación",
             "model": "IDS",
             "observation": {
-                "absences": 5,
+                "absences": 0,
                 "goout": 3,
-                "studytime": 1,
+                "studytime": 2,
                 "reason_reputation": 0,
-                "failures": 1,
+                "failures": 0,
                 "Fedu": 2
             },
             "global_graph": "Representación del grafo global del modelo IDS",
@@ -350,7 +322,83 @@
                 "si reason_reputation > 0 y goout > 4 entonces Reprobado",
                 "si Fedu > 2 y goout > 3 y failures > 0 entonces Aprobado"
             ],
-            "prediction_model": "Reprobado",
+            "prediction_model": {
+                "DT-InterpretML": "Aprobado",
+                "IDS": "Reprobado"
+            },
+            "real_class": "Aprobado",
+            "answer": null,
+            "follow_up": {
+                "question": "¿Qué tan seguro(a) estás de tu respuesta?",
+                "options": ["Mucho", "Poco", "Nada"]
+            }
+        },
+        {
+            "category": "Ambigüedad",
+            "sub_category": "Grado Local",
+            "instructions": "Selecciona la predicción de acuerdo con la observación",
+            "model": "DT-InterpretML",
+            "observation": {
+                "absences": 12,
+                "goout": 4,
+                "studytime": 1,
+                "reason_reputation": 0,
+                "failures": 0,
+                "Fedu": 2
+            },
+            "global_graph": "Representación del grafo global del modelo DT-InterpretML",
+            "rules": [
+                "si failures ≤ 0.50 y reason_reputation ≤ 0.50 y Fedu ≤ 1.50 entonces Reprobado",
+                "si failures ≤ 0.50 y reason_reputation ≤ 0.50 y Fedu > 1.50 entonces Aprobado",
+                "si failures ≤ 0.50 y reason_reputation > 0.50 y absences ≤ 13.50 entonces Aprobado",
+                "si failures ≤ 0.50 y reason_reputation > 0.50 y absences > 13.50 entonces Reprobado",
+                "si failures > 0.50 y absences ≤ 1.50 y reason_reputation ≤ 0.50 entonces Reprobado",
+                "si failures > 0.50 y absences ≤ 1.50 y reason_reputation > 0.50 entonces Reprobado",
+                "si failures > 0.50 y absences > 1.50 y goout ≤ 2.50 entonces Aprobado",
+                "si failures > 0.50 y absences > 1.50 y goout > 2.50 entonces Reprobado"
+            ],
+            "prediction_model": {
+                "DT-InterpretML": "Aprobado",
+                "IDS": "Reprobado"
+            },
+            "real_class": "Aprobado",
+            "answer": null,
+            "follow_up": {
+                "question": "¿Qué tan seguro(a) estás de tu respuesta?",
+                "options": ["Mucho", "Poco", "Nada"]
+            }
+        },
+        {
+            "category": "Ambigüedad",
+            "sub_category": "Grado Local",
+            "instructions": "Selecciona la predicción de acuerdo con la observación",
+            "model": "IDS",
+            "observation": {
+                "absences": 12,
+                "goout": 4,
+                "studytime": 1,
+                "reason_reputation": 0,
+                "failures": 0,
+                "Fedu": 2
+            },
+            "global_graph": "Representación del grafo global del modelo IDS",
+            "rules": [
+                "si Fedu > 1 entonces Reprobado",
+                "si Fedu > 4 entonces Aprobado",
+                "si absences > 0 entonces Reprobado",
+                "si absences > 2 entonces Aprobado",
+                "si failures > 1 entonces Reprobado",
+                "si goout > 2 entonces Aprobado",
+                "si reason_reputation > 1 entonces Aprobado",
+                "si Fedu > 3 y failures > 0 entonces Aprobado",
+                "si reason_reputation > 0 y goout > 4 entonces Reprobado",
+                "si Fedu > 2 y goout > 3 y failures > 0 entonces Aprobado"
+            ],
+            "prediction_model": {
+                "DT-InterpretML": "Aprobado",
+                "IDS": "Reprobado"
+            },
+            "real_class": "Aprobado",
             "answer": null,
             "follow_up": {
                 "question": "¿Qué tan seguro(a) estás de tu respuesta?",
@@ -364,11 +412,11 @@
             "model": "DT-InterpretML",
             "observation": {
                 "absences": 0,
-                "goout": 5,
+                "goout": 2,
                 "studytime": 4,
                 "reason_reputation": 0,
                 "failures": 0,
-                "Fedu": 1
+                "Fedu": 3
             },
             "rules": [
                 "si failures ≤ 0.50 y reason_reputation ≤ 0.50 y Fedu ≤ 1.50 entonces Reprobado",
@@ -380,7 +428,11 @@
                 "si failures > 0.50 y absences > 1.50 y goout ≤ 2.50 entonces Aprobado",
                 "si failures > 0.50 y absences > 1.50 y goout > 2.50 entonces Reprobado"
             ],
-            "prediction_model": "Reprobado",
+            "prediction_model": {
+                "DT-InterpretML": "Aprobado",
+                "IDS": "Aprobado"
+            },
+            "real_class": "Reprobado",
             "answer": ["Correcta", "Incorrecta", "No estoy seguro"],
             "follow_up": {
                 "question": "¿Qué tan seguro(a) estás de tu respuesta?",
@@ -394,11 +446,11 @@
             "model": "IDS",
             "observation": {
                 "absences": 0,
-                "goout": 5,
+                "goout": 2,
                 "studytime": 4,
                 "reason_reputation": 0,
                 "failures": 0,
-                "Fedu": 1
+                "Fedu": 3
             },
             "rules": [
                 "si Fedu > 1 entonces Reprobado",
@@ -412,7 +464,11 @@
                 "si reason_reputation > 0 y goout > 4 entonces Reprobado",
                 "si Fedu > 2 y goout > 3 y failures > 0 entonces Aprobado"
             ],
-            "prediction_model": "Reprobado",
+            "prediction_model": {
+                "DT-InterpretML": "Aprobado",
+                "IDS": "Aprobado"
+            },
+            "real_class": "Reprobado",
             "answer": ["Correcta", "Incorrecta", "No estoy seguro"],
             "follow_up": {
                 "question": "¿Qué tan seguro(a) estás de tu respuesta?",
@@ -425,12 +481,12 @@
             "instructions": "Califica la predicción del modelo de acuerdo con la observación",
             "model": "DT-InterpretML",
             "observation": {
-                "absences": 0,
-                "goout": 1,
-                "studytime": 4,
-                "reason_reputation": 1,
-                "failures": 0,
-                "Fedu": 4
+                "absences": 14,
+                "goout": 2,
+                "studytime": 1,
+                "reason_reputation": 0,
+                "failures": 2,
+                "Fedu": 2
             },
             "local_graph": "Representación del grafo local del modelo DT-InterpretML",
             "rules": [
@@ -443,7 +499,11 @@
                 "si failures > 0.50 y absences > 1.50 y goout ≤ 2.50 entonces Aprobado",
                 "si failures > 0.50 y absences > 1.50 y goout > 2.50 entonces Reprobado"
             ],
-            "prediction_model": "Aprobado",
+            "prediction_model": {
+                "DT-InterpretML": "Aprobado",
+                "IDS": "Aprobado"
+            },
+            "real_class": "Reprobado",
             "answer": ["Correcta", "Incorrecta", "No estoy seguro"],
             "follow_up": {
                 "question": "¿Qué tan seguro(a) estás de tu respuesta?",
@@ -456,12 +516,12 @@
             "instructions": "Califica la predicción del modelo de acuerdo con la observación",
             "model": "IDS",
             "observation": {
-                "absences": 0,
-                "goout": 1,
-                "studytime": 4,
-                "reason_reputation": 1,
-                "failures": 0,
-                "Fedu": 4
+                "absences": 14,
+                "goout": 2,
+                "studytime": 1,
+                "reason_reputation": 0,
+                "failures": 2,
+                "Fedu": 2
             },
             "rules": [
                 "si Fedu > 1 entonces Reprobado",
@@ -475,7 +535,11 @@
                 "si reason_reputation > 0 y goout > 4 entonces Reprobado",
                 "si Fedu > 2 y goout > 3 y failures > 0 entonces Aprobado"
             ],
-            "prediction_model": "Reprobado",
+            "prediction_model": {
+                "DT-InterpretML": "Aprobado",
+                "IDS": "Aprobado"
+            },
+            "real_class": "Reprobado",
             "answer": ["Correcta", "Incorrecta", "No estoy seguro"],
             "follow_up": {
                 "question": "¿Qué tan seguro(a) estás de tu respuesta?",
@@ -488,12 +552,12 @@
             "instructions": "Califica la predicción del modelo de acuerdo con la observación",
             "model": "DT-InterpretML",
             "observation": {
-                "absences": 1,
-                "goout": 1,
-                "studytime": 3,
-                "reason_reputation": 1,
-                "failures": 2,
-                "Fedu": 3
+                "absences": 19,
+                "goout": 4,
+                "studytime": 1,
+                "reason_reputation": 0,
+                "failures": 1,
+                "Fedu": 2
             },
             "local_graph": "Representación del grafo local del modelo DT-InterpretML",
             "rules": [
@@ -506,7 +570,11 @@
                 "si failures > 0.50 y absences > 1.50 y goout ≤ 2.50 entonces Aprobado",
                 "si failures > 0.50 y absences > 1.50 y goout > 2.50 entonces Reprobado"
             ],
-            "prediction_model": "Aprobado",
+            "prediction_model": {
+                "DT-InterpretML": "Reprobado",
+                "IDS": "Reprobado"
+            },
+            "real_class": "Aprobado",
             "answer": ["Correcta", "Incorrecta", "No estoy seguro"],
             "follow_up": {
                 "question": "¿Qué tan seguro(a) estás de tu respuesta?",
@@ -519,12 +587,12 @@
             "instructions": "Califica la predicción del modelo de acuerdo con la observación",
             "model": "IDS",
             "observation": {
-                "absences": 1,
-                "goout": 1,
-                "studytime": 3,
-                "reason_reputation": 1,
-                "failures": 2,
-                "Fedu": 3
+                "absences": 19,
+                "goout": 4,
+                "studytime": 1,
+                "reason_reputation": 0,
+                "failures": 1,
+                "Fedu": 2
             },
             "local_graph": "Representación del grafo local del modelo IDS",
             "rules": [
@@ -539,7 +607,11 @@
                 "si reason_reputation > 0 y goout > 4 entonces Reprobado",
                 "si Fedu > 2 y goout > 3 y failures > 0 entonces Aprobado"
             ],
-            "prediction_model": "Reprobado",
+            "prediction_model": {
+                "DT-InterpretML": "Reprobado",
+                "IDS": "Reprobado"
+            },
+            "real_class": "Aprobado",
             "answer": ["Correcta", "Incorrecta", "No estoy seguro"],
             "follow_up": {
                 "question": "¿Qué tan seguro(a) estás de tu respuesta?",
