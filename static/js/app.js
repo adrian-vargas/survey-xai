@@ -239,7 +239,6 @@ function handleAnswer(answer, optionElement) {
     const currentQuestionData = questions[currentQuestionIndex];
 
     if (currentQuestionData) {
-        // Guardar la respuesta principal
         answers.push({
             model: currentQuestionData.model || "",
             observation: currentQuestionData.observation || {},
@@ -253,14 +252,11 @@ function handleAnswer(answer, optionElement) {
 
         updateProgressBar();
 
-        // Verificar si existe una pregunta de seguimiento y si el contenedor está vacío
         const followUpContainer = document.getElementById('follow-up-container');
         if (currentQuestionData.follow_up && followUpContainer.innerHTML === '') {
-            // Mostrar la pregunta de seguimiento
             followUpContainer.innerHTML = `<p>${currentQuestionData.follow_up.question}</p>`;
             followUpContainer.style.display = 'block';
-            
-            // Crear botones para las opciones de la pregunta de seguimiento
+
             currentQuestionData.follow_up.options.forEach(option => {
                 const followUpButton = document.createElement('button');
                 followUpButton.textContent = option;
@@ -272,37 +268,44 @@ function handleAnswer(answer, optionElement) {
             // Ocultar el botón "Siguiente" hasta que se responda la pregunta de seguimiento
             document.getElementById('next-question-btn').style.display = 'none';
         } else if (!currentQuestionData.follow_up) {
-            // Si no hay pregunta de seguimiento, mostrar el botón "Siguiente" inmediatamente
             document.getElementById('next-question-btn').style.display = 'block';
         }
 
-        // Realizar scroll hacia abajo
+        // Realizar scroll hacia abajo después de que se procesa la respuesta
         scrollDown();
     } else {
         console.error("Error: currentQuestionData es undefined.");
     }
 }
 
+// Función para hacer scroll hacia abajo
+function scrollDown() {
+    window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: 'smooth' // Desplazamiento suave hacia abajo
+    });
+}
+
+// Función para hacer scroll hacia arriba
+function scrollUp() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth' // Desplazamiento suave hacia arriba
+    });
+}
 
 // Función para manejar la respuesta a la pregunta de seguimiento
 function handleFollowUpAnswer(answer) {
-    // Guardar la respuesta a la pregunta de seguimiento
     answers.push({
         follow_up_answer: answer,
         time: new Date().getTime() - endTime // Tiempo desde que se mostró la pregunta de seguimiento
     });
 
-    // Ocultar el contenedor de seguimiento y mostrar el botón "Siguiente"
-    document.getElementById('follow-up-container').style.display = 'none';
+    // Muestra el botón "Siguiente" una vez que se ha respondido la pregunta de seguimiento
     document.getElementById('next-question-btn').style.display = 'block';
-}
 
-// Función para hacer scroll hacia abajo
-function scrollDown() {
-    window.scrollTo({
-        top: document.body.scrollHeight,
-        behavior: 'smooth' // Desplazamiento suave
-    });
+    // Realizar scroll hacia abajo después de responder la pregunta de seguimiento
+    scrollDown();
 }
 
 function nextQuestion() {
@@ -315,6 +318,9 @@ function nextQuestion() {
 
     loadQuestion();
     document.getElementById('next-question-btn').style.display = 'none';
+
+    // Realizar scroll hacia arriba al pasar a la siguiente pregunta
+    scrollUp();
 }
 
 function moveToNextCategory() {
