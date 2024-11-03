@@ -76,7 +76,7 @@
                 "failures": 1,
                 "Fedu": 3
             },
-            "global_graph": "Representación del grafo global del modelo DT-InterpretML",
+            "global_graph": "Grafo global del modelo DT-InterpretML",
             "rules": [
                 "si failures ≤ 0.50 y reason_reputation ≤ 0.50 y Fedu ≤ 1.50 entonces Reprobado",
                 "si failures ≤ 0.50 y reason_reputation ≤ 0.50 y Fedu > 1.50 entonces Aprobado",
@@ -107,7 +107,7 @@
                 "failures": 1,
                 "Fedu": 3
             },
-            "global_graph": "Representación del grafo global del modelo IDS",
+            "global_graph": "Grafo global del modelo IDS",
             "rules": [
                 "si Fedu > 1 entonces Reprobado",
                 "si Fedu > 4 entonces Aprobado",
@@ -140,7 +140,7 @@
                 "failures": 1,
                 "Fedu": 2
             },
-            "local_graph": "Representación del grafo local del modelo DT-InterpretML",
+            "local_graph": "Grafo local del modelo DT-InterpretML",
             "rules": [
                 "si failures ≤ 0.50 y reason_reputation ≤ 0.50 y Fedu ≤ 1.50 entonces Reprobado",
                 "si failures ≤ 0.50 y reason_reputation ≤ 0.50 y Fedu > 1.50 entonces Aprobado",
@@ -171,7 +171,7 @@
                 "failures": 1,
                 "Fedu": 2
             },
-            "local_graph": "Representación del grafo local del modelo IDS",
+            "local_graph": "Grafo local del modelo IDS",
             "rules": [
                 "si Fedu > 1 entonces Reprobado",
                 "si Fedu > 4 entonces Aprobado",
@@ -274,7 +274,7 @@
                 "failures": 0,
                 "Fedu": 2
             },
-            "global_graph": "Representación del grafo global del modelo DT-InterpretML",
+            "global_graph": "Grafo global del modelo DT-InterpretML",
             "rules": [
                 "si failures ≤ 0.50 y reason_reputation ≤ 0.50 y Fedu ≤ 1.50 entonces Reprobado",
                 "si failures ≤ 0.50 y reason_reputation ≤ 0.50 y Fedu > 1.50 entonces Aprobado",
@@ -309,7 +309,7 @@
                 "failures": 0,
                 "Fedu": 2
             },
-            "global_graph": "Representación del grafo global del modelo IDS",
+            "global_graph": "Grafo global del modelo IDS",
             "rules": [
                 "si Fedu > 1 entonces Reprobado",
                 "si Fedu > 4 entonces Aprobado",
@@ -346,7 +346,7 @@
                 "failures": 0,
                 "Fedu": 2
             },
-            "global_graph": "Representación del grafo global del modelo DT-InterpretML",
+            "global_graph": "Grafo global del modelo DT-InterpretML",
             "rules": [
                 "si failures ≤ 0.50 y reason_reputation ≤ 0.50 y Fedu ≤ 1.50 entonces Reprobado",
                 "si failures ≤ 0.50 y reason_reputation ≤ 0.50 y Fedu > 1.50 entonces Aprobado",
@@ -381,7 +381,7 @@
                 "failures": 0,
                 "Fedu": 2
             },
-            "global_graph": "Representación del grafo global del modelo IDS",
+            "global_graph": "Grafo global del modelo IDS",
             "rules": [
                 "si Fedu > 1 entonces Reprobado",
                 "si Fedu > 4 entonces Aprobado",
@@ -488,7 +488,7 @@
                 "failures": 2,
                 "Fedu": 2
             },
-            "local_graph": "Representación del grafo local del modelo DT-InterpretML",
+            "local_graph": "Grafo local del modelo DT-InterpretML",
             "rules": [
                 "si failures ≤ 0.50 y reason_reputation ≤ 0.50 y Fedu ≤ 1.50 entonces Reprobado",
                 "si failures ≤ 0.50 y reason_reputation ≤ 0.50 y Fedu > 1.50 entonces Aprobado",
@@ -559,7 +559,7 @@
                 "failures": 1,
                 "Fedu": 2
             },
-            "local_graph": "Representación del grafo local del modelo DT-InterpretML",
+            "local_graph": "Grafo local del modelo DT-InterpretML",
             "rules": [
                 "si failures ≤ 0.50 y reason_reputation ≤ 0.50 y Fedu ≤ 1.50 entonces Reprobado",
                 "si failures ≤ 0.50 y reason_reputation ≤ 0.50 y Fedu > 1.50 entonces Aprobado",
@@ -594,7 +594,7 @@
                 "failures": 1,
                 "Fedu": 2
             },
-            "local_graph": "Representación del grafo local del modelo IDS",
+            "local_graph": "Grafo local del modelo IDS",
             "rules": [
                 "si Fedu > 1 entonces Reprobado",
                 "si Fedu > 4 entonces Aprobado",

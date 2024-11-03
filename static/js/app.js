@@ -55,15 +55,20 @@ const definitionsTableHTML = `
 function updateProgressBar() {
     // Total de preguntas en la lista 'questions'
     const totalQuestions = questions.length;
-    
-    // Número de preguntas respondidas hasta el momento
-    const currentQuestionNumber = currentQuestionIndex + 1; // Sumar 1 porque el índice comienza en 0
-    
-    // Calcular el progreso en porcentaje
-    const currentProgress = (currentQuestionNumber / totalQuestions) * 100;
-    document.getElementById('progress-bar').style.width = currentProgress + '%';
-}
 
+    // Número de preguntas respondidas hasta el momento
+    const questionsAnswered = currentQuestionIndex; // No sumamos 1 aquí para evitar que avance al cargar una nueva pregunta
+
+    // Calcular el progreso en porcentaje, asegurando que se complete solo después de responder la última pregunta
+    const currentProgress = (questionsAnswered / totalQuestions) * 100;
+    
+    // Asegurarnos de que solo llegue a 100% después de la última respuesta
+    if (questionsAnswered === totalQuestions) {
+        document.getElementById('progress-bar').style.width = '100%';
+    } else {
+        document.getElementById('progress-bar').style.width = currentProgress + '%';
+    }
+}
 
 // Función para cargar preguntas
 function loadQuestion() {
@@ -138,18 +143,68 @@ function displayQuestion(questionData) {
     // Mostrar grafo global o local
     if (questionData.global_graph) {
         const globalGraphElement = document.createElement('p');
-        globalGraphElement.textContent = `Grafo Global: ${questionData.global_graph}`;
+        //globalGraphElement.textContent = `Grafo Global: ${questionData.global_graph}`;
+        globalGraphElement.textContent = `${questionData.global_graph}`;
         container.appendChild(globalGraphElement);
+
+        // Agregar imagen del grafo global para el modelo DT-InterpretML
+        if (questionData.model === 'DT-InterpretML') {
+            const graphImage = document.createElement('img');
+            graphImage.src = '/static/graphs/interpretml/dt.png'; // Ruta para el grafo de DT-InterpretML
+            graphImage.alt = 'Grafo Global del modelo DT-InterpretML';
+            graphImage.style.maxWidth = '100%';
+            container.appendChild(graphImage);
+        }
+        // Agregar imagen del grafo global para el modelo IDS
+        else if (questionData.model === 'IDS') {
+            const graphImage = document.createElement('img');
+            graphImage.src = '/static/graphs/ids/ids.png'; // Ruta para el grafo de IDS
+            graphImage.alt = 'Grafo Global del modelo IDS';
+            graphImage.style.maxWidth = '100%';
+            container.appendChild(graphImage);
+        }
     } else if (questionData.local_graph) {
         const localGraphElement = document.createElement('p');
-        localGraphElement.textContent = `Grafo Local: ${questionData.local_graph}`;
+        //localGraphElement.textContent = `Grafo Local: ${questionData.local_graph}`;
+        localGraphElement.textContent = `${questionData.local_graph}`;
         container.appendChild(localGraphElement);
+
+        // Agregar imagen del grafo local según el modelo y categoría de pregunta
+        let localGraphImageSrc = '';
+        if (questionData.model === 'DT-InterpretML') {
+            if (questionData.category === 'Exactitud') {
+                localGraphImageSrc = '/static/graphs/interpretml/local/exactitud.png';
+            } else if (questionData.category === 'Ambigüedad') {
+                localGraphImageSrc = '/static/graphs/interpretml/local/ambiguedad.png';
+            } else if (questionData.category === 'Error') {
+                localGraphImageSrc = '/static/graphs/interpretml/local/error.png';
+            }
+        } else if (questionData.model === 'IDS') {
+            if (questionData.category === 'Exactitud') {
+                localGraphImageSrc = '/static/graphs/ids/local/exactitud.png';
+            } else if (questionData.category === 'Ambigüedad') {
+                localGraphImageSrc = '/static/graphs/ids/local/ambiguedad.png';
+            } else if (questionData.category === 'Error') {
+                localGraphImageSrc = '/static/graphs/ids/local/error.png';
+            }
+        }
+
+        if (localGraphImageSrc) {
+            const graphImage = document.createElement('img');
+            graphImage.src = localGraphImageSrc;
+            graphImage.alt = `Grafo Local del modelo ${questionData.model} - ${questionData.category}`;
+            graphImage.style.maxWidth = '100%';
+            container.appendChild(graphImage);
+        }
     }
 
-    // Mostrar predicción del modelo solo si la categoría no es de exactitud ni ambigüedad
-    if (questionData.prediction_model && questionData.category !== 'Exactitud' && questionData.category !== 'Ambigüedad') {
+    // Mostrar predicción del modelo solo si la categoría es de "Error"
+    if (questionData.prediction_model && questionData.category === 'Error') {
         const predictionElement = document.createElement('p');
-        predictionElement.textContent = `Predicción del modelo: ${questionData.prediction_model}`;
+        const modelPrediction = questionData.prediction_model[questionData.model];
+        
+        // Aplicar estilo en rojo a la predicción
+        predictionElement.innerHTML = `Predicción del modelo (<strong>${questionData.model}</strong>): <span style="color: red; font-weight: bold;">${modelPrediction}</span>`;
         container.appendChild(predictionElement);
     }
 
@@ -293,6 +348,7 @@ function scrollUp() {
         behavior: 'smooth' // Desplazamiento suave hacia arriba
     });
 }
+
 
 // Función para manejar la respuesta a la pregunta de seguimiento
 function handleFollowUpAnswer(answer) {
