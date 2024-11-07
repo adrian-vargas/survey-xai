@@ -3,6 +3,7 @@
 let questions;
 let currentQuestionIndex = 0;
 let startTime, endTime;
+
 const answers = [];
 
 // Tabla de definiciones en HTML
@@ -52,30 +53,23 @@ const definitionsTableHTML = `
     </div>
 `;
 
+
 function updateProgressBar() {
     // Total de preguntas en la lista 'questions'
     const totalQuestions = questions.length;
 
-    // Número de preguntas respondidas hasta el momento
-    const questionsAnswered = currentQuestionIndex; // No sumamos 1 aquí para evitar que avance al cargar una nueva pregunta
-
-    // Calcular el progreso en porcentaje, asegurando que se complete solo después de responder la última pregunta
+    const questionsAnswered = currentQuestionIndex;  // Contador de preguntas respondidas
     const currentProgress = (questionsAnswered / totalQuestions) * 100;
-    
-    // Asegurarnos de que solo llegue a 100% después de la última respuesta
-    if (questionsAnswered === totalQuestions) {
-        document.getElementById('progress-bar').style.width = '100%';
-    } else {
-        document.getElementById('progress-bar').style.width = currentProgress + '%';
-    }
+    document.getElementById('progress-bar').style.width = currentProgress + '%';
+    // Solo incrementar el progreso después de que se responda la primera pregunta
 }
 
 // Función para cargar preguntas
 function loadQuestion() {
     if (currentQuestionIndex < questions.length) {
         const questionData = questions[currentQuestionIndex];
+        showQuestionNumber(questionData.id);
         displayQuestion(questionData);
-        updateProgressBar();
     } else {
         submitAnswers();
     }
@@ -84,6 +78,9 @@ function loadQuestion() {
 function displayQuestion(questionData) {
     const container = document.getElementById('question-container');
     container.innerHTML = ''; // Limpiar la pregunta anterior
+
+    // Actualizar y mostrar el número de la pregunta actual
+    showQuestionNumber(questionData.id);
 
     // Limpiar el contenedor de seguimiento para cada nueva pregunta
     const followUpContainer = document.getElementById('follow-up-container');
@@ -294,19 +291,39 @@ function handleAnswer(answer, optionElement) {
     const currentQuestionData = questions[currentQuestionIndex];
 
     if (currentQuestionData) {
-        answers.push({
-            model: currentQuestionData.model || "",
-            observation: currentQuestionData.observation || {},
-            rules: currentQuestionData.rules || [],
-            visualization: currentQuestionData.visualization || "",
-            prediction_model: currentQuestionData.prediction_model || "",
-            prediction: currentQuestionData.prediction || [],
-            answer: answer,
-            time: responseTime
-        });
+        console.log("Seleccionando respuesta para la pregunta ID:", currentQuestionData.id);
 
-        updateProgressBar();
+        // Buscar si ya existe una respuesta para esta pregunta en `answers`
+        const existingAnswerIndex = answers.findIndex(a => a.question_id === currentQuestionData.id);
 
+        if (existingAnswerIndex !== -1) {
+            // Si ya existe, actualizamos la respuesta y el tiempo
+            answers[existingAnswerIndex].answer = answer;
+            answers[existingAnswerIndex].time = responseTime;
+            console.log("Respuesta actualizada:", answer);
+        } else {
+            // Si no existe, creamos una nueva entrada en `answers`
+            answers.push({
+                question_id: currentQuestionData.id || currentQuestionIndex + 1,  // Guarda el ID o índice de la pregunta
+                question: currentQuestionData.instructions || "",  // Añade el campo 'instructions' como 'question'
+                model: currentQuestionData.model || "",
+                observation: currentQuestionData.observation || {},
+                rules: currentQuestionData.rules || [],
+                visualization: currentQuestionData.visualization || "",
+                prediction_model: currentQuestionData.prediction_model || "",
+                prediction: currentQuestionData.prediction || [],
+                answer: answer,  // Respuesta principal
+                follow_up_question: currentQuestionData.follow_up ? currentQuestionData.follow_up.question : null,  // Guardar la pregunta de seguimiento, si existe
+                follow_up_answer: null,  // Inicializar el campo de respuesta de seguimiento como `null`
+                time: responseTime  // Tiempo de respuesta principal
+            });
+            console.log("Respuesta guardada:", answer);
+        }
+
+        // Reiniciar el temporizador para permitir cambios de respuesta
+        startTime = new Date().getTime();
+
+        // Manejo de preguntas de seguimiento
         const followUpContainer = document.getElementById('follow-up-container');
         if (currentQuestionData.follow_up && followUpContainer.innerHTML === '') {
             followUpContainer.innerHTML = `<p>${currentQuestionData.follow_up.question}</p>`;
@@ -335,29 +352,40 @@ function handleAnswer(answer, optionElement) {
 
 // Función para hacer scroll hacia abajo
 function scrollDown() {
-    window.scrollTo({
-        top: document.body.scrollHeight,
-        behavior: 'smooth' // Desplazamiento suave hacia abajo
-    });
+    setTimeout(() => {
+        window.scrollTo({
+            top: document.body.scrollHeight,
+            behavior: 'smooth' // Desplazamiento suave hacia abajo
+        });
+    }, 100);
 }
 
 // Función para hacer scroll hacia arriba
 function scrollUp() {
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth' // Desplazamiento suave hacia arriba
-    });
+    setTimeout(() => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth' // Desplazamiento suave
+        });
+    }, 100); // Retraso de 100ms para asegurar que el contenido cambie antes de hacer scroll
 }
 
 
 // Función para manejar la respuesta a la pregunta de seguimiento
-function handleFollowUpAnswer(answer) {
-    answers.push({
-        follow_up_answer: answer,
-        time: new Date().getTime() - endTime // Tiempo desde que se mostró la pregunta de seguimiento
-    });
+function handleFollowUpAnswer(followUpAnswer) {
+    endTime = new Date().getTime();
+    const followUpResponseTime = endTime - startTime;
 
-    // Muestra el botón "Siguiente" una vez que se ha respondido la pregunta de seguimiento
+    if (answers.length > 0) {
+        // Actualizar la última entrada en `answers` para incluir la respuesta de seguimiento
+        answers[answers.length - 1].follow_up_answer = followUpAnswer;
+        answers[answers.length - 1].follow_up_time = followUpResponseTime; // Guardar el tiempo de respuesta de seguimiento
+        console.log("Respuesta de seguimiento guardada:", followUpAnswer);
+    } else {
+        console.error("Error: No se encontró la respuesta principal para asociar la respuesta de seguimiento.");
+    }
+
+    // Mostrar el botón "Siguiente" una vez que se ha respondido la pregunta de seguimiento
     document.getElementById('next-question-btn').style.display = 'block';
 
     // Realizar scroll hacia abajo después de responder la pregunta de seguimiento
@@ -375,6 +403,8 @@ function nextQuestion() {
     loadQuestion();
     document.getElementById('next-question-btn').style.display = 'none';
 
+    updateProgressBar();
+
     // Realizar scroll hacia arriba al pasar a la siguiente pregunta
     scrollUp();
 }
@@ -386,7 +416,7 @@ function moveToNextCategory() {
 }
 
 function loadDescriptiveQuestion() {
-    updateProgressBar();
+    //updateProgressBar();
     if (currentQuestionIndex < questions[descriptiveQuestionsCategory].length) {
         const questionData = questions[descriptiveQuestionsCategory][currentQuestionIndex];
         const container = document.getElementById('question-container');
@@ -437,80 +467,75 @@ function loadDescriptiveQuestion() {
 }
 
 function submitAnswers() {
-    updateProgressBar();
+    document.getElementById('next-question-btn').style.display = 'none';
+    if (answers.length === 0) {
+        console.error("No hay respuestas para enviar.");
+        return;
+    }
+
+    // Reestructuramos cada respuesta en el arreglo `answers` antes de enviarla
+    const formattedAnswers = answers.map(answer => ({
+        user_id: sessionStorage.getItem('user_id'),  // Asegúrate de que el `user_id` esté almacenado en la sesión
+        question_id: answer.question_id,  // ID de la pregunta
+        question: answer.question,  // Texto de la pregunta
+        model: answer.model,  // Modelo utilizado (ej. "DT-InterpretML" o "IDS")
+        answer: answer.answer,  // Respuesta principal del usuario
+        follow_up_question: answer.follow_up_question || null,  // Pregunta de seguimiento, si existe
+        follow_up_answer: answer.follow_up_answer || null,  // Respuesta a la pregunta de seguimiento, si existe
+        response_time_seconds: answer.time,  // Tiempo de respuesta para la pregunta principal
+        follow_up_time_seconds: answer.follow_up_time || null  // Tiempo de respuesta para la pregunta de seguimiento, si existe
+    }));
+
+    // Enviar las respuestas formateadas al servidor
     fetch('/submit', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(answers),
+        body: JSON.stringify(formattedAnswers),
     })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                alert('Cuestionario completado');
-                console.log(data);
-                document.getElementById('question-container').innerHTML = '<div class="thank-you-message"><p>Gracias por completar el cuestionario.</p></div>';
-                document.getElementById('next-question-btn').style.display = 'none';
-                document.querySelector('h1').style.display = 'none';
-            } else {
-                console.error('Error:', data.message);
-            }
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            document.getElementById('question-container').innerHTML = '<div class="thank-you-message"><p>Gracias por completar el cuestionario.</p></div>';
+            document.querySelector('h1').style.display = 'none';
+            updateProgressBar();
+        } else {
+            console.error('Error:', data.message);
+        }
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
 }
 
 document.getElementById('next-question-btn').onclick = nextQuestion;
 
-const correctAccessKey = 'clave123';
+const userAccessKey = 'clave123';
+const adminAccessKey = 'clave456';
 
 document.getElementById('access-btn').onclick = function () {
-    const enteredKey = document.getElementById('access-key').value;
-
-    if (enteredKey === correctAccessKey) {
-        document.getElementById('access-container').style.display = 'none';
-        document.getElementById('instructions').style.display = 'block';
-    } else {
-        alert('Clave de acceso incorrecta. Inténtalo de nuevo.');
-    }
-};
-
-document.getElementById('start-questionnaire-btn').onclick = function () {
-    document.getElementById('instructions').style.display = 'none';
-    document.getElementById('question-container').style.display = 'block';
-
-    fetch('/static/questions.json')
-        .then(response => response.json())
-        .then(data => {
-            questions = data;
-            loadQuestion();
-        })
-        .catch(error => console.error('Error loading questions:', error));
-};
-
-
-// Inicializar el botón de acceso
-document.getElementById('access-btn').onclick = function () {
-    const enteredKey = document.getElementById('access-key').value;
-    const correctAccessKey = 'clave123';
-
-    if (enteredKey === correctAccessKey) {
+    const enteredKey = document.getElementById('access-key').value; // Definimos aquí `enteredKey`
+    
+    if (enteredKey === userAccessKey) {
+        // Código para acceso de usuario
         document.getElementById('access-container').style.display = 'none';
         document.getElementById('model-prediction-explanation').style.display = 'block';
+        document.getElementById('instructions').style.display = 'none';
 
-        // Verifica que `questions` esté definido y tenga una pregunta con reglas
-        if (questions && questions[0] && questions[0].rules) {
-            // Itera sobre cada regla en `rules`
-            questions[0].rules.forEach(rule => {
-                const listItem = document.createElement('div');
-                listItem.innerHTML = formatRule(rule);
-                document.getElementById('model-prediction-explanation').appendChild(listItem);
-            });
-        } else {
-            console.warn("No se encontró una regla en el JSON");
-        }
+        // Ocultar el título <h1> después de acceder
+        document.querySelector('h1').classList.add('hidden');
+
+        sessionStorage.setItem('user_logged_in', 'true');
+    } else if (enteredKey === adminAccessKey) {
+        // Código para acceso de administrador
+        document.getElementById('access-container').style.display = 'none';
+        document.getElementById('admin-content').style.display = 'block';
+
+        // Ocultar el título <h1> después de acceder
+        document.querySelector('h1').classList.add('hidden');
+
+        sessionStorage.setItem('admin_logged_in', 'true');
     } else {
         alert('Clave de acceso incorrecta. Inténtalo de nuevo.');
     }
@@ -553,14 +578,27 @@ document.getElementById('start-questionnaire-btn').onclick = function () {
     document.getElementById('question-container').style.display = 'block';
 
     fetch('/static/questions.json')
-        .then(response => response.json())
-        .then(data => {
-            questions = data.questions; // Asegúrate de que `data.questions` sea un array de preguntas
-            currentQuestionIndex = 0;
-            loadQuestion();
-            scrollUp();
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Error en la carga de preguntas: ${response.status}`);
+            }
+            return response.json();
         })
-        .catch(error => console.error('Error loading questions:', error));
+        .then(data => {
+            if (data && Array.isArray(data.questions)) {
+                questions = data.questions;
+                currentQuestionIndex = 0;
+                loadQuestion();
+                scrollUp();
+            } else {
+                console.error('Formato incorrecto en el archivo questions.json');
+                alert('Hubo un problema al cargar las preguntas. Por favor, inténtelo de nuevo más tarde.');
+            }
+        })
+        .catch(error => {
+            console.error('Error loading questions:', error);
+            alert('Hubo un error al cargar las preguntas. Por favor, inténtelo de nuevo más tarde.');
+        });
 };
 
 // Insertar la tabla de definiciones en el contenedor específico
@@ -587,4 +625,8 @@ function unescapeHTML(html) {
     return doc.documentElement.textContent;
 }
 
-
+// Mostrar número de pregunta usando `id`
+function showQuestionNumber(questionId) {
+    const questionNumberIndicator = document.getElementById('question-number');
+    questionNumberIndicator.textContent = `Pregunta ${questionId} de ${questions.length}`;
+}

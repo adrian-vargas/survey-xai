@@ -1,6 +1,7 @@
 {
     "questions": [
         {
+            "id": 1,
             "category": "Exactitud",
             "sub_category": "Reglas",
             "instructions": "Selecciona la predicción de acuerdo con la observación",
@@ -32,6 +33,7 @@
             "answer": null
         },
         {
+            "id": 2,
             "category": "Exactitud",
             "sub_category": "Reglas",
             "instructions": "Selecciona la predicción de acuerdo con la observación",
@@ -64,6 +66,7 @@
             "answer": null
         },
         {
+            "id": 3,
             "category": "Exactitud",
             "sub_category": "Grado Global",
             "instructions": "Selecciona la predicción de acuerdo con la observación",
@@ -95,6 +98,7 @@
             "answer": null
         },
         {
+            "id": 4,
             "category": "Exactitud",
             "sub_category": "Grado Global",
             "instructions": "Selecciona la predicción de acuerdo con la observación",
@@ -128,6 +132,7 @@
             "answer": null
         },
         {
+            "id": 5,
             "category": "Exactitud",
             "sub_category": "Grado Local",
             "instructions": "Selecciona la predicción de acuerdo con la observación",
@@ -159,6 +164,7 @@
             "answer": null
         },
         {
+            "id": 6,
             "category": "Exactitud",
             "sub_category": "Grado Local",
             "instructions": "Selecciona la predicción de acuerdo con la observación",
@@ -192,6 +198,7 @@
             "answer": null
         },
         {
+            "id": 7,
             "category": "Ambigüedad",
             "sub_category": "Reglas",
             "instructions": "Selecciona la predicción de acuerdo con la observación",
@@ -226,6 +233,7 @@
             }
         },
         {
+            "id": 8,
             "category": "Ambigüedad",
             "sub_category": "Reglas",
             "instructions": "Selecciona la predicción de acuerdo con la observación",
@@ -262,6 +270,7 @@
             }
         },
         {
+            "id": 9,
             "category": "Ambigüedad",
             "sub_category": "Grado Global",
             "instructions": "Selecciona la predicción de acuerdo con la observación",
@@ -297,6 +306,7 @@
             }
         },
         {
+            "id": 10,
             "category": "Ambigüedad",
             "sub_category": "Grado Global",
             "instructions": "Selecciona la predicción de acuerdo con la observación",
@@ -334,6 +344,7 @@
             }
         },
         {
+            "id": 11,
             "category": "Ambigüedad",
             "sub_category": "Grado Local",
             "instructions": "Selecciona la predicción de acuerdo con la observación",
@@ -369,6 +380,7 @@
             }
         },
         {
+            "id": 12,
             "category": "Ambigüedad",
             "sub_category": "Grado Local",
             "instructions": "Selecciona la predicción de acuerdo con la observación",
@@ -406,6 +418,7 @@
             }
         },
         {
+            "id": 13,
             "category": "Error",
             "sub_category": "Reglas",
             "instructions": "Califica la predicción del modelo de acuerdo con la observación",
@@ -440,6 +453,7 @@
             }
         },
         {
+            "id": 14,
             "category": "Error",
             "sub_category": "Reglas",
             "instructions": "Califica la predicción del modelo de acuerdo con la observación",
@@ -476,6 +490,7 @@
             }
         },
         {
+            "id": 15,
             "category": "Error",
             "sub_category": "Grado Global",
             "instructions": "Califica la predicción del modelo de acuerdo con la observación",
@@ -511,6 +526,7 @@
             }
         },
         {
+            "id": 16,
             "category": "Error",
             "sub_category": "Grado Global",
             "instructions": "Califica la predicción del modelo de acuerdo con la observación",
@@ -547,6 +563,7 @@
             }
         },
         {
+            "id": 17,
             "category": "Error",
             "sub_category": "Grado Local",
             "instructions": "Califica la predicción del modelo de acuerdo con la observación",
@@ -582,6 +599,7 @@
             }
         },
         {
+            "id": 18,
             "category": "Error",
             "sub_category": "Grado Local",
             "instructions": "Califica la predicción del modelo de acuerdo con la observación",
@@ -619,14 +637,16 @@
             }
         },
         {
+            "id": 19,
             "category": "Preferencias de Visualización",
             "instructions": "¿Cuál de los siguientes grafos encontraste más útil para entender el funcionamiento del modelo?",
             "answer": [
                 "Árbol de decisión (InterpretML)",
-                "Conjunto de reglas completo (IDS)"
+                "Conjuntos de Decisiones interpretables (IDS)"
             ]
         },
         {
+            "id": 20,
             "category": "Preferencias de Visualización",
             "instructions": "¿Qué modelo te facilitó comprender la predicción y analizar posibles errores?",
             "answer": [
@@ -635,6 +655,7 @@
             ]
         },
         {
+            "id": 21,
             "category": "Pregunta Descriptiva",
             "instructions": "¿Crees que la visualización del grafo y sus reglas debería siempre acompañar las predicciones para mejorar la comprensión?",
             "answer": null
