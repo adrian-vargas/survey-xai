@@ -370,3 +370,39 @@ textarea {
     color: purple;
     font-size: 1.5em;
 }
+
+.hidden {
+    display: none;
+}
+
+/* Estilos para los botones del panel de administración */
+.admin-button {
+    background-color: #d9534f;
+    color: white;
+    border: none;
+    padding: 1em 2em;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    margin: 10px;
+    display: inline-block;
+    text-decoration: none; /* Quita el subrayado de los enlaces */
+}
+
+.admin-button:hover {
+    background-color: #c9302c;
+}
+
+/* Centrar los botones en el panel de administración */
+#admin-content {
+    text-align: center;
+}
+
+#admin-content .admin-button {
+    margin: 10px 5px;
+}
+
+/* styles.css */
+#question-number {
+    margin-top: 20px; /* Ajusta este valor según necesites */
+}

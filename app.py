@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 import json
 import time
 import uuid
@@ -7,8 +7,12 @@ import logging
 import requests
 from pymongo import MongoClient
 from dotenv import load_dotenv
+import pandas as pd
+import io
+from flask import send_file
 
 app = Flask(__name__)
+app.secret_key = "your_super_secret_key"  # Clave secreta de la aplicación
 
 # Configurar logging
 logging.basicConfig(level=logging.INFO)
@@ -26,6 +30,28 @@ client = MongoClient(mongo_uri)
 db = client[db_name]
 collection = db[collection_name]
 
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/access', methods=['POST'])
+def access():
+    password = request.json.get("password")
+    if password == "clave456":  # Contraseña del administrador
+        session["admin_logged_in"] = True
+        return jsonify({"status": "admin"})
+    elif password == "clave123":  # Contraseña del usuario
+        session["user_logged_in"] = True
+        return jsonify({"status": "user"})
+    else:
+        return jsonify({"status": "error"}), 403
+
+@app.route('/logout')
+def logout():
+    session.pop("admin_logged_in", None)
+    session.pop("user_logged_in", None)
+    return redirect(url_for("index"))
+
 @app.route('/test-connection', methods=['GET'])
 def test_connection():
     try:
@@ -34,10 +60,6 @@ def test_connection():
     except Exception as e:
         logging.error(f"Error in test_connection: {str(e)}")
         return jsonify({'status': 'error', 'message': str(e)})
-
-@app.route('/')
-def index():
-    return render_template('index.html')
 
 @app.route('/questions', methods=['GET'])
 def get_questions():
@@ -73,6 +95,52 @@ def submit():
 def get_my_ip():
     ip = requests.get('https://api.ipify.org').text
     return f'My public IP is: {ip}'
+
+@app.route('/admin/download_individual_report')
+def download_individual_report():
+    if not session.get("admin_logged_in"):
+        return redirect(url_for("index"))
+    
+    data = pd.DataFrame(list(collection.find()))
+    individual_report = data.groupby("user_id").agg({
+        "time": "mean",
+        "answer": "count"
+    }).rename(columns={"time": "Average Time", "answer": "Total Answers"})
+
+    output = io.StringIO()
+    individual_report.to_csv(output)
+    output.seek(0)
+
+    return send_file(
+        io.BytesIO(output.getvalue().encode()),
+        mimetype="text/csv",
+        as_attachment=True,
+        download_name="individual_report.csv"
+    )
+
+@app.route('/admin/download_general_report')
+def download_general_report():
+    if not session.get("admin_logged_in"):
+        return redirect(url_for("index"))
+    
+    data = pd.DataFrame(list(collection.find()))
+    total_participants = data['user_id'].nunique()
+    avg_time = data['time'].mean()
+    general_summary = pd.DataFrame({
+        "Total Participants": [total_participants],
+        "Average Completion Time": [avg_time]
+    })
+
+    output = io.StringIO()
+    general_summary.to_csv(output)
+    output.seek(0)
+
+    return send_file(
+        io.BytesIO(output.getvalue().encode()),
+        mimetype="text/csv",
+        as_attachment=True,
+        download_name="general_report.csv"
+    )
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -18,7 +18,16 @@
     <div id="access-container">
         <p>Introduce la clave de acceso:</p>
         <input type="password" id="access-key" placeholder="Clave de acceso">
-        <button id="access-btn">Acceder</button>
+        <button id="access-btn" type="button">Acceder</button>
+    </div>
+
+    <!-- Contenido para el panel de administración -->
+    <div id="admin-content" style="display: none;">
+        <h1>Panel de Administración</h1>
+        <p>Bienvenido, Administrador</p>
+        <a href="/admin/download_individual_report" class="admin-button">Descargar Reporte Individual</a>
+        <a href="/admin/download_general_report" class="admin-button">Descargar Reporte General</a>
+        <a href="/logout" class="admin-button">Cerrar Sesión</a>
     </div>
 
     <!-- Sección de explicación de modelos -->
@@ -70,7 +79,6 @@
         <button id="close-interpretml-explanation-btn">Entendido</button>
     </div>
 
-
     <!-- Sección de explicación del modelo IDS -->
     <div id="ids-explanation" style="display: none;">
         <h2>¿Cómo toma decisiones el modelo IDS (Interpretable Decision Sets)?</h2>
@@ -86,8 +94,6 @@
             <li><strong>Regla 5:</strong> Si <span class="attribute">studytime</span> < <span class="value">1</span> <span class="keyword">y</span> <span class="attribute">Fedu</span> < <span class="value">2</span>, <span class="keyword">entonces</span> <span class="conclusion">Reprobado</span>.</li>
             <li><strong>Regla 6:</strong> Si <span class="attribute">absences</span> > <span class="value">10</span> <span class="keyword">y</span> <span class="attribute">reason_reputation</span> = <span class="value">1</span>, <span class="keyword">entonces</span> <span class="conclusion">Aprobado</span>.</li>
         </ul>
-        
-        
         
         <p><strong>Para esta observación, se tienen los siguientes valores de características:</strong></p>
         <ul style="list-style-type: none; padding-left: 0;">
@@ -114,7 +120,6 @@
         <button id="close-explanation-btn">Entendido</button>
     </div>
 
-
     <!-- Instrucciones del cuestionario -->
     <div id="instructions" style="display:none;">
         <p id="instruction-text">
@@ -122,6 +127,9 @@
         </p>
         <button id="start-questionnaire-btn">Comenzar Cuestionario</button>
     </div>
+
+    <!-- Contenedor para mostrar el número de pregunta actual -->
+    <div id="question-number" style="text-align: center; font-weight: bold; margin-bottom: 10px;"></div>
 
     <!-- Contenedor para mostrar las preguntas del cuestionario -->
     <div id="question-container" style="display:none;"></div>
