@@ -3,7 +3,7 @@ import json
 from pymongo import MongoClient
 import os
 from dotenv import load_dotenv
-import pprint
+import matplotlib.pyplot as plt
 
 # Cargar las variables de entorno desde el archivo .env
 load_dotenv()
@@ -58,11 +58,11 @@ follow_up_answer_map = {
 user_answer_map = {
     "Reprobado": 0,
     "Aprobado": 1,
-    "No estoy seguro": 2,
-    "Correcto": 3,
-    "Incorrecto": 4,
-    "Árbol de decisión (InterpretML)": 6,
-    "Conjuntos de Decisiones interpretables (IDS)": 7
+    "Correcto": 2,
+    "Incorrecto": 3,
+    "Árbol de decisión (InterpretML)": 4,
+    "Conjuntos de Decisiones interpretables (IDS)": 5,
+    "No estoy seguro": 6
 }
 
 # Obtener todos los user_id únicos y asignar un número secuencial a cada uno
@@ -104,11 +104,40 @@ for answer_text, normalized_value in follow_up_answer_map.items():
 for answer_text, normalized_value in user_answer_map.items():
     glossary_data.append({"column": "user_answer", "normalized_value": normalized_value, "original_value": answer_text})
 
+# Crear la carpeta 'report' si no existe
+os.makedirs("report", exist_ok=True)
+
 # Crear un archivo Excel con múltiples hojas
-with pd.ExcelWriter("all_users_survey_report.xlsx") as writer:
+with pd.ExcelWriter("report/all_users_survey_report.xlsx") as writer:
     # Añadir la hoja del glosario con el formato solicitado
     glossary_df = pd.DataFrame(glossary_data)
     glossary_df.to_excel(writer, sheet_name="Glossary", index=False)
+
+    # DataFrame para almacenar los conteos de respuestas generales
+    general_counts = pd.DataFrame(index=range(1, 21))  # Para 20 preguntas
+    general_counts.index.name = "question"  # Nombrar la primera columna como 'question'
+    
+    # Inicializar las columnas de conteo
+    general_counts["reprobado"] = 0
+    general_counts["aprobado"] = 0
+    general_counts["correcto"] = 0
+    general_counts["incorrecto"] = 0
+    general_counts["dt"] = 0
+    general_counts["ids"] = 0
+    general_counts["inseguro"] = 0
+    # Inicializar columnas para respuestas de seguimiento
+    general_counts["aprobado_mucho"] = 0
+    general_counts["aprobado_poco"] = 0
+    general_counts["aprobado_nada"] = 0
+    general_counts["reprobado_mucho"] = 0
+    general_counts["reprobado_poco"] = 0
+    general_counts["reprobado_nada"] = 0
+    general_counts["correcto_mucho"] = 0
+    general_counts["correcto_poco"] = 0
+    general_counts["correcto_nada"] = 0
+    general_counts["incorrecto_mucho"] = 0
+    general_counts["incorrecto_poco"] = 0
+    general_counts["incorrecto_nada"] = 0
 
     # Iterar sobre cada user_id para crear su reporte en una hoja individual
     for user_id, user_num in user_id_map.items():
@@ -147,13 +176,13 @@ with pd.ExcelWriter("all_users_survey_report.xlsx") as writer:
             response = user_responses[idx] if idx < len(user_responses) else {}
             user_answer_text = response.get('answer')
             
-            # Normalizar `user_answer`, asignando 8 a las respuestas a la pregunta 21
+            # Normalizar `user_answer`, asignando 7 a las respuestas a la pregunta 21
             if question_id == 21:
-                user_answer = 8
+                user_answer = 7
                 # Agregar la respuesta de la pregunta 21 al glosario
                 glossary_data.append({
                     "column": f"user_id_{user_num}",
-                    "normalized_value": 8,
+                    "normalized_value": 7,
                     "original_value": user_answer_text or ""
                 })
             else:
@@ -192,15 +221,66 @@ with pd.ExcelWriter("all_users_survey_report.xlsx") as writer:
             # Agregar la fila a la lista de filas del usuario actual
             rows.append(row)
 
+            # Contar las respuestas en la tabla general
+            if user_answer == 0:
+                general_counts.at[question_id, "reprobado"] += 1
+                if follow_up_answer == 1:  # Poco
+                    general_counts.at[question_id, "reprobado_poco"] += 1
+                elif follow_up_answer == 2:  # Mucho
+                    general_counts.at[question_id, "reprobado_mucho"] += 1
+                elif follow_up_answer == 3:  # Nada
+                    general_counts.at[question_id, "reprobado_nada"] += 1
+
+            elif user_answer == 1:
+                general_counts.at[question_id, "aprobado"] += 1
+                if follow_up_answer == 1:  # Poco
+                    general_counts.at[question_id, "aprobado_poco"] += 1
+                elif follow_up_answer == 2:  # Mucho
+                    general_counts.at[question_id, "aprobado_mucho"] += 1
+                elif follow_up_answer == 3:  # Nada
+                    general_counts.at[question_id, "aprobado_nada"] += 1
+
+            elif user_answer == 2:
+                general_counts.at[question_id, "correcto"] += 1
+                if follow_up_answer == 1:  # Poco
+                    general_counts.at[question_id, "correcto_poco"] += 1
+                elif follow_up_answer == 2:  # Mucho
+                    general_counts.at[question_id, "correcto_mucho"] += 1
+                elif follow_up_answer == 3:  # Nada
+                    general_counts.at[question_id, "correcto_nada"] += 1
+
+            elif user_answer == 3:
+                general_counts.at[question_id, "incorrecto"] += 1
+                if follow_up_answer == 1:  # Poco
+                    general_counts.at[question_id, "incorrecto_poco"] += 1
+                elif follow_up_answer == 2:  # Mucho
+                    general_counts.at[question_id, "incorrecto_mucho"] += 1
+                elif follow_up_answer == 3:  # Nada
+                    general_counts.at[question_id, "incorrecto_nada"] += 1
+
+            elif user_answer == 4:
+                general_counts.at[question_id, "dt"] += 1
+
+            elif user_answer == 5:
+                general_counts.at[question_id, "ids"] += 1
+
+            elif user_answer == 6:
+                general_counts.at[question_id, "inseguro"] += 1
+
         # Crear un DataFrame con las filas del usuario actual
         df = pd.DataFrame(rows)
 
         # Escribir el DataFrame en una hoja del archivo Excel con el nombre "User_<número secuencial>"
         sheet_name = f"User_{user_num}"
         df.to_excel(writer, sheet_name=sheet_name, index=False)
-        
+
     # Actualizar el glosario con las respuestas de la pregunta 21 de cada usuario
     glossary_df = pd.DataFrame(glossary_data)
     glossary_df.to_excel(writer, sheet_name="Glossary", index=False)
-        
-print("Archivo 'all_users_survey_report.xlsx' creado exitosamente con cada usuario en una hoja separada y un glosario de mapeos.")
+
+    # Guardar el conteo general en una nueva hoja
+    general_counts.to_excel(writer, sheet_name="General", index=True)
+
+print("Archivo 'report/all_users_survey_report.xlsx' creado exitosamente con cada usuario en una hoja separada, un glosario de mapeos y un reporte general.")
+
+################################# GRAFICAS DE EXACTITUD #######################################
