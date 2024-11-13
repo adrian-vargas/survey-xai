@@ -147,7 +147,7 @@ function displayQuestion(questionData) {
             const graphImage = document.createElement('img');
             graphImage.src = '/static/graphs/interpretml/dt.png'; // Ruta para el grafo de DT-InterpretML
             graphImage.alt = 'Grafo Global del modelo DT-InterpretML';
-            graphImage.style.maxWidth = '100%';
+            graphImage.style.maxWidth = '80%';
             container.appendChild(graphImage);
         }
         // Agregar imagen del grafo global para el modelo IDS
@@ -155,7 +155,7 @@ function displayQuestion(questionData) {
             const graphImage = document.createElement('img');
             graphImage.src = '/static/graphs/ids/ids.png'; // Ruta para el grafo de IDS
             graphImage.alt = 'Grafo Global del modelo IDS';
-            graphImage.style.maxWidth = '100%';
+            graphImage.style.maxWidth = '80%';
             container.appendChild(graphImage);
         }
     } else if (questionData.local_graph) {
@@ -488,7 +488,7 @@ function submitAnswers() {
     .then(response => response.json())
     .then(data => {
         if (data.status === 'success') {
-            document.getElementById('question-container').innerHTML = '<div class="thank-you-message"><p>Gracias por completar el cuestionario.</p></div>';
+            document.getElementById('question-container').innerHTML = '<div class="thank-you-message"><p>¡Gracias por completar el cuestionario!</p></div>';
 
             // Ocultar el número de pregunta si está en la pantalla de agradecimiento
             const questionNumberIndicator = document.getElementById('question-number');
