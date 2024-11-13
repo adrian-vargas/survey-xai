@@ -118,5 +118,6 @@ def download_report():
     else:
         return "El archivo no existe.", 404
     
+# Configuración de ejecución para producción
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=False)
