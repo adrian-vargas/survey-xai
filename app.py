@@ -15,12 +15,15 @@ import io
 load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = os.getenv("SECRET_KEY")  # Clave secreta de la aplicación
+
+# Configurar la clave secreta de la aplicación
+app.secret_key = os.getenv("SECRET_KEY")
 
 # Configurar logging
 logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-# Obtener las variables desde el entorno
+# Obtener las variables de conexión a MongoDB desde el entorno
 mongo_uri = os.getenv('MONGO_URI')
 db_name = os.getenv('MONGO_DB_NAME')
 collection_name = os.getenv('MONGO_COLLECTION_NAME')
@@ -30,9 +33,9 @@ try:
     client = MongoClient(mongo_uri)
     db = client[db_name]
     collection = db[collection_name]
-    logging.info("Conexión a MongoDB establecida correctamente.")
+    logger.info("Conexión a MongoDB establecida correctamente.")
 except Exception as e:
-    logging.error(f"Error al conectar a MongoDB: {e}")
+    logger.error(f"Error al conectar a MongoDB: {e}")
 
 @app.route('/')
 def index():
