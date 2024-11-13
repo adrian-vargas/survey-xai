@@ -102,15 +102,20 @@ def get_my_ip():
     return f'My public IP is: {ip}'
 
 # Ruta para ejecutar el script y generar el reporte
+import subprocess
+
 @app.route('/generate_report')
 def generate_report():
     try:
         app.logger.info("Intentando ejecutar el script survey_report.py...")
-        result = subprocess.run(["python", "survey_report.py"], check=True, capture_output=True, text=True)
+        result = subprocess.run(["python", "survey_report.py"], check=True, capture_output=True, text=True, timeout=300)  # Tiempo en segundos
         app.logger.info(f"Salida del script: {result.stdout}")
         if result.stderr:
             app.logger.error(f"Errores del script: {result.stderr}")
         return redirect(url_for('download_report'))
+    except subprocess.TimeoutExpired:
+        app.logger.error("Tiempo de espera agotado al generar el reporte.")
+        return "El reporte tomó demasiado tiempo en generarse y fue cancelado.", 500
     except subprocess.CalledProcessError as e:
         app.logger.error(f"Error al generar el reporte: {e}")
         return "Error al generar el reporte.", 500
