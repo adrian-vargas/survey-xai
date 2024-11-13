@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
+import subprocess
 import json
 import time
 import uuid
@@ -12,7 +13,7 @@ import io
 from flask import send_file
 
 app = Flask(__name__)
-app.secret_key = "your_super_secret_key"  # Clave secreta de la aplicación
+app.secret_key = os.getenv("SECRET_KEY")  # Clave secreta de la aplicación
 
 # Configurar logging
 logging.basicConfig(level=logging.INFO)
@@ -96,51 +97,23 @@ def get_my_ip():
     ip = requests.get('https://api.ipify.org').text
     return f'My public IP is: {ip}'
 
-@app.route('/admin/download_individual_report')
-def download_individual_report():
-    if not session.get("admin_logged_in"):
-        return redirect(url_for("index"))
+# Ruta para ejecutar el script y generar el reporte
+@app.route('/generate_report')
+def generate_report():
+    try:
+        subprocess.run(["python", "survey_report.py"], check=True)
+        return redirect(url_for('download_report'))
+    except subprocess.CalledProcessError:
+        return "Error al generar el reporte.", 500
+
+# Ruta para descargar el reporte
+@app.route('/download_report')
+def download_report():
+    report_path = os.path.join("static", "report.zip")
+    if os.path.exists(report_path):
+        return send_file(report_path, as_attachment=True)
+    else:
+        return "El archivo no existe.", 404
     
-    data = pd.DataFrame(list(collection.find()))
-    individual_report = data.groupby("user_id").agg({
-        "time": "mean",
-        "answer": "count"
-    }).rename(columns={"time": "Average Time", "answer": "Total Answers"})
-
-    output = io.StringIO()
-    individual_report.to_csv(output)
-    output.seek(0)
-
-    return send_file(
-        io.BytesIO(output.getvalue().encode()),
-        mimetype="text/csv",
-        as_attachment=True,
-        download_name="individual_report.csv"
-    )
-
-@app.route('/admin/download_general_report')
-def download_general_report():
-    if not session.get("admin_logged_in"):
-        return redirect(url_for("index"))
-    
-    data = pd.DataFrame(list(collection.find()))
-    total_participants = data['user_id'].nunique()
-    avg_time = data['time'].mean()
-    general_summary = pd.DataFrame({
-        "Total Participants": [total_participants],
-        "Average Completion Time": [avg_time]
-    })
-
-    output = io.StringIO()
-    general_summary.to_csv(output)
-    output.seek(0)
-
-    return send_file(
-        io.BytesIO(output.getvalue().encode()),
-        mimetype="text/csv",
-        as_attachment=True,
-        download_name="general_report.csv"
-    )
-
 if __name__ == '__main__':
     app.run(debug=True)

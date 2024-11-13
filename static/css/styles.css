@@ -18,8 +18,7 @@ h1 {
     text-align: center;
 }
 
-/* Styling for the question container */
-#question-container, #instructions, #ids-explanation, #model-prediction-explanation, #interpretml-explanation {
+#question-container, #instructions, #ids-explanation, #model-prediction-explanation, #interpretml-explanation, #intro-container {
     background-color: white;
     padding: 2em;
     border-radius: 8px;
@@ -30,7 +29,7 @@ h1 {
     margin: 0 auto;
 }
 
-#instructions {
+#instructions, #intro-container {
     text-align: justify;
 }
 
@@ -41,7 +40,6 @@ p {
     line-height: 1.6;
 }
 
-/* Styling for buttons */
 button {
     background-color: #d9534f;
     color: white;
@@ -78,13 +76,12 @@ button.selected {
     background-color: #4cae4c;
 }
 
-/* Mobile responsive adjustments */
 @media (max-width: 768px) {
     h1 {
         font-size: 1.8em;
     }
 
-    #question-container, #instructions {
+    #question-container, #instructions, #intro-container {
         padding: 1.5em;
     }
 
@@ -126,7 +123,6 @@ textarea {
     box-sizing: border-box;
 }
 
-/* Progress bar styling */
 .progress-container {
     position: fixed;
     top: 0;
@@ -218,7 +214,6 @@ textarea {
     font-weight: bold;
 }
 
-
 /* Centrar la tabla dentro de su contenedor */
 .table-container {
     display: flex;
@@ -265,7 +260,6 @@ textarea {
     text-align: center;
 }
 
-
 #follow-up-container {
     text-align: center;
     margin-top: 20px;
@@ -292,9 +286,6 @@ textarea {
     margin-top: 20px;
 }
 
-
-
-/* Ajustar el espaciado entre párrafos y elementos en la explicación de InterpretML */
 #interpretml-explanation p, #interpretml-explanation ul {
     margin-bottom: 20px;
 }
@@ -312,9 +303,6 @@ textarea {
 #interpretml-explanation img {
     margin-top: 20px;
 }
-
-
-
 
 /* Ajustes adicionales para follow-up-container */
 #follow-up-container {
@@ -367,7 +355,7 @@ textarea {
 
 #question-container > p:nth-child(2) {
     font-weight: bold;
-    color: purple;
+    color: rgb(255, 40, 76);
     font-size: 1.5em;
 }
 
@@ -386,7 +374,7 @@ textarea {
     cursor: pointer;
     margin: 10px;
     display: inline-block;
-    text-decoration: none; /* Quita el subrayado de los enlaces */
+    text-decoration: none;
 }
 
 .admin-button:hover {
@@ -402,7 +390,13 @@ textarea {
     margin: 10px 5px;
 }
 
-/* styles.css */
 #question-number {
-    margin-top: 20px; /* Ajusta este valor según necesites */
+    margin-top: 20px;
+}
+
+.selected-follow-up {
+    background-color: orange;
+    color: white;
+    border: none;
+    font-weight: bold;
 }

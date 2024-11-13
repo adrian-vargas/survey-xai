@@ -1,9 +1,8 @@
-// app.js
-
 let questions;
 let currentQuestionIndex = 0;
 let startTime, endTime;
-
+const userAccessKey = 'clave123';
+const adminAccessKey = 'clave456';
 const answers = [];
 
 // Tabla de definiciones en HTML
@@ -118,15 +117,15 @@ function displayQuestion(questionData) {
         container.appendChild(definitionsContainer);
     }
 
-    // Mostrar reglas como una lista de elementos
-    if (questionData.rules) {
+    // Mostrar reglas como una lista de elementos solo si el modelo no es IDS o no es de subcategoría Grado Global o Grado Local
+    if (questionData.rules && !(questionData.model === 'IDS' && (questionData.sub_category === 'Grado Global' || questionData.sub_category === 'Grado Local'))) {
         const rulesContainer = document.createElement('div');
         rulesContainer.classList.add('rule-container');
-    
+
         const rulesTitle = document.createElement('strong');
         rulesTitle.textContent = "Reglas:";
         rulesContainer.appendChild(rulesTitle);
-    
+
         const rulesList = document.createElement('ul');
         questionData.rules.forEach(rule => {
             const ruleItem = document.createElement('li');
@@ -140,7 +139,6 @@ function displayQuestion(questionData) {
     // Mostrar grafo global o local
     if (questionData.global_graph) {
         const globalGraphElement = document.createElement('p');
-        //globalGraphElement.textContent = `Grafo Global: ${questionData.global_graph}`;
         globalGraphElement.textContent = `${questionData.global_graph}`;
         container.appendChild(globalGraphElement);
 
@@ -162,7 +160,6 @@ function displayQuestion(questionData) {
         }
     } else if (questionData.local_graph) {
         const localGraphElement = document.createElement('p');
-        //localGraphElement.textContent = `Grafo Local: ${questionData.local_graph}`;
         localGraphElement.textContent = `${questionData.local_graph}`;
         container.appendChild(localGraphElement);
 
@@ -199,13 +196,11 @@ function displayQuestion(questionData) {
     if (questionData.prediction_model && questionData.category === 'Error') {
         const predictionElement = document.createElement('p');
         const modelPrediction = questionData.prediction_model[questionData.model];
-        
-        // Aplicar estilo en rojo a la predicción
         predictionElement.innerHTML = `Predicción del modelo (<strong>${questionData.model}</strong>): <span style="color: red; font-weight: bold;">${modelPrediction}</span>`;
         container.appendChild(predictionElement);
     }
 
-    // Verificar si es una pregunta descriptiva y mostrar un campo de texto
+    // Si es una pregunta descriptiva, mostrar un campo de texto
     if (questionData.category === "Pregunta Descriptiva") {
         const answerInput = document.createElement('textarea');
         answerInput.setAttribute('placeholder', 'Explica tu respuesta aquí...');
@@ -240,13 +235,11 @@ function displayQuestion(questionData) {
         };
 
         startTime = new Date().getTime();
-        return; // Salir de la función para evitar agregar opciones de botón en preguntas descriptivas
+        return;
     }
 
     // Configuración de las opciones de respuesta para preguntas no descriptivas
-    const options = questionData.category === "Error"
-        ? ["Correcto", "Incorrecto", "No estoy seguro"]
-        : questionData.answer || ["Aprobado", "Reprobado", "No estoy seguro"];
+    let options = questionData.answer || ["Aprobado", "Reprobado"]; // Por defecto "Aprobado" y "Reprobado" si `answer` no está definido
     
     const optionsContainer = document.createElement('div');
     optionsContainer.style.display = 'flex';
@@ -266,7 +259,6 @@ function displayQuestion(questionData) {
     document.getElementById('next-question-btn').style.display = 'none';
 }
 
-
 function getVisualizationPath(questionData) {
     if (questionData.visualization) {
         if (questionData.visualization.includes('scikit-learn')) {
@@ -281,9 +273,6 @@ function getVisualizationPath(questionData) {
 }
 
 function handleAnswer(answer, optionElement) {
-    endTime = new Date().getTime();
-    const responseTime = endTime - startTime;
-
     // Desmarcar todos los botones y marcar el botón seleccionado
     document.querySelectorAll('button').forEach(button => button.classList.remove('selected'));
     optionElement.classList.add('selected');
@@ -297,14 +286,13 @@ function handleAnswer(answer, optionElement) {
         const existingAnswerIndex = answers.findIndex(a => a.question_id === currentQuestionData.id);
 
         if (existingAnswerIndex !== -1) {
-            // Si ya existe, actualizamos la respuesta y el tiempo
+            // Si ya existe, actualizamos la respuesta sin modificar el tiempo de respuesta
             answers[existingAnswerIndex].answer = answer;
-            answers[existingAnswerIndex].time = responseTime;
             console.log("Respuesta actualizada:", answer);
         } else {
             // Si no existe, creamos una nueva entrada en `answers`
             answers.push({
-                question_id: currentQuestionData.id || currentQuestionIndex + 1,  // Guarda el ID o índice de la pregunta
+                question_id: currentQuestionData.id || currentQuestionIndex + 1,  // Guarda el ID de la pregunta
                 question: currentQuestionData.instructions || "",  // Añade el campo 'instructions' como 'question'
                 model: currentQuestionData.model || "",
                 observation: currentQuestionData.observation || {},
@@ -314,14 +302,10 @@ function handleAnswer(answer, optionElement) {
                 prediction: currentQuestionData.prediction || [],
                 answer: answer,  // Respuesta principal
                 follow_up_question: currentQuestionData.follow_up ? currentQuestionData.follow_up.question : null,  // Guardar la pregunta de seguimiento, si existe
-                follow_up_answer: null,  // Inicializar el campo de respuesta de seguimiento como `null`
-                time: responseTime  // Tiempo de respuesta principal
+                follow_up_answer: null  // Inicializar el campo de respuesta de seguimiento como `null`
             });
             console.log("Respuesta guardada:", answer);
         }
-
-        // Reiniciar el temporizador para permitir cambios de respuesta
-        startTime = new Date().getTime();
 
         // Manejo de preguntas de seguimiento
         const followUpContainer = document.getElementById('follow-up-container');
@@ -342,32 +326,28 @@ function handleAnswer(answer, optionElement) {
         } else if (!currentQuestionData.follow_up) {
             document.getElementById('next-question-btn').style.display = 'block';
         }
-
-        // Realizar scroll hacia abajo después de que se procesa la respuesta
         scrollDown();
     } else {
         console.error("Error: currentQuestionData es undefined.");
     }
 }
 
-// Función para hacer scroll hacia abajo
 function scrollDown() {
     setTimeout(() => {
         window.scrollTo({
             top: document.body.scrollHeight,
-            behavior: 'smooth' // Desplazamiento suave hacia abajo
+            behavior: 'smooth'
         });
-    }, 100);
+    }, 100); // Retraso de 100ms para asegurar que el contenido cambie antes de hacer scroll
 }
 
-// Función para hacer scroll hacia arriba
 function scrollUp() {
     setTimeout(() => {
         window.scrollTo({
             top: 0,
-            behavior: 'smooth' // Desplazamiento suave
+            behavior: 'smooth'
         });
-    }, 100); // Retraso de 100ms para asegurar que el contenido cambie antes de hacer scroll
+    }, 100); 
 }
 
 
@@ -385,38 +365,53 @@ function handleFollowUpAnswer(followUpAnswer) {
         console.error("Error: No se encontró la respuesta principal para asociar la respuesta de seguimiento.");
     }
 
+    // Marcar visualmente la opción seleccionada en el seguimiento
+    document.querySelectorAll('.follow-up-option').forEach(button => button.classList.remove('selected-follow-up'));
+    document.querySelectorAll('.follow-up-option').forEach(button => {
+        if (button.textContent === followUpAnswer) {
+            button.classList.add('selected-follow-up');
+        }
+    });
+
     // Mostrar el botón "Siguiente" una vez que se ha respondido la pregunta de seguimiento
     document.getElementById('next-question-btn').style.display = 'block';
-
-    // Realizar scroll hacia abajo después de responder la pregunta de seguimiento
     scrollDown();
 }
 
 function nextQuestion() {
+    endTime = new Date().getTime();  // Captura el tiempo cuando el usuario hace clic en "Siguiente"
+    const responseTime = endTime - startTime;  // Calcula el tiempo total de respuesta
+
+    // Almacena la respuesta con el tiempo total de respuesta
+    const currentQuestionData = questions[currentQuestionIndex];
+    const existingAnswerIndex = answers.findIndex(a => a.question_id === currentQuestionData.id);
+
+    if (existingAnswerIndex !== -1) {
+        answers[existingAnswerIndex].time = responseTime;
+    } else {
+        answers.push({
+            question_id: currentQuestionData.id,
+            question: currentQuestionData.instructions || "",
+            model: currentQuestionData.model || "",
+            answer: "",  
+            time: responseTime
+        });
+    }
+
+    // Avanza a la siguiente pregunta
     currentQuestionIndex++;
 
     if (currentQuestionIndex >= questions.length) {
         submitAnswers();
         return;
     }
-
     loadQuestion();
     document.getElementById('next-question-btn').style.display = 'none';
-
     updateProgressBar();
-
-    // Realizar scroll hacia arriba al pasar a la siguiente pregunta
     scrollUp();
 }
 
-function moveToNextCategory() {
-    currentCategoryIndex++;
-    currentQuestionIndex = 0;
-    loadQuestion();
-}
-
 function loadDescriptiveQuestion() {
-    //updateProgressBar();
     if (currentQuestionIndex < questions[descriptiveQuestionsCategory].length) {
         const questionData = questions[descriptiveQuestionsCategory][currentQuestionIndex];
         const container = document.getElementById('question-container');
@@ -437,9 +432,7 @@ function loadDescriptiveQuestion() {
         container.appendChild(answerInput);
 
         startTime = new Date().getTime();
-
         document.getElementById('next-question-btn').style.display = 'none';
-
         answerInput.addEventListener('input', function () {
             if (answerInput.value.trim() !== '') {
                 document.getElementById('next-question-btn').style.display = 'block';
@@ -447,7 +440,6 @@ function loadDescriptiveQuestion() {
                 document.getElementById('next-question-btn').style.display = 'none';
             }
         });
-
         document.getElementById('next-question-btn').onclick = function () {
             endTime = new Date().getTime();
             const responseTime = endTime - startTime;
@@ -457,7 +449,6 @@ function loadDescriptiveQuestion() {
                 answer: answerInput.value,
                 time: responseTime
             });
-
             currentQuestionIndex++;
             loadDescriptiveQuestion();
         };
@@ -475,15 +466,15 @@ function submitAnswers() {
 
     // Reestructuramos cada respuesta en el arreglo `answers` antes de enviarla
     const formattedAnswers = answers.map(answer => ({
-        user_id: sessionStorage.getItem('user_id'),  // Asegúrate de que el `user_id` esté almacenado en la sesión
+        user_id: sessionStorage.getItem('user_id'),  // Validar que el `user_id` esté almacenado en la sesión
         question_id: answer.question_id,  // ID de la pregunta
         question: answer.question,  // Texto de la pregunta
-        model: answer.model,  // Modelo utilizado (ej. "DT-InterpretML" o "IDS")
+        model: answer.model,  // Modelo utilizado
         answer: answer.answer,  // Respuesta principal del usuario
-        follow_up_question: answer.follow_up_question || null,  // Pregunta de seguimiento, si existe
-        follow_up_answer: answer.follow_up_answer || null,  // Respuesta a la pregunta de seguimiento, si existe
+        follow_up_question: answer.follow_up_question || null,  // Pregunta de seguimiento
+        follow_up_answer: answer.follow_up_answer || null,  // Respuesta a la pregunta de seguimiento
         response_time_seconds: answer.time,  // Tiempo de respuesta para la pregunta principal
-        follow_up_time_seconds: answer.follow_up_time || null  // Tiempo de respuesta para la pregunta de seguimiento, si existe
+        follow_up_time_seconds: answer.follow_up_time || null  // Tiempo de respuesta para la pregunta de seguimiento
     }));
 
     // Enviar las respuestas formateadas al servidor
@@ -498,8 +489,14 @@ function submitAnswers() {
     .then(data => {
         if (data.status === 'success') {
             document.getElementById('question-container').innerHTML = '<div class="thank-you-message"><p>Gracias por completar el cuestionario.</p></div>';
+
+            // Ocultar el número de pregunta si está en la pantalla de agradecimiento
+            const questionNumberIndicator = document.getElementById('question-number');
+            questionNumberIndicator.style.display = 'none';
+
             document.querySelector('h1').style.display = 'none';
             updateProgressBar();
+
         } else {
             console.error('Error:', data.message);
         }
@@ -511,65 +508,62 @@ function submitAnswers() {
 
 document.getElementById('next-question-btn').onclick = nextQuestion;
 
-const userAccessKey = 'clave123';
-const adminAccessKey = 'clave456';
-
-document.getElementById('access-btn').onclick = function () {
-    const enteredKey = document.getElementById('access-key').value; // Definimos aquí `enteredKey`
-    
+// Función de inicio de sesión
+function login() {
+    const enteredKey = document.getElementById('access-key').value;
     if (enteredKey === userAccessKey) {
         // Código para acceso de usuario
         document.getElementById('access-container').style.display = 'none';
-        document.getElementById('model-prediction-explanation').style.display = 'block';
+        document.getElementById('intro-container').style.display = 'block'; // Mostrar el intro-container
+        document.getElementById('model-prediction-explanation').style.display = 'none';
         document.getElementById('instructions').style.display = 'none';
-
-        // Ocultar el título <h1> después de acceder
-        document.querySelector('h1').classList.add('hidden');
-
+        document.getElementById('questionnaire-title').classList.add('hidden');
         sessionStorage.setItem('user_logged_in', 'true');
     } else if (enteredKey === adminAccessKey) {
         // Código para acceso de administrador
         document.getElementById('access-container').style.display = 'none';
         document.getElementById('admin-content').style.display = 'block';
-
-        // Ocultar el título <h1> después de acceder
         document.querySelector('h1').classList.add('hidden');
-
         sessionStorage.setItem('admin_logged_in', 'true');
     } else {
         alert('Clave de acceso incorrecta. Inténtalo de nuevo.');
     }
-};
-
-// Función para hacer scroll hacia arriba
-function scrollUp() {
-    setTimeout(() => {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth' // Desplazamiento suave
-        });
-    }, 100); // Retraso de 100ms para asegurar que el contenido cambie antes de hacer scroll
 }
+
+// Ejecutar login al hacer clic en el botón "Acceder" o presionar "Enter"
+document.getElementById('access-btn').onclick = login;
+document.getElementById('access-key').addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+        login();
+    }
+});
+
+// Al hacer clic en "Continuar" en el intro-container
+document.getElementById('start-introduction-btn').onclick = function () {
+    document.getElementById('intro-container').style.display = 'none';
+    document.getElementById('model-prediction-explanation').style.display = 'block';
+    scrollUp(); 
+};
 
 // Mostrar la explicación de InterpretML y DT de scikit-learn al hacer clic en "Entendido" en la explicación de modelos
 document.getElementById('close-model-prediction-explanation-btn').onclick = function () {
     document.getElementById('model-prediction-explanation').style.display = 'none';
     document.getElementById('interpretml-explanation').style.display = 'block';
-    scrollUp(); // Scroll hacia arriba
+    scrollUp(); 
 };
 
 // Mostrar la explicación de IDS al hacer clic en "Entendido" en la explicación de InterpretML
 document.getElementById('close-interpretml-explanation-btn').onclick = function () {
     document.getElementById('interpretml-explanation').style.display = 'none';
     document.getElementById('ids-explanation').style.display = 'block';
-    scrollUp(); // Scroll hacia arriba
+    scrollUp(); 
 };
 
 // Mostrar las instrucciones del cuestionario al hacer clic en "Entendido" en la explicación de IDS
 document.getElementById('close-explanation-btn').onclick = function () {
     document.getElementById('ids-explanation').style.display = 'none';
     document.getElementById('instructions').style.display = 'block';
-    scrollUp(); // Scroll hacia arriba
+    scrollUp(); 
 };
 
 // Iniciar el cuestionario al hacer clic en "Comenzar Cuestionario"
@@ -619,6 +613,7 @@ function formatRule(rule) {
 
     return unescapeHTML(rule);
 }
+
 // Función para des-escapar el contenido HTML
 function unescapeHTML(html) {
     const doc = new DOMParser().parseFromString(html, 'text/html');
@@ -628,5 +623,12 @@ function unescapeHTML(html) {
 // Mostrar número de pregunta usando `id`
 function showQuestionNumber(questionId) {
     const questionNumberIndicator = document.getElementById('question-number');
-    questionNumberIndicator.textContent = `Pregunta ${questionId} de ${questions.length}`;
+
+    // Verifica si estamos en la pantalla final de agradecimiento
+    if (questionId > questions.length) {
+        questionNumberIndicator.style.display = 'none'; // Oculta el indicador de número de pregunta
+    } else {
+        questionNumberIndicator.style.display = 'block'; // Muestra el indicador en las preguntas normales
+        questionNumberIndicator.textContent = `Pregunta ${questionId} de ${questions.length}`;
+    }
 }

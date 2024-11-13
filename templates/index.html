@@ -11,8 +11,7 @@
     <div class="progress-container">
         <div id="progress-bar" class="progress-bar"></div>
     </div>
-    
-    <h1>Cuestionario de Interpretabilidad</h1>
+    <h1 id="questionnaire-title">Cuestionario de Interpretabilidad</h1>
     
     <!-- Formulario para la clave de acceso -->
     <div id="access-container">
@@ -21,100 +20,141 @@
         <button id="access-btn" type="button">Acceder</button>
     </div>
 
-    <!-- Contenido para el panel de administración -->
+    <!-- Enlace para generar y descargar el archivo ZIP de la carpeta report -->
     <div id="admin-content" style="display: none;">
         <h1>Panel de Administración</h1>
-        <p>Bienvenido, Administrador</p>
-        <a href="/admin/download_individual_report" class="admin-button">Descargar Reporte Individual</a>
-        <a href="/admin/download_general_report" class="admin-button">Descargar Reporte General</a>
+        <p>Bienvenido</p>
+        <a href="/generate_report" class="admin-button">Descargar Reporte</a>
         <a href="/logout" class="admin-button">Cerrar Sesión</a>
     </div>
 
+    <div id="intro-container" style="display: none;">
+        <h1 style="color: rgb(255, 40, 76);">Bienvenido al Cuestionario de Interpretabilidad en Modelos de IA</h1>
+
+        <p>Mi nombre es Adrian Vargas, y este cuestionario es parte de mi Trabajo de Fin de Máster en la <strong>Universidad Politécnica de Madrid</strong>, titulado <em>"A Tool for Human Evaluation of Interpretability"</em>. Con este proyecto busco explorar cómo los usuarios interpretan y valoran la claridad y la utilidad de las decisiones generadas por modelos de inteligencia artificial.</p>
+
+        <p>
+            Este cuestionario consta de <strong>21 preguntas</strong>, diseñadas para analizar la <strong>interpretabilidad</strong> de dos tipos de modelos de inteligencia artificial: 
+            el <strong>Árbol de Decisión (DT)</strong> y los <strong>Conjuntos de Decisión Interpretables (IDS)</strong>.
+        </p>
+
+        <p>
+            A lo largo de este cuestionario, se te presentarán predicciones de estos modelos en diversas situaciones. Tu tarea será analizar las explicaciones proporcionadas y responder preguntas sobre la precisión, claridad y utilidad de las interpretaciones que ofrece cada modelo.
+        </p>
+
+        <p>
+            Con tu participación, buscamos obtener una comprensión más profunda de hasta qué punto las personas pueden interpretar y confiar en las decisiones generadas por estos modelos de IA.
+        </p>
+
+        <p>
+            ¡Agradezco mucho tu tiempo y tus respuestas!
+        </p>
+            
+        <p><strong>Antes de comenzar:</strong> Te proporciono una breve explicación de cada modelo para que tengas contexto 
+            sobre cómo funcionan y en qué se basan para realizar sus predicciones.</p>
+
+        <p><strong>Nota de privacidad:</strong> Este cuestionario no recopila información de identificación personal. Se genera un identificador único anónimo para registrar tus respuestas en una base de datos exclusivamente con fines de análisis de interpretabilidad. La sesión se utiliza únicamente para gestionar el acceso durante la duración de la encuesta, sin realizar ningún seguimiento de tu actividad.</p>
+
+        <button id="start-introduction-btn">Continuar</button>
+    </div>
+        
     <!-- Sección de explicación de modelos -->
     <div id="model-prediction-explanation" style="display: none;">
         <h2>¿Qué están prediciendo los modelos?</h2>
         <p>
-            Los modelos que estás evaluando en este cuestionario han sido entrenados para predecir si un estudiante 
+            Los modelos que estás evaluando en este cuestionario han sido entrenados para predecir si un estudiante de secundaria
             <strong>aprobará o reprobará</strong> según su rendimiento y características personales. Utilizan un conjunto de reglas 
             simples que toman en cuenta factores específicos como el tiempo de estudio, las ausencias y la educación de los padres, 
             entre otros, para realizar esta predicción.
         </p>
-
-        <!-- Contenedor donde se insertará la tabla desde JavaScript -->
         <div id="definitions-table-container"></div>
-
         <p>
-            En cada pregunta, verás una <strong>tabla de características</strong> que describe estos factores y sus posibles valores. 
+            En cada pregunta, verás esta <strong>tabla de características</strong> que describe estos factores y sus posibles valores. 
             Esto te ayudará a interpretar las reglas aplicadas y comprender cómo cada característica influye en la predicción del modelo.
         </p>
-
         <button id="close-model-prediction-explanation-btn">Entendido</button>
     </div>
 
-    <!-- Sección de explicación de InterpretML y DT de scikit-learn -->
     <div id="interpretml-explanation" style="display: none;">
-        <h2>Explicación del Modelo de Árbol de Decisión (DT) en InterpretML y scikit-learn</h2>
+        <h2>Explicación del Modelo de Árbol de Decisión (DT) en InterpretML</h2>
+        
         <p>
-            El modelo de Árbol de Decisión (DT) se utiliza en InterpretML para obtener explicaciones locales y globales. Para este cuestionario, el modelo subyacente de scikit-learn se ha extraído y se visualiza en InterpretML para analizar tanto las explicaciones globales (comportamiento general del modelo) como las explicaciones locales (interpretación específica para una observación).
+            InterpretML es una herramienta para facilitar la interpretación de modelos de aprendizaje automático. En este cuestionario, la utilizamos para generar explicaciones tanto <strong>globales</strong> como <strong>locales</strong> de un modelo de Árbol de Decisión (DT) a fin de comprender cómo el modelo toma decisiones de manera general y cómo llega a una conclusión específica para casos individuales.
         </p>
+
+        <h3>¿Qué es una Observación?</h3>
         <p>
-            <strong>Nota:</strong> InterpretML presenta un defecto en el conteo de observaciones (indicado como <code>#Obs</code>), el cual muestra incorrectamente el valor <code>0, 0</code>. Este error debe ignorarse en el contexto de este cuestionario, ya que no afecta la interpretación de las decisiones del modelo.
+            Una <strong>observación</strong> se refiere a un caso o ejemplo específico con valores concretos para cada característica del modelo. Por ejemplo, una observación podría representar a un estudiante con las siguientes características: <em>absences = 12</em>, <em>goout = 4</em>, <em>studytime = 1</em>, <em>reason_reputation = 0</em>, <em>failures = 0</em>, <em>Fedu = 2</em>. 
         </p>
         
+        <h3>Explicación Global del Modelo</h3>
+        <p>
+            La <strong>explicación global</strong> nos muestra el comportamiento general del modelo al clasificar todas las posibles observaciones y nos permite ver cómo se toman decisiones en cada nodo del árbol. Cada nodo contiene los siguientes elementos:
+        </p>
+        <ul>
+            <li><strong>Condición de división</strong>: la característica y el umbral que dividen los datos en ese nodo (por ejemplo, <em>studytime &le; 2</em>).</li>
+            <li><strong>Índice Gini</strong>: una medida de la pureza del nodo; valores más bajos indican nodos con clases más homogéneas.</li>
+            <li><strong>Número de ejemplos</strong>: la cantidad de observaciones en el nodo.</li>
+            <li><strong>Distribución de clases</strong>: la cantidad de ejemplos de cada clase en el nodo (por ejemplo, <em>value = [30, 70]</em> para las clases "Reprobado" y "Aprobado" respectivamente).</li>
+            <li><strong>Predicción de clase</strong>: la clase mayoritaria en el nodo, que representa la predicción final si una observación llega a este punto.</li>
+        </ul>
+    
         <!-- Imagen del modelo global en InterpretML (usando dt.png) -->
         <div style="text-align: center; margin-top: 20px;">
             <img src="/static/graphs/interpretml/dt.png" alt="Explicación Global del Modelo DT de scikit-learn" style="max-width:80%; height:auto;">
-            <p><em>Explicación global del modelo de Árbol de Decisión (DT) en scikit-learn.</em></p>
+            <p><em>Explicación global del modelo de Árbol de Decisión (DT) de InterpretML.</em></p>
         </div>
         
-        <!-- Explicación Local -->
-        <h3>Explicación Local del Modelo DT</h3>
-        <p>La explicación local para una observación específica detalla la contribución de cada característica a la predicción final del modelo.</p>
-        
-        <!-- Imagen de la explicación local (local_0.PNG) -->
+        <h3>Explicación Local del Modelo</h3>
+        <p>
+            Las explicaciones locales analizan cómo el modelo toma decisiones para esta observación en particular, destacando la ruta de decisión seguida en el árbol. En esta visualización, InterpretML resalta la ruta específica que el modelo sigue en el árbol de decisión para la observación seleccionada incluyendo la misma información que el grafo global como:
+        </p>
+        <ul>
+            <li><strong>Condición de división</strong>: el criterio que determina si el camino continúa hacia la izquierda o hacia la derecha en el árbol.</li>
+            <li><strong>Distribución de clases</strong> y <strong>Número de ejemplos</strong>: información clave para evaluar la confianza del modelo en esa parte del árbol.</li>
+        </ul>
+    
+        <!-- Imagen de la explicación local personalizada (local_0.PNG) -->
         <div style="text-align: center; margin-top: 20px;">
             <img src="static/graphs/interpretml/local/ambiguedad.png" alt="Explicación Local 0" style="max-width:80%; height:auto;">
-            <p><em>Explicación Local - Observación 0</em></p>
+            <p><em>Explicación local que resalta en amarillo los nodos de la ruta de predicción para la observación: absences = 12, goout = 4, studytime = 1, reason_reputation = 0, failures = 0, Fedu = 2.</em></p>
         </div>
         <button id="close-interpretml-explanation-btn">Entendido</button>
     </div>
-
+    
     <!-- Sección de explicación del modelo IDS -->
     <div id="ids-explanation" style="display: none;">
-        <h2>¿Cómo toma decisiones el modelo IDS (Interpretable Decision Sets)?</h2>
+        <h2>¿Cómo toma decisiones el modelo IDS?</h2>
         <p>
-            IDS clasifica observaciones utilizando un conjunto de <strong>reglas simples</strong>. Cada regla contiene condiciones que, si se cumplen, llevan a una decisión específica (como "Aprobado" o "Reprobado"). Si varias reglas se aplican a una misma observación, el modelo elige la etiqueta <strong>que más se repita</strong> entre esas reglas aplicables.
+            IDS (Interpretable Decision Sets) clasifica observaciones utilizando un conjunto de <strong>reglas simples</strong>. Cada regla contiene condiciones que se aplican independientemente. Si se cumplen, llevan a una decisión específica (como "Aprobado" o "Reprobado"). Si varias reglas se aplican a una misma observación, el modelo elige la etiqueta <strong>que más se repita</strong> entre esas reglas aplicables. En caso de que ninguna de las reglas seleccionadas coincida con las características de una observación, el modelo IDS utiliza una clase por defecto, para realizar la predicción. En nuestro modelo, la clase por defecto es "Reprobado".
         </p>
         <p><strong>Por ejemplo:</strong></p>
         <ul>
             <li><strong>Regla 1:</strong> Si <span class="attribute">Fedu</span> > <span class="value">2</span>, <span class="keyword">entonces</span> <span class="conclusion">Aprobado</span>.</li>
             <li><strong>Regla 2:</strong> Si <span class="attribute">absences</span> < <span class="value">3</span> <span class="keyword">y</span> <span class="attribute">studytime</span> > <span class="value">2</span>, <span class="keyword">entonces</span> <span class="conclusion">Aprobado</span>.</li>
             <li><strong>Regla 3:</strong> Si <span class="attribute">failures</span> > <span class="value">1</span>, <span class="keyword">entonces</span> <span class="conclusion">Reprobado</span>.</li>
-            <li><strong>Regla 4:</strong> Si <span class="attribute">goout</span> > <span class="value">4</span> <span class="keyword">y</span> <span class="attribute">reason_reputation</span> = <span class="value">False</span>, <span class="keyword">entonces</span> <span class="conclusion">Reprobado</span>.</li>
+            <li><strong>Regla 4:</strong> Si <span class="attribute">goout</span> > <span class="value">4</span> <span class="keyword">y</span> <span class="attribute">reason_reputation</span> = <span class="value">0</span>, <span class="keyword">entonces</span> <span class="conclusion">Reprobado</span>.</li>
             <li><strong>Regla 5:</strong> Si <span class="attribute">studytime</span> < <span class="value">1</span> <span class="keyword">y</span> <span class="attribute">Fedu</span> < <span class="value">2</span>, <span class="keyword">entonces</span> <span class="conclusion">Reprobado</span>.</li>
             <li><strong>Regla 6:</strong> Si <span class="attribute">absences</span> > <span class="value">10</span> <span class="keyword">y</span> <span class="attribute">reason_reputation</span> = <span class="value">1</span>, <span class="keyword">entonces</span> <span class="conclusion">Aprobado</span>.</li>
         </ul>
         
-        <p><strong>Para esta observación, se tienen los siguientes valores de características:</strong></p>
-        <ul style="list-style-type: none; padding-left: 0;">
-            <li><strong>Fedu:</strong> 3</li>
-            <li><strong>absences:</strong> 2</li>
-            <li><strong>studytime:</strong> 3</li>
-            <li><strong>failures:</strong> 0</li>
-            <li><strong>goout:</strong> 5</li>
-            <li><strong>reason_reputation:</strong> 0</li>
-        </ul>
+        <p><strong>Para esta observación, se tienen los siguientes valores de características:</strong> Fedu = 3, absences = 2, studytime = 3, failures = 0, goout = 5, reason_reputation = 0</p>
 
-        <!-- Imagen de explicación global -->
-        <div style="text-align: center; margin-top: 20px;">
-            <img src="static/graphs/ids/intro/ids_global.png" alt="Explicación global del modelo IDS" style="max-width:80%; height:auto;">
-            <p><em>Explicación global del modelo IDS</em></p>
-        </div>
+        <!-- Contenedor de imágenes en paralelo -->
+        <div style="display: flex; justify-content: center; gap: 20px; margin-top: 20px;">
 
-        <!-- Imagen de explicación local -->
-        <div style="text-align: center; margin-top: 20px;">
-            <img src="static/graphs/ids/intro/ids_local.png" alt="Explicación local del modelo IDS" style="max-width:80%; height:auto;">
-            <p><em>Explicación local del modelo IDS (reglas aplicadas y predicción remarcadas)</em></p>
+            <!-- Imagen de explicación global -->
+            <div style="text-align: center;">
+                <img src="static/graphs/ids/intro/ids_global.png" alt="Explicación global del modelo IDS" style="max-width:75%; height:auto;">
+                <p><em>Explicación global del modelo IDS</em></p>
+            </div>
+
+            <!-- Imagen de explicación local -->
+            <div style="text-align: center;">
+                <img src="static/graphs/ids/intro/ids_local.png" alt="Explicación local del modelo IDS" style="max-width:75%; height:auto;">
+                <p><em>Explicación local del modelo IDS (reglas aplicadas en doble círculo y etiqueta de predicción remarcada)</em></p>
+            </div>
+            
         </div>
 
         <button id="close-explanation-btn">Entendido</button>
@@ -130,19 +170,14 @@
 
     <!-- Contenedor para mostrar el número de pregunta actual -->
     <div id="question-number" style="text-align: center; font-weight: bold; margin-bottom: 10px;"></div>
-
     <!-- Contenedor para mostrar las preguntas del cuestionario -->
     <div id="question-container" style="display:none;"></div>
-
     <!-- Contenedor para la pregunta de seguimiento (follow-up) -->
     <div id="follow-up-container" style="display: none; margin-top: 20px;"></div>
-    
     <!-- Botón para avanzar a la siguiente pregunta -->
     <div class="navigation">
         <button id="next-question-btn" style="display:none;">Siguiente</button>
     </div>
-
-    <!-- Enlace al archivo JavaScript -->
     <script src="/static/js/app.js"></script>
 </body>
 </html>
