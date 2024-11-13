@@ -8,8 +8,6 @@ import logging
 import requests
 from pymongo import MongoClient
 from dotenv import load_dotenv
-import pandas as pd
-import io
 
 # Cargar las variables de entorno desde el archivo .env
 load_dotenv()
