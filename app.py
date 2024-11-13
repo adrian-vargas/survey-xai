@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for, send_file
 import subprocess
 import json
 import time
@@ -10,7 +10,9 @@ from pymongo import MongoClient
 from dotenv import load_dotenv
 import pandas as pd
 import io
-from flask import send_file
+
+# Cargar las variables de entorno desde el archivo .env
+load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")  # Clave secreta de la aplicación
@@ -18,18 +20,19 @@ app.secret_key = os.getenv("SECRET_KEY")  # Clave secreta de la aplicación
 # Configurar logging
 logging.basicConfig(level=logging.INFO)
 
-# Cargar las variables de entorno desde el archivo .env
-load_dotenv()
-
 # Obtener las variables desde el entorno
 mongo_uri = os.getenv('MONGO_URI')
 db_name = os.getenv('MONGO_DB_NAME')
 collection_name = os.getenv('MONGO_COLLECTION_NAME')
 
-# Configuración de la conexión a MongoDB Atlas
-client = MongoClient(mongo_uri)
-db = client[db_name]
-collection = db[collection_name]
+# Configuración de la conexión a MongoDB Atlas con manejo de errores
+try:
+    client = MongoClient(mongo_uri)
+    db = client[db_name]
+    collection = db[collection_name]
+    logging.info("Conexión a MongoDB establecida correctamente.")
+except Exception as e:
+    logging.error(f"Error al conectar a MongoDB: {e}")
 
 @app.route('/')
 def index():
