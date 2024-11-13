@@ -1,16 +1,19 @@
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for, send_file
-import subprocess
+import os
 import json
 import time
 import uuid
-import os
 import logging
 import requests
 from pymongo import MongoClient
 from dotenv import load_dotenv
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for, send_file
+import subprocess
 
 # Cargar las variables de entorno desde el archivo .env
 load_dotenv()
+
+# Establecer la ruta base del proyecto
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 app = Flask(__name__)
 
@@ -68,8 +71,9 @@ def test_connection():
 
 @app.route('/questions', methods=['GET'])
 def get_questions():
+    questions_path = os.path.join(BASE_DIR, 'static', 'js', 'questions.json')
     try:
-        with open('questions.json', 'r') as f:
+        with open(questions_path, 'r') as f:
             questions = json.load(f)
         return jsonify(questions)
     except Exception as e:
@@ -102,13 +106,12 @@ def get_my_ip():
     return f'My public IP is: {ip}'
 
 # Ruta para ejecutar el script y generar el reporte
-import subprocess
-
 @app.route('/generate_report')
 def generate_report():
     try:
         app.logger.info("Intentando ejecutar el script survey_report.py...")
-        result = subprocess.run(["python", "survey_report.py"], check=True, capture_output=True, text=True, timeout=300)  # Tiempo en segundos
+        survey_report_path = os.path.join(BASE_DIR, "survey_report.py")
+        result = subprocess.run(["python", survey_report_path], check=True, capture_output=True, text=True, timeout=300)  # Tiempo en segundos
         app.logger.info(f"Salida del script: {result.stdout}")
         if result.stderr:
             app.logger.error(f"Errores del script: {result.stderr}")
@@ -123,12 +126,12 @@ def generate_report():
 # Ruta para descargar el reporte
 @app.route('/download_report')
 def download_report():
-    report_path = os.path.join("static", "report.zip")
+    report_path = os.path.join(BASE_DIR, "static", "report.zip")
     if os.path.exists(report_path):
         return send_file(report_path, as_attachment=True)
     else:
         return "El archivo no existe.", 404
-    
+
 # Configuración de ejecución para producción
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=False)
