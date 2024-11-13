@@ -105,9 +105,14 @@ def get_my_ip():
 @app.route('/generate_report')
 def generate_report():
     try:
-        subprocess.run(["python", "survey_report.py"], check=True)
+        app.logger.info("Intentando ejecutar el script survey_report.py...")
+        result = subprocess.run(["python", "survey_report.py"], check=True, capture_output=True, text=True)
+        app.logger.info(f"Salida del script: {result.stdout}")
+        if result.stderr:
+            app.logger.error(f"Errores del script: {result.stderr}")
         return redirect(url_for('download_report'))
-    except subprocess.CalledProcessError:
+    except subprocess.CalledProcessError as e:
+        app.logger.error(f"Error al generar el reporte: {e}")
         return "Error al generar el reporte.", 500
 
 # Ruta para descargar el reporte
