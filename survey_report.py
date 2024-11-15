@@ -227,41 +227,54 @@ with pd.ExcelWriter("report/all_users_survey_report.xlsx") as writer:
             rows.append(row)
 
             # Contar las respuestas en la tabla general
+            # Contar las respuestas en la tabla general con impresión de depuración
             if user_answer == 0:
                 general_counts.at[question_id, "reprobado"] += 1
-                if follow_up_answer == 1:  # Poco
-                    general_counts.at[question_id, "reprobado_poco"] += 1
-                elif follow_up_answer == 2:  # Mucho
-                    general_counts.at[question_id, "reprobado_mucho"] += 1
-                elif follow_up_answer == 3:  # Nada
+                if follow_up_answer == 1:  # Nada
                     general_counts.at[question_id, "reprobado_nada"] += 1
+                    print(f"Pregunta {question_id}: Incrementando 'reprobado_nada' para respuesta 'Nada'")
+                elif follow_up_answer == 2:  # Poco
+                    general_counts.at[question_id, "reprobado_poco"] += 1
+                    print(f"Pregunta {question_id}: Incrementando 'reprobado_poco' para respuesta 'Poco'")
+                elif follow_up_answer == 3:  # Mucho
+                    general_counts.at[question_id, "reprobado_mucho"] += 1
+                    print(f"Pregunta {question_id}: Incrementando 'reprobado_mucho' para respuesta 'Mucho'")
 
             elif user_answer == 1:
                 general_counts.at[question_id, "aprobado"] += 1
-                if follow_up_answer == 1:  # Poco
-                    general_counts.at[question_id, "aprobado_poco"] += 1
-                elif follow_up_answer == 2:  # Mucho
-                    general_counts.at[question_id, "aprobado_mucho"] += 1
-                elif follow_up_answer == 3:  # Nada
+                if follow_up_answer == 1:  # Nada
                     general_counts.at[question_id, "aprobado_nada"] += 1
+                    print(f"Pregunta {question_id}: Incrementando 'aprobado_nada' para respuesta 'Nada'")
+                elif follow_up_answer == 2:  # Poco
+                    general_counts.at[question_id, "aprobado_poco"] += 1
+                    print(f"Pregunta {question_id}: Incrementando 'aprobado_poco' para respuesta 'Poco'")
+                elif follow_up_answer == 3:  # Mucho
+                    general_counts.at[question_id, "aprobado_mucho"] += 1
+                    print(f"Pregunta {question_id}: Incrementando 'aprobado_mucho' para respuesta 'Mucho'")
 
             elif user_answer == 2:
                 general_counts.at[question_id, "correcto"] += 1
-                if follow_up_answer == 1:  # Poco
-                    general_counts.at[question_id, "correcto_poco"] += 1
-                elif follow_up_answer == 2:  # Mucho
-                    general_counts.at[question_id, "correcto_mucho"] += 1
-                elif follow_up_answer == 3:  # Nada
+                if follow_up_answer == 1:  # Nada
                     general_counts.at[question_id, "correcto_nada"] += 1
+                    print(f"Pregunta {question_id}: Incrementando 'correcto_nada' para respuesta 'Nada'")
+                elif follow_up_answer == 2:  # Poco
+                    general_counts.at[question_id, "correcto_poco"] += 1
+                    print(f"Pregunta {question_id}: Incrementando 'correcto_poco' para respuesta 'Poco'")
+                elif follow_up_answer == 3:  # Mucho
+                    general_counts.at[question_id, "correcto_mucho"] += 1
+                    print(f"Pregunta {question_id}: Incrementando 'correcto_mucho' para respuesta 'Mucho'")
 
             elif user_answer == 3:
                 general_counts.at[question_id, "incorrecto"] += 1
-                if follow_up_answer == 1:  # Poco
-                    general_counts.at[question_id, "incorrecto_poco"] += 1
-                elif follow_up_answer == 2:  # Mucho
-                    general_counts.at[question_id, "incorrecto_mucho"] += 1
-                elif follow_up_answer == 3:  # Nada
+                if follow_up_answer == 1:  # Nada
                     general_counts.at[question_id, "incorrecto_nada"] += 1
+                    print(f"Pregunta {question_id}: Incrementando 'incorrecto_nada' para respuesta 'Nada'")
+                elif follow_up_answer == 2:  # Poco
+                    general_counts.at[question_id, "incorrecto_poco"] += 1
+                    print(f"Pregunta {question_id}: Incrementando 'incorrecto_poco' para respuesta 'Poco'")
+                elif follow_up_answer == 3:  # Mucho
+                    general_counts.at[question_id, "incorrecto_mucho"] += 1
+                    print(f"Pregunta {question_id}: Incrementando 'incorrecto_mucho' para respuesta 'Mucho'")
 
             elif user_answer == 4:
                 general_counts.at[question_id, "dt"] += 1
@@ -555,3 +568,102 @@ if not os.path.exists("static"):
     os.makedirs("static")
 shutil.move(zip_path, static_zip_path)
 print("Archivo ZIP creado y movido a 'static/report.zip'")
+
+
+################################# FORMATO DE REPORTE ##########################################
+import openpyxl
+from openpyxl.styles import PatternFill
+
+# Cargar el archivo Excel generado
+file_path = 'report/all_users_survey_report.xlsx'
+workbook = openpyxl.load_workbook(file_path)
+
+# Obtener la hoja necesaria
+sheet = workbook['General']  # Asumiendo que los datos están en la hoja "General"
+
+# Colores de formato
+gray_fill_exactitud = PatternFill(start_color='D9D9D9', end_color='D9D9D9', fill_type='solid')  # Gris para exactitud
+gray_fill_ambiguidad = PatternFill(start_color='BFBFBF', end_color='BFBFBF', fill_type='solid')  # Gris para ambigüedad
+gray_fill_error = PatternFill(start_color='A6A6A6', end_color='A6A6A6', fill_type='solid')  # Gris para error
+gray_fill_19_20 = PatternFill(start_color='9E9E9E', end_color='9E9E9E', fill_type='solid')  # Gris para preguntas 19 y 20 con valor 0
+
+green_fill = PatternFill(start_color='C6EFCE', end_color='C6EFCE', fill_type='solid')  # Verde para "aprobado", "correcto"
+red_fill = PatternFill(start_color='F4CCCC', end_color='F4CCCC', fill_type='solid')  # Rojo para "reprobado", "incorrecto"
+blue_fill = PatternFill(start_color='C9DAF8', end_color='C9DAF8', fill_type='solid')  # Azul para "dt"
+violet_fill = PatternFill(start_color='EAD1DC', end_color='EAD1DC', fill_type='solid')  # Violeta para "ids"
+
+# Definir el orden correcto de las columnas
+correct_column_order = [
+    'question', 'aprobado', 'reprobado', 'aprobado_mucho', 'aprobado_poco', 'aprobado_nada',
+    'reprobado_mucho', 'reprobado_poco', 'reprobado_nada', 'correcto_mucho', 'correcto_poco', 'correcto_nada',
+    'incorrecto_mucho', 'incorrecto_poco', 'incorrecto_nada', 'correcto', 'incorrecto', 'ids', 'dt'
+]
+
+# Obtener los encabezados actuales de la hoja
+columns = [cell.value for cell in sheet[1]]  # Obtener los encabezados de la primera fila
+column_index_map = {column: index for index, column in enumerate(columns)}
+
+# Crear una lista de los índices correspondientes a las columnas en el orden correcto
+new_column_order = [column_index_map[col] for col in correct_column_order if col in column_index_map]
+
+# Crear una nueva hoja para el reporte con las columnas en el orden correcto
+new_sheet = workbook.create_sheet("Reordered General")
+
+# Copiar los encabezados en el nuevo orden
+for idx, col in enumerate(new_column_order, start=1):
+    new_sheet.cell(row=1, column=idx, value=columns[col])
+
+# Copiar los valores de las filas en el nuevo orden
+for row_idx, row in enumerate(sheet.iter_rows(min_row=2, min_col=1, max_col=sheet.max_column), start=2):
+    for col_idx, new_col in enumerate(new_column_order, start=1):
+        new_sheet.cell(row=row_idx, column=col_idx, value=row[new_col].value)
+
+# Aplicar los colores correspondientes a la nueva hoja con el orden corregido
+for row in new_sheet.iter_rows(min_row=2, min_col=1, max_col=new_sheet.max_column):
+    question = row[0].value  # La columna 'question' está en la columna A
+
+    # Aplicar formato a la celda de la columna 'question' dependiendo de la categoría
+    if question <= 6:  # Exactitud (Preguntas 1 a 6)
+        row[0].fill = gray_fill_exactitud
+    elif question <= 12:  # Ambigüedad (Preguntas 7 a 12)
+        row[0].fill = gray_fill_ambiguidad
+    elif question <= 18:  # Error (Preguntas 13 a 18)
+        row[0].fill = gray_fill_error
+    elif question == 19 or question == 20:  # Preguntas 19 y 20
+        row[0].fill = gray_fill_19_20  # Gris más oscuro
+
+    # Aplicar formato a las otras celdas dependiendo de sus valores y la columna a la que pertenecen
+    for cell_idx, cell in enumerate(row[1:], start=1):  # Empezamos en la columna 2 (ya que la primera es 'question')
+        header = new_sheet.cell(row=1, column=cell_idx + 1).value
+
+        if cell.value == 0:
+            if question <= 6:  # Exactitud (Preguntas 1 a 6)
+                cell.fill = gray_fill_exactitud
+            elif question <= 12:  # Ambigüedad (Preguntas 7 a 12)
+                cell.fill = gray_fill_ambiguidad
+            elif question <= 18:  # Error (Preguntas 13 a 18)
+                cell.fill = gray_fill_error
+            elif question == 19 or question == 20:  # Preguntas 19 y 20
+                cell.fill = gray_fill_19_20  # Gris más oscuro si el valor es 0
+
+        elif cell.value > 0:
+            # Aplicar color verde para "aprobado", "correcto"
+            if header in ['aprobado', 'correcto', 'aprobado_mucho', 'aprobado_poco', 'aprobado_nada', 'correcto_mucho', 'correcto_poco', 'correcto_nada']:
+                cell.fill = green_fill
+            
+            # Aplicar color rojo para "reprobado", "incorrecto"
+            elif header in ['reprobado', 'reprobado_mucho', 'reprobado_poco', 'reprobado_nada', 'incorrecto', 'incorrecto_mucho', 'incorrecto_poco', 'incorrecto_nada']:
+                cell.fill = red_fill
+            
+            # Aplicar color azul para "dt" en preguntas 19 y 20
+            elif header == 'dt' and (question == 19 or question == 20):
+                cell.fill = blue_fill
+
+            # Aplicar color violeta para "ids" en preguntas 19 y 20
+            elif header == 'ids' and (question == 19 or question == 20):
+                cell.fill = violet_fill
+
+# Guardar el archivo después de aplicar el formato y reordenar las columnas
+workbook.save('report/formatted_and_reordered_users_survey_report.xlsx')
+
+print("Formato aplicado, columnas reorganizadas y archivo guardado como 'formatted_and_reordered_users_survey_report.xlsx'")
