@@ -52,7 +52,6 @@ const definitionsTableHTML = `
     </div>
 `;
 
-
 function updateProgressBar() {
     // Total de preguntas en la lista 'questions'
     const totalQuestions = questions.length;
@@ -286,7 +285,7 @@ function handleAnswer(answer, optionElement) {
         const existingAnswerIndex = answers.findIndex(a => a.question_id === currentQuestionData.id);
 
         if (existingAnswerIndex !== -1) {
-            // Si ya existe, actualizamos la respuesta sin modificar el tiempo de respuesta
+            // Si ya existe, actualizamos la respuesta principal sin modificar el tiempo de respuesta
             answers[existingAnswerIndex].answer = answer;
             console.log("Respuesta actualizada:", answer);
         } else {
@@ -350,16 +349,18 @@ function scrollUp() {
     }, 100); 
 }
 
-
 // Función para manejar la respuesta a la pregunta de seguimiento
 function handleFollowUpAnswer(followUpAnswer) {
     endTime = new Date().getTime();
     const followUpResponseTime = endTime - startTime;
 
-    if (answers.length > 0) {
-        // Actualizar la última entrada en `answers` para incluir la respuesta de seguimiento
-        answers[answers.length - 1].follow_up_answer = followUpAnswer;
-        answers[answers.length - 1].follow_up_time = followUpResponseTime; // Guardar el tiempo de respuesta de seguimiento
+    const currentQuestionData = questions[currentQuestionIndex];
+    const existingAnswer = answers.find(a => a.question_id === currentQuestionData.id);
+
+    if (existingAnswer) {
+        // Actualizar la entrada en `answers` para incluir la respuesta de seguimiento y el tiempo de respuesta
+        existingAnswer.follow_up_answer = followUpAnswer;
+        existingAnswer.follow_up_time = followUpResponseTime;
         console.log("Respuesta de seguimiento guardada:", followUpAnswer);
     } else {
         console.error("Error: No se encontró la respuesta principal para asociar la respuesta de seguimiento.");

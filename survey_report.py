@@ -226,7 +226,6 @@ with pd.ExcelWriter("report/all_users_survey_report.xlsx") as writer:
             # Agregar la fila a la lista de filas del usuario actual
             rows.append(row)
 
-            # Contar las respuestas en la tabla general
             # Contar las respuestas en la tabla general con impresión de depuración
             if user_answer == 0:
                 general_counts.at[question_id, "reprobado"] += 1
@@ -554,7 +553,7 @@ for category in ["Ambigüedad", "Error"]:
             plt.close()
 
 ################################# DESCARGA DEL REPORTE #######################################
-
+'''
 # Ruta de la carpeta report y la ubicación de destino del ZIP
 report_path = "report"
 zip_path = "report.zip"
@@ -568,7 +567,7 @@ if not os.path.exists("static"):
     os.makedirs("static")
 shutil.move(zip_path, static_zip_path)
 print("Archivo ZIP creado y movido a 'static/report.zip'")
-
+'''
 
 ################################# FORMATO DE REPORTE ##########################################
 import openpyxl
@@ -664,6 +663,128 @@ for row in new_sheet.iter_rows(min_row=2, min_col=1, max_col=new_sheet.max_colum
                 cell.fill = violet_fill
 
 # Guardar el archivo después de aplicar el formato y reordenar las columnas
-workbook.save('report/formatted_and_reordered_users_survey_report.xlsx')
+workbook.save('report/all_users_survey_report.xlsx')
 
-print("Formato aplicado, columnas reorganizadas y archivo guardado como 'formatted_and_reordered_users_survey_report.xlsx'")
+print("Formato aplicado, columnas reorganizadas y archivo guardado como 'all_users_survey_report.xlsx'")
+
+
+############################## GRAFICAR PREGUNTAS DE PREFERENCIA DE VISUALIZACIÓN ###################################
+
+import matplotlib.pyplot as plt
+import os
+
+# Crear la carpeta "Preferencias de Visualización" si no existe
+preferences_folder_path = 'report/Preferencias de Visualización'
+os.makedirs(preferences_folder_path, exist_ok=True)
+
+# Asegurarse de que los índices de general_counts sean del 1 al 20
+general_counts.index = range(1, len(general_counts) + 1)
+
+# Filtrar las respuestas de la pregunta 19 y 20 del DataFrame general_counts
+questions_to_plot = [19, 20]
+
+for question_id in questions_to_plot:
+    if question_id in general_counts.index:  # Verificar si el índice existe
+        # Filtrar los datos para la pregunta actual
+        question_data = general_counts.loc[question_id]
+
+        # Extraer los valores de interés: "dt" y "ids"
+        dt_count = question_data['dt']
+        ids_count = question_data['ids']
+
+        # Crear la gráfica de barras
+        labels = ['DT-InterpretML', 'IDS']
+        counts = [dt_count, ids_count]
+
+        plt.figure(figsize=(10, 6))
+        plt.bar(labels, counts, color=['blue', 'violet'])
+        plt.xlabel('Modelos')
+        plt.ylabel('Número de Usuarios')
+        plt.title(f'Preferencia de Modelos en la Pregunta {question_id}')
+        plt.grid(axis='y', linestyle='--')
+
+        # Guardar la gráfica en la carpeta "Preferencias de Visualización"
+        plt.savefig(f'{preferences_folder_path}/pregunta_{question_id}_preferencia_modelos.png', bbox_inches='tight')
+        plt.close()
+
+        print(f"Gráfica para la pregunta {question_id} creada y guardada en 'Preferencias de Visualización'.")
+    else:
+        print(f"La pregunta {question_id} no está presente en los datos.")
+
+##################### GRÁFICA DE TIEMPO PROMEDIO DE RESPUESTA ###########################
+import os
+import matplotlib.pyplot as plt
+import pandas as pd
+import openpyxl
+from openpyxl.utils import get_column_letter
+
+# Calcular el tiempo promedio de respuesta
+responses = list(collection.find())  # Obtener las respuestas desde MongoDB
+responses_df = pd.DataFrame(responses)  # Convertir a DataFrame
+
+if 'question_id' in responses_df.columns and 'response_time_seconds' in responses_df.columns:
+    # Verificar si los valores están en milisegundos y convertir a segundos si es necesario
+    if responses_df['response_time_seconds'].max() > 1000:
+        print("Los valores de tiempo están en MILISEGUNDOS. Serán convertidos a segundos.")
+        responses_df['response_time_seconds'] /= 1000
+    else:
+        print("Los valores de tiempo están en SEGUNDOS.")
+
+    # Agrupar por pregunta y calcular el tiempo promedio
+    avg_time = responses_df.groupby('question_id')['response_time_seconds'].mean().reset_index()
+    avg_time.columns = ['question', 'avg_time_(s)']  # Renombrar columnas
+
+    # Crear gráfica de barras para el tiempo promedio por pregunta
+    os.makedirs('report/time', exist_ok=True)  # Crear carpeta si no existe
+    plt.figure(figsize=(10, 6))
+    bars = plt.bar(avg_time['question'], avg_time['avg_time_(s)'], color='skyblue', alpha=0.8)
+    plt.title('Average Response Time per question', fontsize=14)
+    plt.xlabel('Question', fontsize=12)
+    plt.ylabel('Average Time (seconds)', fontsize=12)
+    plt.xticks(avg_time['question'], rotation=45)
+    plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+    # Agregar los valores encima de cada barra
+    for bar in bars:
+        yval = bar.get_height()  # Obtener la altura de la barra (valor)
+        plt.text(
+            bar.get_x() + bar.get_width() / 2,  # Coordenada X
+            yval + 0.1,  # Coordenada Y (ligeramente por encima de la barra)
+            f"{yval:.2f}",  # Formatear el valor a 2 decimales
+            ha='center',  # Alinear texto al centro de la barra
+            va='bottom',  # Alinear texto en la parte inferior
+            fontsize=10
+        )
+
+    # Guardar la gráfica
+    plt.savefig('report/time/average_time.png', bbox_inches='tight')
+    plt.close()
+    print("Gráfica del tiempo promedio creada en 'report/time' con valores encima de cada barra.")
+
+    # Agregar columna del tiempo promedio al archivo Excel
+    file_path = 'report/all_users_survey_report.xlsx'
+    workbook = openpyxl.load_workbook(file_path)
+    sheet = workbook["Reordered General"]
+
+    # Añadir encabezado para la nueva columna al final
+    new_col_idx = sheet.max_column + 1
+    sheet.cell(row=1, column=new_col_idx, value="avg_time_(s)")
+
+    # Añadir valores promedio de tiempo a cada pregunta en la nueva columna
+    for row in sheet.iter_rows(min_row=2, max_row=sheet.max_row, min_col=1, max_col=1):
+        question_id = row[0].value  # Obtener el ID de la pregunta de la primera columna
+        avg_time_value = avg_time.loc[avg_time['question'] == question_id, 'avg_time_(s)']
+        sheet.cell(
+            row=row[0].row,
+            column=new_col_idx,
+            value=avg_time_value.values[0] if not avg_time_value.empty else "N/A"
+        )
+
+    # Ajustar el ancho de la columna "avg_time_(s)" para que sea más legible
+    sheet.column_dimensions[get_column_letter(new_col_idx)].width = 20
+
+    # Guardar los cambios en el archivo Excel
+    workbook.save(file_path)
+    print("Columna 'avg_time_(s)' añadida a 'Reordered General'.")
+else:
+    print("Las columnas necesarias ('question_id' y 'response_time_seconds') no están presentes en los datos.")
