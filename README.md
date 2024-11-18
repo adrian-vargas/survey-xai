@@ -1,6 +1,6 @@
 # Survey-XAI-App
 
-Survey-XAI-App es una herramienta clave dentro del Trabajo de Fin de Máster (TFM) *"A Tool for Human Evaluation of Interpretability"*, desarrollado por Adrián Vargas Rangel en el Máster de Inteligencia Artificial de la Universidad Politécnica de Madrid (2024). Su propósito es analizar y comparar la interpretabilidad y precisión de modelos transparentes en aprendizaje automático, específicamente Árboles de Decisión (DT) e Interpretable Decision Sets (IDS).
+Survey-XAI-App es una herramienta desarrollada por Adrián Vargas Rangel para el Trabajo de Fin de Máster (TFM) de Inteligencia Artificial *"A Tool for Human Evaluation of Interpretability"*, en la Universidad Politécnica de Madrid (2024). Su propósito es analizar y comparar la interpretabilidad y precisión de modelos transparentes en aprendizaje automático, específicamente Árboles de Decisión (DT) e Interpretable Decision Sets (IDS).
 
 ## Contexto
 
@@ -9,7 +9,7 @@ La interpretabilidad en inteligencia artificial es fundamental, especialmente en
 Survey-XAI-App integra una aplicación web que recopila datos a través de un cuestionario interactivo. Estos datos permiten combinar métricas técnicas (parsimonia, cobertura, simplicidad de reglas) con la percepción humana de interpretabilidad, proporcionando información sobre cómo los usuarios finales comprenden las decisiones de los modelos.
 
 ## Implementación de Modelos
-La implementación de los modelos evaluados está documentada en el notebook Survey-XAI-Models.ipynb, ubicado en la carpeta notebook. Además de validar el rendimiento de los modelos, este archivo también detalla el preprocesamiento, entrenamiento y generación de reglas, y sirve como referencia técnica para reproducir el estudio. También contiene los csv generados con las métricas de interpretabilidad cuantitativas: precisión, parsimonía, cobertura, gini y sparsidad.
+La implementación de los modelos evaluados está documentada en el notebook Survey-XAI-Models.ipynb, ubicado en la carpeta notebook. Además de validar el rendimiento de los modelos, este archivo también detalla el preprocesamiento, entrenamiento y generación de reglas, y sirve como referencia técnica para reproducir el estudio. También contiene los csv generados con las métricas de interpretabilidad cuantitativas de las reglas generadas por los modelos: precisión, parsimonía, cobertura, gini y sparsidad.
 
 ## Herramientas Desarrolladas
 
@@ -22,9 +22,9 @@ Disponible aquí: [IDS - Interpretable Decision Sets](https://github.com/adrian-
 
 ### 2. **Survey-XAI-App**
 Aplicación web para evaluar interpretabilidad:
-- Interactúa con reglas generadas por modelos DT-InterpretML e IDS.
+- Usa las reglas generadas por modelos DT-InterpretML e IDS.
 - Mide tiempos de respuesta y evalúa comprensión de reglas.
-- Genera reportes en Excel con gráficos detallados.
+- Genera reportes en Excel y gráficos detallados.
 
 ## Cuestionario Implementado
 
@@ -89,7 +89,7 @@ Este archivo permite agregar o modificar preguntas sin necesidad de cambiar el c
 ### Características Medidas
 
 - **Confianza del usuario**: Preguntas de seguimiento para evaluar el nivel de certeza de los participantes.
-- **Errores detectados**: Identificación de predicciones incorrectas por parte de los usuarios.
+- **Errores detectados**: Identificación de predicciones incorrectas de los modelos.
 - **Preferencias de visualización**: Evaluación subjetiva sobre qué modelo facilita más el análisis y la comprensión.
 
 ## Dataset Utilizado
@@ -109,7 +109,7 @@ El conjunto de datos utilizado en este proyecto es el **Student Performance**, r
 
 ### Aplicación en los Modelos
 
-Estas características fueron seleccionadas por su relevancia para predecir el rendimiento académico de los estudiantes. El conjunto de datos fue preprocesado para balancear las clases (aprobado/reprobado) utilizando técnicas como SMOTE. Posteriormente, estas variables se utilizaron para entrenar y evaluar modelos interpretables, específicamente Árboles de Decisión (DT) e Interpretable Decision Sets (IDS). Los modelos generaron reglas y visualizaciones que fueron integradas en el cuestionario de esta aplicación.
+Estas características fueron seleccionadas por su relevancia para predecir el rendimiento académico de los estudiantes. El conjunto de datos fue preprocesado para balancear las clases (aprobado/reprobado) utilizando técnicas como SMOTE. Posteriormente, estas variables se utilizaron para entrenar y evaluar modelos interpretables, específicamente Árboles de Decisión (DT) de [InterpretML](https://interpret.ml/) e Interpretable Decision Sets (IDS). Los modelos generaron reglas y visualizaciones que fueron integradas en el cuestionario de esta aplicación.
 
 ## Visualización y Resultados
 
