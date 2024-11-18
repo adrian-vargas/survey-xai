@@ -14,7 +14,7 @@ La implementación de los modelos evaluados está documentada en el notebook Sur
 ## Herramientas Desarrolladas
 
 ### 1. **Librería IDS Personalizada**
-Una implementación adaptada de Interpretable Decision Sets (IDS) basada en el repositorio [pyIDS](https://github.com/jirifilip/pyIDS) y el estudio de Lakkaraju et al. (2016). La librería permite:
+Una implementación adaptada de Interpretable Decision Sets (IDS) basada en el repositorio [pyIDS](https://github.com/jirifilip/pyIDS) y el estudio de Lakkaraju et al. (2016). Una copia de la librería desarrollada se encuentra en la carpeta IDS de este proyecto y permite:
 - Generación de reglas interpretables optimizadas.
 - Preprocesamiento y balanceo de datos con SMOTE.
 - Ajuste de parámetros como soporte, confianza y longitud máxima de reglas.
