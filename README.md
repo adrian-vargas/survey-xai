@@ -9,7 +9,7 @@ La interpretabilidad en inteligencia artificial es fundamental, especialmente en
 Survey-XAI-App integra una aplicación web que recopila datos a través de un cuestionario interactivo. Estos datos permiten combinar métricas técnicas (parsimonia, cobertura, simplicidad de reglas) con la percepción humana de interpretabilidad, proporcionando información sobre cómo los usuarios finales comprenden las decisiones de los modelos.
 
 ## Implementación de Modelos
-La implementación de los modelos evaluados está documentada en el notebook Survey-XAI-Models.ipynb, ubicado en la carpeta notebook. Este archivo detalla el preprocesamiento, entrenamiento y generación de reglas, y sirve como referencia técnica para reproducir el estudio.
+La implementación de los modelos evaluados está documentada en el notebook Survey-XAI-Models.ipynb, ubicado en la carpeta notebook. Este archivo detalla el preprocesamiento, entrenamiento y generación de reglas, y sirve como referencia técnica para reproducir el estudio. También contiene los csv generados con las métricas de interpretabilidad cuantitativas.
 
 ## Herramientas Desarrolladas
 
