@@ -9,7 +9,7 @@ La interpretabilidad en inteligencia artificial es fundamental, especialmente en
 Survey-XAI-App integra una aplicación web que recopila datos a través de un cuestionario interactivo. Estos datos permiten combinar métricas técnicas (parsimonia, cobertura, simplicidad de reglas) con la percepción humana de interpretabilidad, proporcionando información sobre cómo los usuarios finales comprenden las decisiones de los modelos.
 
 ## Implementación de Modelos
-La implementación de los modelos evaluados está documentada en el notebook Survey-XAI-Models.ipynb, ubicado en la carpeta notebook. Este archivo detalla el preprocesamiento, entrenamiento y generación de reglas, y sirve como referencia técnica para reproducir el estudio. También contiene los csv generados con las métricas de interpretabilidad cuantitativas.
+La implementación de los modelos evaluados está documentada en el notebook Survey-XAI-Models.ipynb, ubicado en la carpeta notebook. Además de validar el rendimiento de los modelos, este archivo también detalla el preprocesamiento, entrenamiento y generación de reglas, y sirve como referencia técnica para reproducir el estudio. También contiene los csv generados con las métricas de interpretabilidad cuantitativas: precisión, parsimonía, cobertura, gini y sparsidad.
 
 ## Herramientas Desarrolladas
 
@@ -50,7 +50,7 @@ El cuestionario interactivo de la aplicación evalúa la interpretabilidad de lo
 
 5. **Pregunta Descriptiva**: Una pregunta final abierta que permite a los usuarios expresar su opinión sobre el uso de visualizaciones y reglas para acompañar las predicciones.
 
-Como se ha mencionado, las categorías Exactitud, Ambigüedad y Error se dividen en tres subcategorías: Reglas, Grado Global y Grado Local. En cada subcategoría, se formula la misma pregunta, aplicándola una vez al modelo DT-InterpretML y otra al modelo IDS.
+Las visualizaciones utilizadas en las preguntas, como los grafos locales y globales, se generan a partir de los modelos DT-InterpretML e IDS. Es importante destacar que las subcategorías comparten la misma pregunta formulada, pero esta se aplica de forma independiente a ambos modelos, utilizando sus respectivas visualizaciones y reglas.
 
 ### Ejemplo de Configuración de Preguntas
 
@@ -94,15 +94,22 @@ Este archivo permite agregar o modificar preguntas sin necesidad de cambiar el c
 
 ## Dataset Utilizado
 
-El conjunto de datos es el **Student Performance**, recopilado por Paulo Cortez y disponible en el [UCI Machine Learning Repository](https://archive.ics.uci.edu/dataset/320/student+performance). Incluye características relevantes como:
-- **Absences**: Número de ausencias escolares.
-- **Studytime**: Tiempo dedicado al estudio semanal.
-- **Failures**: Número de asignaturas reprobadas.
-- **Fedu**: Nivel educativo del padre.
-- **Reason_reputation**: Razón principal para elegir la escuela.
-- **Goout**: Frecuencia con la que los estudiantes salen con amigos.
+El conjunto de datos utilizado en este proyecto es el **Student Performance**, recopilado por Paulo Cortez y disponible en el [UCI Machine Learning Repository](https://archive.ics.uci.edu/dataset/320/student+performance). Este dataset incluye características relevantes relacionadas con el rendimiento académico de los estudiantes, utilizadas para construir modelos predictivos que clasifican a los estudiantes en dos categorías: **Aprobado** o **Reprobado**.
 
-Estas variables sirvieron para construir modelos predictivos que clasifican a los estudiantes en categorías de Aprobado o Reprobado.
+### Variables del Dataset
+
+| **Característica**   | **Descripción**                                              | **Posibles Valores**                                                                       |
+|-----------------------|------------------------------------------------------------|-------------------------------------------------------------------------------------------|
+| `absences`           | Número de ausencias escolares del estudiante.              | Valores numéricos de 0 a 93                                                               |
+| `goout`              | Frecuencia con la que el estudiante sale con amigos.        | Enteros de 1 a 5: <br> 1: Muy baja frecuencia <br> 5: Muy alta frecuencia                 |
+| `studytime`          | Tiempo semanal dedicado al estudio fuera de las clases.     | Enteros de 1 a 4: <br> 1: Menos de 2 horas <br> 2: Entre 2 y 5 horas <br> 3: Entre 5 y 10 horas <br> 4: Más de 10 horas |
+| `reason_reputation`  | Razón principal para elegir la escuela (reputación).        | Binario: <br> 0: No es la razón principal <br> 1: Es la razón principal                   |
+| `failures`           | Número de asignaturas reprobadas anteriormente.             | Enteros de 0 a 4: <br> 0: Ninguna asignatura <br> 4: Cuatro o más asignaturas reprobadas  |
+| `Fedu`               | Nivel educativo del padre.                                  | Enteros de 0 a 4: <br> 0: Sin educación <br> 1: Primaria <br> 2: Secundaria <br> 3: Universidad <br> 4: Postgrado o avanzado |
+
+### Aplicación en los Modelos
+
+Estas características fueron seleccionadas por su relevancia para predecir el rendimiento académico de los estudiantes. El conjunto de datos fue preprocesado para balancear las clases (aprobado/reprobado) utilizando técnicas como SMOTE. Posteriormente, estas variables se utilizaron para entrenar y evaluar modelos interpretables, específicamente Árboles de Decisión (DT) e Interpretable Decision Sets (IDS). Los modelos generaron reglas y visualizaciones que fueron integradas en el cuestionario de esta aplicación.
 
 ## Visualización y Resultados
 
