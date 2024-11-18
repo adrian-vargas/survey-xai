@@ -106,6 +106,8 @@ La aplicación ofrece una interfaz intuitiva para usuarios y administradores:
 
 ![Interfaz del Cuestionario](static/app/interfaz_cuestionario.PNG)
 
+![Panel de administración](static/app/admin_panel.PNG)
+
 ### Reportes Generados
 Los reportes incluyen:
 - Glosario del análisis.

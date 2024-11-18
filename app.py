@@ -29,6 +29,10 @@ mongo_uri = os.getenv('MONGO_URI')
 db_name = os.getenv('MONGO_DB_NAME')
 collection_name = os.getenv('MONGO_COLLECTION_NAME')
 
+# Obtener las claves de admin y user desde las variables de entorno
+user_access_key = os.getenv('USER_ACCESS_KEY')
+admin_access_key = os.getenv('ADMIN_ACCESS_KEY')
+
 # Configuración de la conexión a MongoDB Atlas con manejo de errores
 try:
     client = MongoClient(mongo_uri)
@@ -45,10 +49,10 @@ def index():
 @app.route('/access', methods=['POST'])
 def access():
     password = request.json.get("password")
-    if password == "clave456":  # Contraseña del administrador
+    if password == admin_access_key:  # Contraseña del administrador
         session["admin_logged_in"] = True
         return jsonify({"status": "admin"})
-    elif password == "clave123":  # Contraseña del usuario
+    elif password == user_access_key:  # Contraseña del usuario
         session["user_logged_in"] = True
         return jsonify({"status": "user"})
     else:
@@ -106,31 +110,35 @@ def get_my_ip():
     return f'My public IP is: {ip}'
 
 # Ruta para ejecutar el script y generar el reporte
-@app.route('/generate_report')
+@app.route('/generate_report', methods=['GET'])
 def generate_report():
     try:
         app.logger.info("Intentando ejecutar el script survey_report.py...")
         survey_report_path = os.path.join(BASE_DIR, "survey_report.py")
-        result = subprocess.run(["python", survey_report_path], check=True, capture_output=True, text=True, timeout=300)  # Tiempo en segundos
+
+        # Ejecutar el script sin necesidad de descargar el reporte
+        result = subprocess.run(
+            ["python", survey_report_path], 
+            check=True, 
+            capture_output=True, 
+            text=True, 
+            timeout=300  # Tiempo máximo en segundos
+        )
         app.logger.info(f"Salida del script: {result.stdout}")
+
         if result.stderr:
             app.logger.error(f"Errores del script: {result.stderr}")
-        return redirect(url_for('download_report'))
+
+        # Devolver mensaje de éxito al cliente
+        return jsonify({"status": "success", "message": "Reporte generado exitosamente."})
+
     except subprocess.TimeoutExpired:
         app.logger.error("Tiempo de espera agotado al generar el reporte.")
-        return "El reporte tomó demasiado tiempo en generarse y fue cancelado.", 500
+        return jsonify({"status": "error", "message": "El reporte tomó demasiado tiempo en generarse y fue cancelado."}), 500
+
     except subprocess.CalledProcessError as e:
         app.logger.error(f"Error al generar el reporte: {e}")
-        return "Error al generar el reporte.", 500
-
-# Ruta para descargar el reporte
-@app.route('/download_report')
-def download_report():
-    report_path = os.path.join(BASE_DIR, "static", "report.zip")
-    if os.path.exists(report_path):
-        return send_file(report_path, as_attachment=True)
-    else:
-        return "El archivo no existe.", 404
+        return jsonify({"status": "error", "message": "Error al generar el reporte."}), 500
 
 # Configuración de ejecución para producción
 if __name__ == '__main__':

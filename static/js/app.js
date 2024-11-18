@@ -1,8 +1,8 @@
 let questions;
 let currentQuestionIndex = 0;
 let startTime, endTime;
-const userAccessKey = 'clave123';
-const adminAccessKey = 'clave456';
+//const userAccessKey = 'clave123';
+//const adminAccessKey = 'clave456';
 const answers = [];
 
 // Tabla de definiciones en HTML
@@ -512,23 +512,42 @@ document.getElementById('next-question-btn').onclick = nextQuestion;
 // Función de inicio de sesión
 function login() {
     const enteredKey = document.getElementById('access-key').value;
-    if (enteredKey === userAccessKey) {
-        // Código para acceso de usuario
-        document.getElementById('access-container').style.display = 'none';
-        document.getElementById('intro-container').style.display = 'block'; // Mostrar el intro-container
-        document.getElementById('model-prediction-explanation').style.display = 'none';
-        document.getElementById('instructions').style.display = 'none';
-        document.getElementById('questionnaire-title').classList.add('hidden');
-        sessionStorage.setItem('user_logged_in', 'true');
-    } else if (enteredKey === adminAccessKey) {
-        // Código para acceso de administrador
-        document.getElementById('access-container').style.display = 'none';
-        document.getElementById('admin-content').style.display = 'block';
-        document.querySelector('h1').classList.add('hidden');
-        sessionStorage.setItem('admin_logged_in', 'true');
-    } else {
-        alert('Clave de acceso incorrecta. Inténtalo de nuevo.');
-    }
+
+    // Enviar la clave ingresada al servidor
+    fetch('/access', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: enteredKey })  // Enviar la clave como parte del cuerpo de la solicitud
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Clave de acceso incorrecta.');
+        }
+        return response.json();  // Convertir la respuesta a JSON
+    })
+    .then(data => {
+        // Manejo de la respuesta según el estado recibido del backend
+        if (data.status === "admin") {
+            // Acceso como administrador
+            document.getElementById('access-container').style.display = 'none';
+            document.getElementById('admin-content').style.display = 'block';
+            document.querySelector('h1').classList.add('hidden');
+            sessionStorage.setItem('admin_logged_in', 'true');
+        } else if (data.status === "user") {
+            // Acceso como usuario
+            document.getElementById('access-container').style.display = 'none';
+            document.getElementById('intro-container').style.display = 'block'; 
+            document.getElementById('model-prediction-explanation').style.display = 'none';
+            document.getElementById('instructions').style.display = 'none';
+            document.getElementById('questionnaire-title').classList.add('hidden');
+            sessionStorage.setItem('user_logged_in', 'true');
+        } else {
+            throw new Error('Clave de acceso incorrecta.');
+        }
+    })
+    .catch(error => {
+        alert(error.message);  
+    });
 }
 
 // Ejecutar login al hacer clic en el botón "Acceder" o presionar "Enter"
