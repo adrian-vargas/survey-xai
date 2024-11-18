@@ -344,7 +344,7 @@ for category in categories:
         ]
 
         if not filtered_data.empty:
-            plt.figure(figsize=(12, 8))  # Aumenta el tamaño si es necesario
+            plt.figure(figsize=(12, 8))  
 
             # Obtener los IDs y las instrucciones de las preguntas para agregar contexto
             question_ids = filtered_data['id'].tolist()
@@ -354,7 +354,7 @@ for category in categories:
             # Obtener los tipos de respuesta correspondientes a la categoría
             response_types = response_options.get(category, [])
             x = np.arange(len(response_types))  # Posiciones para cada tipo de respuesta en el eje X
-            width = 0.35  # Ancho de las barras
+            width = 0.35  
 
             # Obtener la observación (es la misma para las preguntas de la misma subcategoría)
             observation = filtered_data['observation'].iloc[0]
@@ -376,9 +376,9 @@ for category in categories:
 
             # Agregar título y contexto a la gráfica
             plt.title(f'Conteo Total de Respuestas para {category} - {sub_category}')
-            plt.xlabel('Opciones de Respuesta', labelpad=5)  # Ajuste del espacio con labelpad
-            plt.ylabel('Número de Usuarios', labelpad=5)  # Ajuste del espacio con labelpad
-            plt.xticks(x + width / 2, response_types, rotation=0)  # Alineación horizontal de etiquetas
+            plt.xlabel('Opciones de Respuesta', labelpad=5)  
+            plt.ylabel('Número de Usuarios', labelpad=5)  
+            plt.xticks(x + width / 2, response_types, rotation=0)  
             plt.legend()
 
             # Preparar datos para la tabla
@@ -500,9 +500,9 @@ for category in ["Ambigüedad", "Error"]:
                 plt.bar(x + idx * width, counts, width, label=f"{model}")
 
             plt.title(f'Conteo Total de Respuestas de Seguimiento para {category} - {sub_category}')
-            plt.xlabel('Opciones de Respuesta de Seguimiento', labelpad=5)  # Ajuste del espacio con labelpad
-            plt.ylabel('Número de Usuarios', labelpad=5)  # Ajuste del espacio con labelpad
-            plt.xticks(x + width / 2, follow_up_types, rotation=0)  # Alineación horizontal de etiquetas
+            plt.xlabel('Opciones de Respuesta de Seguimiento', labelpad=5)  
+            plt.ylabel('Número de Usuarios', labelpad=5)  
+            plt.xticks(x + width / 2, follow_up_types, rotation=0)  
             plt.legend()
 
             # Preparar datos para la tabla
@@ -522,7 +522,7 @@ for category in ["Ambigüedad", "Error"]:
                 colLabels=column_labels,
                 cellLoc='center',
                 loc='bottom',
-                bbox=[0.0, -0.4, 1.0, 0.2]  # Ajuste de la posición y tamaño de la tabla
+                bbox=[0.0, -0.4, 1.0, 0.2]  
             )
 
             # Agregar la instrucción y observación debajo de la tabla como texto adicional con ajustes en las coordenadas
@@ -578,7 +578,7 @@ file_path = 'report/all_users_survey_report.xlsx'
 workbook = openpyxl.load_workbook(file_path)
 
 # Obtener la hoja necesaria
-sheet = workbook['General']  # Asumiendo que los datos están en la hoja "General"
+sheet = workbook['General']  # Los datos están en la hoja "General"
 
 # Colores de formato
 gray_fill_exactitud = PatternFill(start_color='D9D9D9', end_color='D9D9D9', fill_type='solid')  # Gris para exactitud
@@ -732,10 +732,10 @@ if 'question_id' in responses_df.columns and 'response_time_seconds' in response
 
     # Agrupar por pregunta y calcular el tiempo promedio
     avg_time = responses_df.groupby('question_id')['response_time_seconds'].mean().reset_index()
-    avg_time.columns = ['question', 'avg_time_(s)']  # Renombrar columnas
+    avg_time.columns = ['question', 'avg_time_(s)']  
 
     # Crear gráfica de barras para el tiempo promedio por pregunta
-    os.makedirs('report/time', exist_ok=True)  # Crear carpeta si no existe
+    os.makedirs('report/time', exist_ok=True)  
     plt.figure(figsize=(10, 6))
     bars = plt.bar(avg_time['question'], avg_time['avg_time_(s)'], color='skyblue', alpha=0.8)
     plt.title('Average Response Time per question', fontsize=14)
@@ -746,13 +746,13 @@ if 'question_id' in responses_df.columns and 'response_time_seconds' in response
 
     # Agregar los valores encima de cada barra
     for bar in bars:
-        yval = bar.get_height()  # Obtener la altura de la barra (valor)
+        yval = bar.get_height()  
         plt.text(
-            bar.get_x() + bar.get_width() / 2,  # Coordenada X
-            yval + 0.1,  # Coordenada Y (ligeramente por encima de la barra)
-            f"{yval:.2f}",  # Formatear el valor a 2 decimales
-            ha='center',  # Alinear texto al centro de la barra
-            va='bottom',  # Alinear texto en la parte inferior
+            bar.get_x() + bar.get_width() / 2,  
+            yval + 0.1,  
+            f"{yval:.2f}", 
+            ha='center', 
+            va='bottom',
             fontsize=10
         )
 
