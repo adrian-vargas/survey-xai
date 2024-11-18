@@ -1,8 +1,6 @@
 let questions;
 let currentQuestionIndex = 0;
 let startTime, endTime;
-//const userAccessKey = 'clave123';
-//const adminAccessKey = 'clave456';
 const answers = [];
 
 // Tabla de definiciones en HTML
