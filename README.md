@@ -8,6 +8,9 @@ La interpretabilidad en inteligencia artificial es fundamental, especialmente en
 
 Survey-XAI-App integra una aplicación web que recopila datos a través de un cuestionario interactivo. Estos datos permiten combinar métricas técnicas (parsimonia, cobertura, simplicidad de reglas) con la percepción humana de interpretabilidad, proporcionando información sobre cómo los usuarios finales comprenden las decisiones de los modelos.
 
+## Implementación de Modelos
+La implementación de los modelos evaluados está documentada en el notebook Survey-XAI-Models.ipynb, ubicado en la carpeta notebook. Este archivo detalla el preprocesamiento, entrenamiento y generación de reglas, y sirve como referencia técnica para reproducir el estudio.
+
 ## Herramientas Desarrolladas
 
 ### 1. **Librería IDS Personalizada**
@@ -25,7 +28,7 @@ Aplicación web para evaluar interpretabilidad:
 
 ## Cuestionario Implementado
 
-El cuestionario interactivo de la aplicación evalúa la interpretabilidad de los modelos utilizando preguntas diseñadas cuidadosamente para abordar diversos aspectos. Estas preguntas están organizadas en las siguientes categorías:
+El cuestionario interactivo de la aplicación evalúa la interpretabilidad de los modelos utilizando 21 preguntas diseñadas cuidadosamente para abordar diversos aspectos. Estas preguntas están organizadas en las siguientes categorías:
 
 1. **Exactitud**: Evalúa si los usuarios pueden identificar correctamente la predicción del modelo basándose en las reglas presentadas.  
    - Subcategorías:
@@ -46,6 +49,8 @@ El cuestionario interactivo de la aplicación evalúa la interpretabilidad de lo
 4. **Preferencias de Visualización**: Preguntas abiertas donde los usuarios seleccionan qué visualización encuentran más útil para comprender el modelo y analizar errores.
 
 5. **Pregunta Descriptiva**: Una pregunta final abierta que permite a los usuarios expresar su opinión sobre el uso de visualizaciones y reglas para acompañar las predicciones.
+
+Como se ha mencionado, las categorías Exactitud, Ambigüedad y Error se dividen en tres subcategorías: Reglas, Grado Global y Grado Local. En cada subcategoría, se formula la misma pregunta, aplicándola una vez al modelo DT-InterpretML y otra al modelo IDS.
 
 ### Ejemplo de Configuración de Preguntas
 
