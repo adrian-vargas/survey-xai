@@ -11,6 +11,15 @@ Survey-XAI-App integra una aplicación web que recopila datos a través de un cu
 ## Implementación de Modelos
 La implementación de los modelos evaluados está documentada en el notebook Survey-XAI-Models.ipynb, ubicado en la carpeta notebook. Además de validar el rendimiento de los modelos, este archivo también detalla el preprocesamiento, entrenamiento y generación de reglas, y sirve como referencia técnica para reproducir el estudio. También contiene los csv generados con las métricas de interpretabilidad cuantitativas de las reglas generadas por los modelos: precisión, parsimonía, cobertura, gini y sparsidad.
 
+### Uso de Árboles de Decisión (DT) de InterpretML
+Se utilizó el Árbol de Decisión (DT) de la biblioteca [InterpretML](https://interpret.ml/) debido a su enfoque en la interpretabilidad intrínseca y su capacidad para generar explicaciones locales y globales fácilmente comprensibles:
+
+- **Compatibilidad con explicaciones visuales**: Proporciona visualizaciones claras, como diagramas de árbol y gráficas de importancia de características, lo que facilita su integración en el cuestionario.
+- **Optimización para interpretabilidad**: Prioriza métricas como la parsimonía y simplicidad en la construcción del árbol.
+- **Consistencia con IDS**: Permite una comparación directa con los modelos IDS al generar reglas con una estructura interpretativa similar.
+
+InterpretML ofrece una implementación optimizada basada en scikit-learn. En este trabajo se usó dicho modelo subyacente de scikit-learn para detallar algunos de los atributos de los grafos generados.
+
 ## Herramientas Desarrolladas
 
 ### 1. **Librería IDS Personalizada**
@@ -106,8 +115,6 @@ El conjunto de datos utilizado en este proyecto es el **Student Performance**, r
 | `reason_reputation`  | Razón principal para elegir la escuela (reputación).        | Binario: <br> 0: No es la razón principal <br> 1: Es la razón principal                   |
 | `failures`           | Número de asignaturas reprobadas anteriormente.             | Enteros de 0 a 4: <br> 0: Ninguna asignatura <br> 4: Cuatro o más asignaturas reprobadas  |
 | `Fedu`               | Nivel educativo del padre.                                  | Enteros de 0 a 4: <br> 0: Sin educación <br> 1: Primaria <br> 2: Secundaria <br> 3: Universidad <br> 4: Postgrado o avanzado |
-
-### Aplicación en los Modelos
 
 Estas características fueron seleccionadas por su relevancia para predecir el rendimiento académico de los estudiantes. El conjunto de datos fue preprocesado para balancear las clases (aprobado/reprobado) utilizando técnicas como SMOTE. Posteriormente, estas variables se utilizaron para entrenar y evaluar modelos interpretables, específicamente Árboles de Decisión (DT) de [InterpretML](https://interpret.ml/) e Interpretable Decision Sets (IDS). Los modelos generaron reglas y visualizaciones que fueron integradas en el cuestionario de esta aplicación.
 
