@@ -71,6 +71,16 @@ function loadQuestion() {
     }
 }
 
+// Lista de reglas específicas a resaltar
+const highlightedRules = {
+    3: ["si failures ≤ 0.50 y reason_reputation > 0.50 y absences ≤ 13.50 entonces Aprobado"],
+    5: ["si failures > 0.50 y absences > 1.50 y goout > 2.50 entonces Reprobado"],
+    9: ["si failures > 0.50 y absences > 1.50 y goout > 2.50 entonces Reprobado"],
+    11: ["si failures > 0.50 y absences > 1.50 y goout > 2.50 entonces Reprobado"],
+    15: ["si failures ≤ 0.50 y reason_reputation ≤ 0.50 y Fedu ≤ 1.50 entonces Reprobado"],
+    17: ["si failures ≤ 0.50 y reason_reputation ≤ 0.50 y Fedu > 1.50 entonces Aprobado"]
+};
+
 function displayQuestion(questionData) {
     const container = document.getElementById('question-container');
     container.innerHTML = ''; // Limpiar la pregunta anterior
@@ -126,6 +136,14 @@ function displayQuestion(questionData) {
         const rulesList = document.createElement('ul');
         questionData.rules.forEach(rule => {
             const ruleItem = document.createElement('li');
+
+            // Verificar si la regla está en las reglas destacadas para esta pregunta
+            const currentQuestionHighlights = highlightedRules[questionData.id];
+            if (currentQuestionHighlights && currentQuestionHighlights.includes(rule)) {
+                ruleItem.style.backgroundColor = 'yellow'; // Resaltar fondo amarillo
+                ruleItem.style.fontWeight = 'bold'; // Hacer el texto en negritas para mayor visibilidad
+            }
+
             ruleItem.innerHTML = formatRule(rule);
             rulesList.appendChild(ruleItem);
         });
@@ -147,6 +165,7 @@ function displayQuestion(questionData) {
             graphImage.style.maxWidth = '80%';
             container.appendChild(graphImage);
         }
+        
         // Agregar imagen del grafo global para el modelo IDS
         else if (questionData.model === 'IDS') {
             const graphImage = document.createElement('img');
@@ -155,6 +174,7 @@ function displayQuestion(questionData) {
             graphImage.style.maxWidth = '80%';
             container.appendChild(graphImage);
         }
+
     } else if (questionData.local_graph) {
         const localGraphElement = document.createElement('p');
         localGraphElement.textContent = `${questionData.local_graph}`;
@@ -183,7 +203,7 @@ function displayQuestion(questionData) {
         if (localGraphImageSrc) {
             const graphImage = document.createElement('img');
             graphImage.src = localGraphImageSrc;
-            graphImage.alt = `Grafo Local del modelo ${questionData.model} - ${questionData.category}`;
+            graphImage.alt = `Grafo Local del Modelo ${questionData.model} - ${questionData.category}`;
             graphImage.style.maxWidth = '80%';
             container.appendChild(graphImage);
         }
