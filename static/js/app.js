@@ -90,8 +90,8 @@ function displayQuestion(questionData) {
 
     // Limpiar el contenedor de seguimiento para cada nueva pregunta
     const followUpContainer = document.getElementById('follow-up-container');
-    followUpContainer.innerHTML = ''; // Limpia cualquier contenido previo en el contenedor de seguimiento
-    followUpContainer.style.display = 'none'; // Oculta el contenedor inicialmente
+    followUpContainer.innerHTML = '';
+    followUpContainer.style.display = 'none';
 
     // Mostrar instrucciones
     if (questionData.instructions) {
@@ -124,7 +124,7 @@ function displayQuestion(questionData) {
         container.appendChild(definitionsContainer);
     }
 
-    // Mostrar reglas como una lista de elementos solo si el modelo no es IDS o no es de subcategoría Grado Global o Grado Local
+    // Mostrar reglas solo si están definidas y no se ocultan explícitamente
     if (questionData.rules && !(questionData.model === 'IDS' && (questionData.sub_category === 'Grado Global' || questionData.sub_category === 'Grado Local'))) {
         const rulesContainer = document.createElement('div');
         rulesContainer.classList.add('rule-container');
@@ -141,7 +141,7 @@ function displayQuestion(questionData) {
             const currentQuestionHighlights = highlightedRules[questionData.id];
             if (currentQuestionHighlights && currentQuestionHighlights.includes(rule)) {
                 ruleItem.style.backgroundColor = 'yellow'; // Resaltar fondo amarillo
-                ruleItem.style.fontWeight = 'bold'; // Hacer el texto en negritas para mayor visibilidad
+                ruleItem.style.fontWeight = 'bold'; 
             }
 
             ruleItem.innerHTML = formatRule(rule);
@@ -151,64 +151,61 @@ function displayQuestion(questionData) {
         container.appendChild(rulesContainer);
     }
 
-    // Mostrar grafo global o local
-    if (questionData.global_graph) {
-        const globalGraphElement = document.createElement('p');
-        globalGraphElement.textContent = `${questionData.global_graph}`;
-        container.appendChild(globalGraphElement);
-
-        // Agregar imagen del grafo global para el modelo DT-InterpretML
-        if (questionData.model === 'DT-InterpretML') {
-            const graphImage = document.createElement('img');
-            graphImage.src = '/static/graphs/interpretml/dt.png'; // Ruta para el grafo de DT-InterpretML
-            graphImage.alt = 'Grafo Global del modelo DT-InterpretML';
-            graphImage.style.maxWidth = '80%';
-            container.appendChild(graphImage);
-        }
-        
-        // Agregar imagen del grafo global para el modelo IDS
-        else if (questionData.model === 'IDS') {
-            const graphImage = document.createElement('img');
-            graphImage.src = '/static/graphs/ids/ids.png'; // Ruta para el grafo de IDS
-            graphImage.alt = 'Grafo Global del modelo IDS';
-            graphImage.style.maxWidth = '80%';
-            container.appendChild(graphImage);
-        }
-
-    } else if (questionData.local_graph) {
-        const localGraphElement = document.createElement('p');
-        localGraphElement.textContent = `${questionData.local_graph}`;
-        container.appendChild(localGraphElement);
-
-        // Agregar imagen del grafo local según el modelo y categoría de pregunta
-        let localGraphImageSrc = '';
-        if (questionData.model === 'DT-InterpretML') {
-            if (questionData.category === 'Exactitud') {
-                localGraphImageSrc = '/static/graphs/interpretml/local/exactitud.png';
-            } else if (questionData.category === 'Ambigüedad') {
-                localGraphImageSrc = '/static/graphs/interpretml/local/ambiguedad.png';
-            } else if (questionData.category === 'Error') {
-                localGraphImageSrc = '/static/graphs/interpretml/local/error.png';
-            }
-        } else if (questionData.model === 'IDS') {
-            if (questionData.category === 'Exactitud') {
-                localGraphImageSrc = '/static/graphs/ids/local/exactitud.png';
-            } else if (questionData.category === 'Ambigüedad') {
-                localGraphImageSrc = '/static/graphs/ids/local/ambiguedad.png';
-            } else if (questionData.category === 'Error') {
-                localGraphImageSrc = '/static/graphs/ids/local/error.png';
+    if (questionData.global_graph || questionData.local_graph) {
+        let graphImageSrc = '';
+    
+        // Determinar la fuente del grafo según el modelo y la categoría
+        if (questionData.global_graph) {
+            if (questionData.model === 'IDS') {
+                // Ajustar las rutas de los grafos globales de IDS según la categoría
+                if (questionData.category === 'Exactitud') {
+                    graphImageSrc = '/static/graphs/ids/global/exactitud.png';
+                } else if (questionData.category === 'Ambigüedad') {
+                    graphImageSrc = '/static/graphs/ids/global/ambiguedad.png';
+                } else if (questionData.category === 'Error') {
+                    graphImageSrc = '/static/graphs/ids/global/error.png';
+                } 
+            } else if (questionData.model === 'DT-InterpretML') {
+                // Ajustar las rutas de los grafos globales de DT-InterpretML
+                graphImageSrc = '/static/graphs/interpretml/dt.png';
             }
         }
-
-        if (localGraphImageSrc) {
+    
+        if (questionData.local_graph) {
+            if (questionData.model === 'IDS') {
+                // Ajustar las rutas de los grafos locales de IDS según la categoría
+                if (questionData.category === 'Exactitud') {
+                    graphImageSrc = '/static/graphs/ids/local/exactitud.png';
+                } else if (questionData.category === 'Ambigüedad') {
+                    graphImageSrc = '/static/graphs/ids/local/ambiguedad.png';
+                } else if (questionData.category === 'Error') {
+                    graphImageSrc = '/static/graphs/ids/local/error.png';
+                }
+            } else if (questionData.model === 'DT-InterpretML') {
+                // Ajustar las rutas de los grafos locales de DT-InterpretML
+                if (questionData.category === 'Exactitud') {
+                    graphImageSrc = '/static/graphs/interpretml/local/exactitud.png';
+                } else if (questionData.category === 'Ambigüedad') {
+                    graphImageSrc = '/static/graphs/interpretml/local/ambiguedad.png';
+                } else if (questionData.category === 'Error') {
+                    graphImageSrc = '/static/graphs/interpretml/local/error.png';
+                }
+            }
+        }
+            
+        // Si no hay una ruta válida, muestra una advertencia y no renderiza imagen
+        if (!graphImageSrc) {
+            console.warn(`No se definió una ruta de grafo válida para la pregunta ID: ${questionData.id}. Ruta: ${graphImageSrc}`);
+        } else {
+            console.log(`Ruta del grafo para la pregunta ID: ${questionData.id}: ${graphImageSrc}`);
             const graphImage = document.createElement('img');
-            graphImage.src = localGraphImageSrc;
-            graphImage.alt = `Grafo Local del Modelo ${questionData.model} - ${questionData.category}`;
+            graphImage.src = graphImageSrc;
+            graphImage.alt = `Grafo del modelo ${questionData.model}`;
             graphImage.style.maxWidth = '80%';
             container.appendChild(graphImage);
         }
     }
-
+    
     // Mostrar predicción del modelo solo si la categoría es de "Error"
     if (questionData.prediction_model && questionData.category === 'Error') {
         const predictionElement = document.createElement('p');
@@ -303,11 +300,11 @@ function handleAnswer(answer, optionElement) {
         const existingAnswerIndex = answers.findIndex(a => a.question_id === currentQuestionData.id);
 
         if (existingAnswerIndex !== -1) {
-            // Si ya existe, actualizamos la respuesta principal sin modificar el tiempo de respuesta
+            // Si ya existe, actualiza la respuesta principal sin modificar el tiempo de respuesta
             answers[existingAnswerIndex].answer = answer;
             console.log("Respuesta actualizada:", answer);
         } else {
-            // Si no existe, creamos una nueva entrada en `answers`
+            // Si no existe, crea una nueva entrada en `answers`
             answers.push({
                 question_id: currentQuestionData.id || currentQuestionIndex + 1,  // Guarda el ID de la pregunta
                 question: currentQuestionData.instructions || "",  // Añade el campo 'instructions' como 'question'
@@ -319,7 +316,7 @@ function handleAnswer(answer, optionElement) {
                 prediction: currentQuestionData.prediction || [],
                 answer: answer,  // Respuesta principal
                 follow_up_question: currentQuestionData.follow_up ? currentQuestionData.follow_up.question : null,  // Guardar la pregunta de seguimiento, si existe
-                follow_up_answer: null  // Inicializar el campo de respuesta de seguimiento como `null`
+                follow_up_answer: null  // Inicializar el campo de respuesta de seguimiento como null
             });
             console.log("Respuesta guardada:", answer);
         }
@@ -376,7 +373,7 @@ function handleFollowUpAnswer(followUpAnswer) {
     const existingAnswer = answers.find(a => a.question_id === currentQuestionData.id);
 
     if (existingAnswer) {
-        // Actualizar la entrada en `answers` para incluir la respuesta de seguimiento y el tiempo de respuesta
+        // Actualizar la entrada en answers para incluir la respuesta de seguimiento y el tiempo de respuesta
         existingAnswer.follow_up_answer = followUpAnswer;
         existingAnswer.follow_up_time = followUpResponseTime;
         console.log("Respuesta de seguimiento guardada:", followUpAnswer);
@@ -485,7 +482,7 @@ function submitAnswers() {
 
     // Reestructuramos cada respuesta en el arreglo `answers` antes de enviarla
     const formattedAnswers = answers.map(answer => ({
-        user_id: sessionStorage.getItem('user_id'),  // Validar que el `user_id` esté almacenado en la sesión
+        user_id: sessionStorage.getItem('user_id'),  // Validar que el user_id esté almacenado en la sesión
         question_id: answer.question_id,  // ID de la pregunta
         question: answer.question,  // Texto de la pregunta
         model: answer.model,  // Modelo utilizado

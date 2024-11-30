@@ -148,7 +148,7 @@ with pd.ExcelWriter("report/all_users_survey_report.xlsx") as writer:
         user_responses = list(collection.find({"user_id": user_id}))
 
         # Recorrer cada pregunta en el JSON y asignar las respuestas del usuario
-        for idx, question in enumerate(questions_data[:21]):  # Limitar a 21 preguntas
+        for idx, question in enumerate(questions_data[:21]): 
             # Extraer datos de la pregunta y normalizar usando los mapeos
             question_id = question.get("id")
             category = question.get("category")
@@ -552,23 +552,6 @@ for category in ["Ambigüedad", "Error"]:
             )
             plt.close()
 
-################################# DESCARGA DEL REPORTE #######################################
-'''
-# Ruta de la carpeta report y la ubicación de destino del ZIP
-report_path = "report"
-zip_path = "report.zip"
-static_zip_path = "static/report.zip"
-
-# Crear un archivo ZIP de la carpeta 'report' en su ubicación actual
-shutil.make_archive(zip_path.replace('.zip', ''), 'zip', report_path)
-
-# Mover el archivo ZIP a la carpeta static
-if not os.path.exists("static"):
-    os.makedirs("static")
-shutil.move(zip_path, static_zip_path)
-print("Archivo ZIP creado y movido a 'static/report.zip'")
-'''
-
 ################################# FORMATO DE REPORTE ##########################################
 import openpyxl
 from openpyxl.styles import PatternFill
@@ -578,7 +561,7 @@ file_path = 'report/all_users_survey_report.xlsx'
 workbook = openpyxl.load_workbook(file_path)
 
 # Obtener la hoja necesaria
-sheet = workbook['General']  # Los datos están en la hoja "General"
+sheet = workbook['General']  
 
 # Colores de formato
 gray_fill_exactitud = PatternFill(start_color='D9D9D9', end_color='D9D9D9', fill_type='solid')  # Gris para exactitud
@@ -599,7 +582,7 @@ correct_column_order = [
 ]
 
 # Obtener los encabezados actuales de la hoja
-columns = [cell.value for cell in sheet[1]]  # Obtener los encabezados de la primera fila
+columns = [cell.value for cell in sheet[1]]  
 column_index_map = {column: index for index, column in enumerate(columns)}
 
 # Crear una lista de los índices correspondientes a las columnas en el orden correcto
@@ -684,7 +667,7 @@ general_counts.index = range(1, len(general_counts) + 1)
 questions_to_plot = [19, 20]
 
 for question_id in questions_to_plot:
-    if question_id in general_counts.index:  # Verificar si el índice existe
+    if question_id in general_counts.index:  
         # Filtrar los datos para la pregunta actual
         question_data = general_counts.loc[question_id]
 
@@ -780,7 +763,7 @@ if 'question_id' in responses_df.columns and 'response_time_seconds' in response
             value=avg_time_value.values[0] if not avg_time_value.empty else "N/A"
         )
 
-    # Ajustar el ancho de la columna "avg_time_(s)" para que sea más legible
+    # Ajustar el ancho de la columna "avg_time_(s)"
     sheet.column_dimensions[get_column_letter(new_col_idx)].width = 20
 
     # Guardar los cambios en el archivo Excel

@@ -1,6 +1,8 @@
 # Survey-XAI-App
 
-Survey-XAI-App es una herramienta desarrollada por Adrián Vargas Rangel para el Trabajo de Fin de Máster (TFM) de Inteligencia Artificial *"A Tool for Human Evaluation of Interpretability"*, en la Universidad Politécnica de Madrid (2024). Su propósito es analizar y comparar la interpretabilidad y precisión de modelos transparentes en aprendizaje automático, específicamente Árboles de Decisión (DT) e Interpretable Decision Sets (IDS).
+Survey-XAI-App es una aplicación web desarrollada por Adrián Vargas Rangel como parte del Trabajo de Fin de Máster (TFM) en Inteligencia Artificial, titulado *"A Tool for Human Evaluation of Interpretability"*. Esta herramienta interactiva permite evaluar cómo los usuarios perciben y comprenden la interpretabilidad de modelos transparentes de aprendizaje automático como Árboles de Decisión (DT) e Interpretable Decision Sets (IDS).
+
+El proyecto se centra en combinar métricas técnicas, como parsimonia y simplicidad de reglas, con evaluaciones humanas para analizar cómo los usuarios finales comprenden las decisiones de los modelos en un contexto educativo.
 
 ## Contexto
 
